@@ -765,14 +765,14 @@
   function getInstallCardMarkup_(){
     const ua = navigator.userAgent || '';
     let aTitle = 'ADD TO HOME SCREEN';
-    let aCopy = 'FOR THE BEST FULL SCREEN PLAY.\n1. ADD THIS PAGE TO YOUR HOME SCREEN\n2. OPEN THE APP FROM ITS ICON';
+    let aCopy = 'For the best full screen play:\nTap Share > Add to Home Screen\nADD TO HOME SCREEN';
 
     if(/iPhone|iPad|iPod/i.test(ua)){
       aTitle = 'ADD TO HOME SCREEN';
-      aCopy = 'FOR THE BEST FULL SCREEN PLAY.\n1. OPEN IN SAFARI\n2. TAP SHARE\n3. TAP ADD TO HOME SCREEN\n4. OPEN THE NEW ICON';
+      aCopy = 'For the best full screen play:\nTap ... > Share > View More >\nADD TO HOME SCREEN';
     } else if(/Android/i.test(ua)){
       aTitle = 'ADD TO HOME SCREEN';
-      aCopy = 'FOR THE BEST FULL SCREEN PLAY.\n1. OPEN IN CHROME\n2. TAP MENU\n3. TAP ADD TO HOME SCREEN OR INSTALL APP\n4. OPEN THE NEW ICON';
+      aCopy = 'For the best full screen play:\nTap Menu > Add to Home Screen or Install App\nADD TO HOME SCREEN';
     }
 
     return `
