@@ -30,7 +30,7 @@
 
     :root{
       --pad:10px;
-      --gap:20px;
+      --gap:0px;
       --card-radius:40px;
       --card-header-bg:#6f8f2a;
       --fs-status:clamp(18px, 3.8vw, 24px);
@@ -773,7 +773,7 @@
     let aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Share > Add to Home Screen\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
 
     if(/iPhone|iPad|iPod/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: (...) > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: ... > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     } else if(/Android/i.test(ua)){
       aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Menu > Add to Home Screen or Install App\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     }
@@ -792,7 +792,6 @@
             <div class="install-choice-copy">${aCopy}</div>
           </div>
         </div>
-        <div id="install-continue" class="install-browser-button"><div class="install-swipe-row"><span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span><span class="install-swipe-label">SWIPE TO PLAY IN BROWSER</span><span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span></div><span class="install-later-note">YOU CAN ADD THE ICON LATER.</span></div>
       </div>
     `;
   }
@@ -804,14 +803,6 @@
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = '';
 
-    const installContinue = document.getElementById('install-continue');
-    if(installContinue){
-      installContinue.addEventListener('click', function(){
-        const existing = loadSession();
-        showInfoCardLoading_();
-        startBuildNewDeck_();
-      });
-    }
   }
 
   function applyPhraseHandlingWithin_(root){
