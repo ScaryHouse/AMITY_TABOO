@@ -69,8 +69,8 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
-      border:2px solid #000;
-      box-shadow:0 0 0 2px rgba(0,0,0,0.18), 0 16px 34px rgba(0,0,0,0.36);
+      border:1px solid #000;
+      box-shadow:none;
     }
 
     .card-layer-top{
@@ -547,7 +547,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.014</div>
+        <div class="status-version" id="status-version">v.015</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -772,7 +772,7 @@
     let aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Share > Add to Home Screen\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
 
     if(/iPhone|iPad|iPod/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: ... > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: … > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     } else if(/Android/i.test(ua)){
       aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Menu > Add to Home Screen or Install App\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     }
