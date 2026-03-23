@@ -344,17 +344,23 @@
       background:#fff;
     }
 
-    .install-choice-label{
-      font-size:clamp(34px,4.8vw,48px);
-      line-height:1;
-      margin-bottom:10px;
-    }
-
     .install-choice-copy{
       white-space:pre-line;
-      font-size:clamp(24px,3.4vw,34px);
-      line-height:1.04;
+      font-size:clamp(20px,2.8vw,28px);
+      line-height:1.18;
       font-weight:900;
+    }
+
+    .install-copy-lead{
+      text-decoration:underline;
+      text-underline-offset:4px;
+    }
+
+    .install-copy-final{
+      display:block;
+      font-size:clamp(34px,4.8vw,48px);
+      line-height:1;
+      margin-top:10px;
     }
 
     .install-later-note{
@@ -764,15 +770,12 @@
 
   function getInstallCardMarkup_(){
     const ua = navigator.userAgent || '';
-    let aTitle = 'ADD TO HOME SCREEN';
-    let aCopy = 'For the best full screen play:\nTap Share > Add to Home Screen\nADD TO HOME SCREEN';
+    let aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Share > Add to Home Screen\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
 
     if(/iPhone|iPad|iPod/i.test(ua)){
-      aTitle = 'ADD TO HOME SCREEN';
-      aCopy = 'For the best full screen play:\nTap ... > Share > View More >\nADD TO HOME SCREEN';
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: (...) > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     } else if(/Android/i.test(ua)){
-      aTitle = 'ADD TO HOME SCREEN';
-      aCopy = 'For the best full screen play:\nTap Menu > Add to Home Screen or Install App\nADD TO HOME SCREEN';
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Menu > Add to Home Screen or Install App\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     }
 
     return `
@@ -786,8 +789,7 @@
         <div class="info-just">JUST PROMPTS.</div>
         <div class="install-choices">
           <div class="install-choice">
-            <div class="install-choice-label">${aTitle}</div>
-            <div class="install-choice-copy">${escapeHtml_(aCopy)}</div>
+            <div class="install-choice-copy">${aCopy}</div>
           </div>
         </div>
         <div id="install-continue" class="install-browser-button"><div class="install-swipe-row"><span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span><span class="install-swipe-label">SWIPE TO PLAY IN BROWSER</span><span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span></div><span class="install-later-note">YOU CAN ADD THE ICON LATER.</span></div>
