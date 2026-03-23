@@ -22,10 +22,8 @@
       text-size-adjust:100%;
       overflow:hidden !important;
       overscroll-behavior:none;
-      position:fixed;
-      inset:0;
       width:100%;
-      touch-action:none;
+      min-height:100dvh;
     }
 
     :root{
@@ -40,8 +38,7 @@
     *{ box-sizing:border-box; }
 
     .screen{
-      height:100vh;
-      min-height:100vh;
+      min-height:100dvh;
       display:flex;
       flex-direction:column;
       padding:
@@ -550,7 +547,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.013</div>
+        <div class="status-version" id="status-version">v.014</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
