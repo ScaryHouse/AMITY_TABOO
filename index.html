@@ -547,7 +547,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.016</div>
+        <div class="status-version" id="status-version">v.017</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -769,12 +769,14 @@
 
   function getInstallCardMarkup_(){
     const ua = navigator.userAgent || '';
-    let aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Share > Add to Home Screen\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+    let aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Share > Add to Home Screen >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
 
-    if(/iPhone|iPad|iPod/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: … > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+    if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: ... > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+    } else if(/iPhone|iPad|iPod/i.test(ua)){
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: ... > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     } else if(/Android/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Menu > Add to Home Screen or Install App\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Menu > Add to Home Screen or Install App >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     }
 
     return `
