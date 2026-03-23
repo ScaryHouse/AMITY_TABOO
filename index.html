@@ -401,25 +401,35 @@
 
     .statusbar{
       width:100%;
-      position:relative;
       display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
+      flex-direction:column;
+      gap:8px;
       font-size:var(--fs-status);
       color:#fff;
       padding:10px 0 0;
       min-height:72px;
     }
 
+    .status-toprow{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .status-bottomrow{
+      width:100%;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      gap:12px;
+    }
+
     .status-mid{
-      position:absolute;
-      left:50%;
-      transform:translateX(-50%);
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-height:56px;
+      min-height:44px;
       padding:8px 18px;
       border:3px solid #000;
       border-radius:999px;
@@ -430,14 +440,11 @@
       line-height:1;
       text-decoration:none;
       white-space:nowrap;
-      z-index:2;
     }
 
     .status-left,
-    .status-right{
-      position:relative;
-      z-index:1;
-      flex:1 1 0;
+    .status-right,
+    .status-version{
       min-width:0;
       font-family:"Arial Narrow", "HelveticaNeue-CondensedBold", "Roboto Condensed", "Liberation Sans Narrow", Arial, Helvetica, sans-serif;
       font-stretch:condensed;
@@ -448,12 +455,17 @@
 
     .status-left{
       text-align:left;
-      padding-right:180px;
+      padding-right:0;
+    }
+
+    .status-version{
+      text-align:center;
+      white-space:nowrap;
     }
 
     .status-right{
       text-align:right;
-      padding-left:180px;
+      padding-left:0;
     }
 
     @media (min-width: 900px){
@@ -500,7 +512,7 @@
               alt="Amity Games Amity Taboo"
               draggable="false"
             >
-            <div class="build-tag">gh.005</div>
+            <div class="build-tag">gh.006</div>
           </div>
         </div>
         <div class="card-bottom">
@@ -525,9 +537,14 @@
     </div>
 
     <div class="statusbar" aria-hidden="true">
-      <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-      <a class="status-mid" id="coffee-link" href="https://buymeacoffee.com/scaryhouse" target="_blank" rel="noopener noreferrer external" aria-label="Buy me a Coffee">Buy me a Coffee</a>
-      <div class="status-right" id="status-cardid">Card ID: #0000</div>
+      <div class="status-toprow">
+        <a class="status-mid" id="coffee-link" href="https://buymeacoffee.com/scaryhouse" target="_blank" rel="noopener noreferrer external" aria-label="Buy me a Coffee">Buy me a Coffee</a>
+      </div>
+      <div class="status-bottomrow">
+        <div class="status-left" id="status-deck">Deck: 0 of 000</div>
+        <div class="status-version" id="status-version">gh.006</div>
+        <div class="status-right" id="status-cardid">Card ID: #0000</div>
+      </div>
     </div>
   </div>
 
