@@ -47,7 +47,7 @@
       padding:
         calc(var(--pad) + env(safe-area-inset-top))
         calc(var(--pad) + env(safe-area-inset-right))
-        calc(var(--pad) + env(safe-area-inset-bottom))
+        calc(env(safe-area-inset-bottom))
         calc(var(--pad) + env(safe-area-inset-left));
       gap:var(--gap);
       overflow:hidden !important;
@@ -355,7 +355,7 @@
       text-decoration:underline;
       text-underline-offset:4px;
       display:block;
-      margin-bottom:0px;
+      margin-bottom:-2px;
     }
 
     .install-copy-final{
@@ -550,7 +550,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.009</div>
+        <div class="status-version" id="status-version">v.010</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
