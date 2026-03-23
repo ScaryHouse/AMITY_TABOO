@@ -29,9 +29,9 @@
     }
 
     :root{
-      --pad:20px;
+      --pad:10px;
       --gap:20px;
-      --card-radius:68px;
+      --card-radius:40px;
       --card-header-bg:#6f8f2a;
       --fs-status:clamp(28px, 6.4vw, 40px);
       --fs-coffee:30px;
@@ -45,9 +45,9 @@
       display:flex;
       flex-direction:column;
       padding:
-        calc(var(--pad) + env(safe-area-inset-top) + 12px)
+        calc(var(--pad) + env(safe-area-inset-top))
         calc(var(--pad) + env(safe-area-inset-right))
-        calc(var(--pad) + env(safe-area-inset-bottom) + 18px)
+        calc(var(--pad) + env(safe-area-inset-bottom))
         calc(var(--pad) + env(safe-area-inset-left));
       gap:var(--gap);
       overflow:hidden !important;
