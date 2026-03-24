@@ -191,7 +191,7 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:0px;
+      gap:8px;
     }
 
     .info-ready{
@@ -211,7 +211,7 @@
       background:var(--card-header-bg);
       border:4px solid #000;
       border-radius:999px;
-      padding:8px 18px;
+      padding:12px 22px;
       width:100%;
       line-height:1;
       margin-top:0;
@@ -219,7 +219,7 @@
     }
 
     .swipe-label{
-      font-size:var(--fs-swipe-label);
+      font-size:clamp(26px, 3.2vw, 34px);
       font-weight:900;
       line-height:1;
     }
@@ -227,10 +227,10 @@
     .swipe-arrow{
       position:relative;
       display:block;
-      width:98px;
-      min-width:98px;
-      height:34px;
-      flex:0 0 98px;
+      width:120px;
+      min-width:120px;
+      height:40px;
+      flex:0 0 120px;
     }
 
     .swipe-arrow::before{
@@ -251,9 +251,9 @@
       left:0;
       top:50%;
       transform:translateY(-50%);
-      border-top:17px solid transparent;
-      border-bottom:17px solid transparent;
-      border-right:24px solid #000;
+      border-top:20px solid transparent;
+      border-bottom:20px solid transparent;
+      border-right:30px solid #000;
     }
 
     .swipe-arrow-right::after{
@@ -262,9 +262,9 @@
       right:0;
       top:50%;
       transform:translateY(-50%);
-      border-top:17px solid transparent;
-      border-bottom:17px solid transparent;
-      border-left:24px solid #000;
+      border-top:20px solid transparent;
+      border-bottom:20px solid transparent;
+      border-left:30px solid #000;
     }
 
     .info-bottom{
@@ -383,16 +383,16 @@
       width:100%;
       display:flex;
       flex-direction:column;
-      gap:8px;
+      gap:6px;
       margin-top:0;
-      margin-bottom:56px;
+      margin-bottom:36px;
     }
 
     .install-choice{
       width:100%;
       border:4px solid #000;
       border-radius:28px;
-      padding:8px 6px 10px;
+      padding:10px 12px 12px;
       box-sizing:border-box;
       background:#fff;
     }
@@ -403,7 +403,7 @@
       flex-direction:column;
       align-items:center;
       gap:2px;
-      font-size:24px;
+      font-size:20px;
       line-height:1.08;
       font-weight:900;
     }
@@ -422,7 +422,7 @@
     }
 
     .install-copy-path{
-      font-size:18px;
+      font-size:20px;
       line-height:1;
       white-space:nowrap;
     }
@@ -658,7 +658,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.049</div>
+        <div class="status-version" id="status-version">v.050</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
