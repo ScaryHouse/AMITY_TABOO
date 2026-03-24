@@ -327,7 +327,7 @@
     .install-card{
       height:100%;
       display:grid;
-      grid-template-rows:auto auto auto 1fr auto;
+      grid-template-rows:auto auto auto 1fr auto auto auto;
       align-items:start;
       justify-items:center;
       text-align:center;
@@ -336,12 +336,35 @@
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
     }
 
+    .install-ghost-ready{
+      font-size:var(--fs-info-ready);
+      font-weight:900;
+      line-height:1.03;
+      margin-bottom:-8px;
+      visibility:hidden;
+    }
+
+    .install-ghost-swipe{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:var(--card-header-bg);
+      border:4px solid transparent;
+      border-radius:999px;
+      padding:8px 18px;
+      width:92%;
+      line-height:1;
+      margin-top:-52px;
+      margin-bottom:12px;
+      visibility:hidden;
+    }
+
     .install-choices{
       width:100%;
       display:flex;
       flex-direction:column;
       gap:18px;
-      margin-top:8px;
+      margin-top:0;
       margin-bottom:2px;
     }
 
@@ -598,7 +621,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.034</div>
+        <div class="status-version" id="status-version">v.035</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -846,6 +869,12 @@
           <div>No scores.</div>
         </div>
         <div class="info-just">JUST PROMPTS.</div>
+        <div class="install-ghost-ready">Card is ready</div>
+        <div class="install-ghost-swipe">
+          <span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span>
+          <span class="swipe-label">SWIPE TO PLAY</span>
+          <span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span>
+        </div>
         <div class="install-choices">
           <div class="install-choice">
             <div class="install-choice-copy">${aCopy}</div>
