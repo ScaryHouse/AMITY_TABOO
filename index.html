@@ -612,7 +612,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.028</div>
+        <div class="status-version" id="status-version">v.029</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -875,7 +875,10 @@
     if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = infoMarkup;
+  }
 
+  function isInstallCardVisible_(){
+    return !!(topBottom && topBottom.querySelector('.install-card'));
   }
 
   function applyPhraseHandlingWithin_(root){
@@ -1271,9 +1274,13 @@
       Math.abs(dx) > (Math.abs(dy) * revealAxisRatio);
 
     if(revealUnderCard){
-      renderUnderCard_(dx < 0 ? 'left' : 'right');
+      if(isInstallCardVisible_()){
+        if(underBottom) underBottom.innerHTML = infoMarkup;
+      } else {
+        renderUnderCard_(dx < 0 ? 'left' : 'right');
+      }
     } else if(underBottom){
-      underBottom.innerHTML = '';
+      underBottom.innerHTML = isInstallCardVisible_() ? infoMarkup : '';
     }
   }
 
@@ -1309,6 +1316,27 @@
     }
 
     const direction = dx < 0 ? 'left' : 'right';
+
+    if(isInstallCardVisible_()){
+      topCard.classList.remove('is-dragging');
+      topCard.classList.add('is-animating');
+      topCard.style.transition = 'transform 520ms cubic-bezier(.22,.61,.36,1), opacity 520ms linear';
+      topCard.style.transform = direction === 'left' ? 'translateX(-120vw)' : 'translateX(120vw)';
+      topCard.style.opacity = '1';
+
+      window.setTimeout(function(){
+        showInfoCardLoading_();
+        resetCardPosition_();
+        const existing = loadSession();
+        if(existing && Array.isArray(existing.cards) && existing.cards.length){
+          showInfoCardReady_(existing.total);
+        } else {
+          startBuildNewDeck_();
+        }
+      }, 530);
+      return;
+    }
+
     const s = loadSession();
     if(!s || !Array.isArray(s.cards) || !s.cards.length){
       resetCardPosition_();
