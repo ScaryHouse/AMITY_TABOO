@@ -481,8 +481,53 @@
 
     @media (min-width: 900px){
       .screen{
-        max-width:420px;
+        width:min(20vw, 320px);
+        min-width:260px;
+        max-width:320px;
         margin:0 auto;
+      }
+
+      .info-top{
+        font-size:22px;
+      }
+
+      .info-main{
+        font-size:28px;
+        line-height:1.02;
+      }
+
+      .info-just{
+        font-size:40px;
+      }
+
+      .info-ready{
+        font-size:22px;
+      }
+
+      .info-swipe{
+        margin-top:-28px;
+        margin-bottom:8px;
+        padding:6px 14px;
+      }
+
+      .swipe-label{
+        font-size:22px;
+      }
+
+      .swipe-arrow{
+        width:74px;
+        min-width:74px;
+        height:28px;
+        flex:0 0 74px;
+      }
+
+      .statusbar{
+        gap:6px;
+      }
+
+      .status-mid{
+        min-height:40px;
+        padding:6px 14px;
       }
     }
   </style>
@@ -553,7 +598,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.025</div>
+        <div class="status-version" id="status-version">v.026</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
