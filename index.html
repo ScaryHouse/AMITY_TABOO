@@ -185,12 +185,20 @@
       color:#000;
     }
 
+    .info-play-group{
+      width:92%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+    }
+
     .info-ready{
       font-size:var(--fs-info-ready);
       font-weight:900;
       line-height:1.03;
       color:#000;
-      margin-bottom:-68px;
+      margin-bottom:0;
     }
 
     .info-swipe{
@@ -203,9 +211,9 @@
       border:4px solid #000;
       border-radius:999px;
       padding:8px 18px;
-      width:92%;
+      width:100%;
       line-height:1;
-      margin-top:-52px;
+      margin-top:0;
       margin-bottom:12px;
     }
 
@@ -339,11 +347,19 @@
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
     }
 
+    .install-ghost-play-group{
+      width:92%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:4px;
+    }
+
     .install-ghost-ready{
       font-size:var(--fs-info-ready);
       font-weight:900;
       line-height:1.03;
-      margin-bottom:-30px;
+      margin-bottom:0;
       visibility:hidden;
     }
 
@@ -355,9 +371,9 @@
       border:4px solid transparent;
       border-radius:999px;
       padding:8px 18px;
-      width:92%;
+      width:100%;
       line-height:1;
-      margin-top:-52px;
+      margin-top:0;
       margin-bottom:12px;
       visibility:hidden;
     }
@@ -381,17 +397,30 @@
     }
 
     .install-choice-copy{
-      white-space:pre-line;
+      white-space:normal;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:2px;
       font-size:var(--fs-install-copy);
-      line-height:1.28;
+      line-height:1.08;
       font-weight:900;
+    }
+
+    .install-copy-lead,
+    .install-copy-path,
+    .install-copy-final{
+      display:block;
     }
 
     .install-copy-lead{
       text-decoration:underline;
       text-underline-offset:4px;
-      display:block;
-      margin-bottom:-8px;
+    }
+
+    .install-copy-path{
+      font-size:var(--fs-install-copy);
+      line-height:1.08;
     }
 
     .install-path-dots{
@@ -401,10 +430,9 @@
     }
 
     .install-copy-final{
-      display:block;
       font-size:var(--fs-install-final);
       line-height:1;
-      margin-top:12px;
+      margin-top:6px;
     }
 
     .install-later-note{
@@ -606,11 +634,13 @@
               <div>No scores.</div>
             </div>
             <div class="info-just">JUST PROMPTS.</div>
-            <div class="info-ready" id="info-ready">Loading deck...</div>
-            <div class="info-swipe">
-              <span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span>
-              <span class="swipe-label">SWIPE TO PLAY</span>
-              <span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span>
+            <div class="info-play-group">
+              <div class="info-ready" id="info-ready">Loading deck...</div>
+              <div class="info-swipe">
+                <span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span>
+                <span class="swipe-label">SWIPE TO PLAY</span>
+                <span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span>
+              </div>
             </div>
             <div class="info-bottom">Double tap to shuffle</div>
           </div>
@@ -624,7 +654,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.042</div>
+        <div class="status-version" id="status-version">v.043</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -853,14 +883,14 @@
 
   function getInstallCardMarkup_(){
     const ua = navigator.userAgent || '';
-    let aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Share > Add to Home Screen >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+    let aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap: Share > Add to Home Screen ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
 
     if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap:   <span class="install-path-dots">...</span> > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap:   <span class="install-path-dots">...</span> > Share > View More ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
     } else if(/iPhone|iPad|iPod/i.test(ua)){
       aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap:   <span class="install-path-dots">...</span> > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     } else if(/Android/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap: Menu > Add to Home Screen or Install App >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap: Menu > Add to Home Screen or Install App ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
     }
 
     return `
@@ -872,11 +902,13 @@
           <div>No scores.</div>
         </div>
         <div class="info-just">JUST PROMPTS.</div>
-        <div class="install-ghost-ready">Card is ready</div>
-        <div class="install-ghost-swipe">
-          <span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span>
-          <span class="swipe-label">SWIPE TO PLAY</span>
-          <span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span>
+        <div class="install-ghost-play-group">
+          <div class="install-ghost-ready">Card is ready</div>
+          <div class="install-ghost-swipe">
+            <span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span>
+            <span class="swipe-label">SWIPE TO PLAY</span>
+            <span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span>
+          </div>
         </div>
         <div class="install-choices">
           <div class="install-choice">
