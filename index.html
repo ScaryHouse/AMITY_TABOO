@@ -383,16 +383,16 @@
       width:100%;
       display:flex;
       flex-direction:column;
-      gap:10px;
+      gap:8px;
       margin-top:0;
-      margin-bottom:34px;
+      margin-bottom:56px;
     }
 
     .install-choice{
       width:100%;
       border:4px solid #000;
       border-radius:28px;
-      padding:6px 2px 8px;
+      padding:8px 6px 10px;
       box-sizing:border-box;
       background:#fff;
     }
@@ -403,7 +403,7 @@
       flex-direction:column;
       align-items:center;
       gap:2px;
-      font-size:26px;
+      font-size:24px;
       line-height:1.08;
       font-weight:900;
     }
@@ -412,6 +412,8 @@
     .install-copy-path,
     .install-copy-final{
       display:block;
+      width:100%;
+      text-align:center;
     }
 
     .install-copy-lead{
@@ -420,7 +422,7 @@
     }
 
     .install-copy-path{
-      font-size:20px;
+      font-size:18px;
       line-height:1;
       white-space:nowrap;
     }
@@ -656,7 +658,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.048</div>
+        <div class="status-version" id="status-version">v.049</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -888,7 +890,7 @@
     let aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap: Share > Add to Home Screen ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
 
     if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap:   <span class="install-path-dots">...</span> > Share > View More ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap: <span class="install-path-dots">...</span> > Share > View More ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
     } else if(/iPhone|iPad|iPod/i.test(ua)){
       aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap:   <span class="install-path-dots">...</span> > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
     } else if(/Android/i.test(ua)){
