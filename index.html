@@ -204,9 +204,10 @@
     }
 
     .info-swipe{
-      display:flex;
+      display:grid;
+      grid-template-columns:120px 1fr 120px;
       align-items:center;
-      justify-content:space-between;
+      justify-items:center;
       font-weight:900;
       color:#000;
       background:var(--card-header-bg);
@@ -269,6 +270,8 @@
     }
 
     .info-bottom{
+      width:100%;
+      text-align:center;
       font-size:var(--fs-info-top);
       font-style:italic;
       font-weight:900;
@@ -659,7 +662,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.051</div>
+        <div class="status-version" id="status-version">v.052</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
