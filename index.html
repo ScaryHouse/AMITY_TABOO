@@ -149,10 +149,10 @@
 
     .info-card{
       height:100%;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:space-between;
+      display:grid;
+      grid-template-rows:auto auto auto 1fr auto auto auto;
+      align-items:start;
+      justify-items:center;
       text-align:center;
       color:#000;
       padding:10px 18px 24px 18px;
@@ -256,7 +256,8 @@
     }
 
     .info-bottom{
-      font-size:var(--fs-info-bottom);
+      font-size:var(--fs-info-top);
+      font-style:italic;
       font-weight:900;
       line-height:1.03;
       color:#000;
@@ -325,10 +326,10 @@
 
     .install-card{
       height:100%;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:space-between;
+      display:grid;
+      grid-template-rows:auto auto auto 1fr auto;
+      align-items:start;
+      justify-items:center;
       text-align:center;
       color:#000;
       padding:10px 18px 24px 18px;
@@ -597,7 +598,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.033</div>
+        <div class="status-version" id="status-version">v.034</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
