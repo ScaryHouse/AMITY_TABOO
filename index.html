@@ -35,7 +35,7 @@
       --fs-info-top:clamp(24px, 3.2vw, 34px);
       --fs-info-main:clamp(32px, 4.6vw, 48px);
       --fs-info-just:clamp(44px, 6.0vw, 62px);
-      --fs-info-ready:clamp(18px, 2.2vw, 24px);
+      --fs-info-ready:var(--fs-info-top);
       --fs-swipe-label:clamp(18px, 2.2vw, 24px);
       --fs-info-bottom:clamp(14px, 1.8vw, 18px);
 
@@ -173,7 +173,7 @@
     .info-main{
       font-size:var(--fs-info-main);
       font-weight:900;
-      line-height:1;
+      line-height:0.94;
       color:#000;
       margin-bottom:24px;
     }
@@ -187,11 +187,11 @@
 
     .info-play-group{
       width:92%;
-      margin-top:auto;
+      margin-top:0;
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:2px;
+      gap:0px;
     }
 
     .info-ready{
@@ -385,7 +385,7 @@
       flex-direction:column;
       gap:18px;
       margin-top:0;
-      margin-bottom:2px;
+      margin-bottom:8px;
     }
 
     .install-choice{
@@ -655,7 +655,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.044</div>
+        <div class="status-version" id="status-version">v.045</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
