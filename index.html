@@ -553,7 +553,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.024</div>
+        <div class="status-version" id="status-version">v.025</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -771,6 +771,13 @@
     }catch(e){
       return false;
     }
+  }
+
+  function isDesktopBrowser_(){
+    const ua = navigator.userAgent || '';
+    const touchPoints = Number(navigator.maxTouchPoints || 0);
+    const isMobileUA = /iPhone|iPad|iPod|Android|Mobile/i.test(ua);
+    return !isMobileUA && touchPoints === 0;
   }
 
   function getInstallCardMarkup_(){
@@ -1116,6 +1123,40 @@
     }, { passive:true });
   }
 
+  function bindKeyboardControls_(){
+    let lastSpaceAt = 0;
+
+    window.addEventListener('keydown', function(e){
+      const active = document.activeElement;
+      const tag = active && active.tagName ? String(active.tagName).toUpperCase() : '';
+      const editing = !!(active && (active.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'));
+      if(editing) return;
+
+      if(e.key === 'ArrowLeft'){
+        e.preventDefault();
+        onBack_(false);
+        return;
+      }
+
+      if(e.key === 'ArrowRight'){
+        e.preventDefault();
+        onNext_(false);
+        return;
+      }
+
+      if(e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar'){
+        e.preventDefault();
+        const now = Date.now();
+        if(now - lastSpaceAt <= 350){
+          triggerShuffle_();
+          lastSpaceAt = 0;
+          return;
+        }
+        lastSpaceAt = now;
+      }
+    });
+  }
+
   const axisRatio = 1.6;
   const revealThresholdX = 42;
   const revealAxisRatio = 1.15;
@@ -1293,11 +1334,12 @@
 
   bindShakeToShuffle_();
   bindDoubleTapShuffle_();
+  bindKeyboardControls_();
 
   document.addEventListener('touchstart', primeAudio_, { passive:true, once:true, capture:true });
   document.addEventListener('click', primeAudio_, { passive:true, once:true, capture:true });
 
-  if(!isStandalone_()){
+  if(!isStandalone_() && !isDesktopBrowser_()){
     showInstallCard_();
   } else {
     const existing = loadSession();
