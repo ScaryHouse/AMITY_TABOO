@@ -107,6 +107,8 @@
 
     .card-bottom{
       flex:1 1 auto;
+      display:flex;
+      flex-direction:column;
       background:#fff;
       opacity:1;
       border-top:3px solid #000;
@@ -170,7 +172,8 @@
     }
 
     .info-card{
-      height:100%;
+      flex:1 1 auto;
+      min-height:0;
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -181,7 +184,8 @@
     }
 
     .install-card{
-      height:100%;
+      flex:1 1 auto;
+      min-height:0;
       display:flex;
       flex-direction:column;
       align-items:center;
@@ -716,7 +720,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.060</div>
+        <div class="status-version" id="status-version">v.061</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
