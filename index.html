@@ -161,14 +161,65 @@
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
     }
 
-    .info-top{
-      margin-top:2px;
-      margin-bottom:24px;
-      font-size:var(--fs-info-top);
-      font-style:italic;
+    .card-art-top,
+    .card-art-bottom,
+    .install-art-bottom{
+      display:block;
+      width:100%;
+      height:auto;
+    }
+
+    .info-card{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      color:#000;
+      padding:10px 18px 24px 18px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    }
+
+    .install-card{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      color:#000;
+      padding:10px 18px 24px 18px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    }
+
+    .card-art-top-wrap{
+      width:100%;
+      margin:0 auto;
+    }
+
+    .info-play-group{
+      width:92%;
+      margin:0 auto;
+      margin-top:auto;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+    }
+
+    .install-bottom-wrap{
+      width:92%;
+      margin:0 auto;
+      margin-top:auto;
+    }
+
+    .info-ready{
+      width:100%;
+      text-align:center;
+      font-size:var(--fs-info-ready);
       font-weight:900;
       line-height:1.03;
       color:#000;
+      margin-bottom:0;
     }
 
     .info-main{
@@ -641,16 +692,17 @@
         </div>
         <div class="card-bottom">
           <div class="info-card">
-            <div class="info-top">(a friendly game of taboo)</div>
-            <div class="info-main">
-              <div>No teams.</div>
-              <div>No timers.</div>
-              <div>No scores.</div>
+            <div class="card-art-top-wrap">
+              <img class="card-art-top" src="at-description.svg?v=1" alt="" draggable="false">
             </div>
-            <div class="info-just">JUST PROMPTS.</div>
+            <div class="info-play-group">
+              <div class="info-ready" id="info-ready">Loading deck...</div>
+              <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" draggable="false">
+            </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
 
     <div class="statusbar" aria-hidden="true">
@@ -659,7 +711,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.058</div>
+        <div class="status-version" id="status-version">v.056</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -888,18 +940,25 @@
 
   function getInstallCardMarkup_(){
     const ua = navigator.userAgent || '';
-    let aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap: Share > Add to Home Screen ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
+    let installAsset = 'at-install-ios-safari.svg?v=1';
 
     if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap: <span class="install-path-dots">...</span> > Share > View More ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      installAsset = 'at-install-ios-chrome.svg?v=1';
     } else if(/iPhone|iPad|iPod/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span>\nTap:   <span class="install-path-dots">...</span> > Share > View More >\n<span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      installAsset = 'at-install-ios-safari.svg?v=1';
     } else if(/Android/i.test(ua)){
-      aCopy = '<span class="install-copy-lead">For the best full screen play:</span><span class="install-copy-path">Tap: Menu > Add to Home Screen or Install App ></span><span class="install-copy-final">ADD TO HOME SCREEN</span>';
+      installAsset = 'at-install-android.svg?v=1';
     }
 
     return `
-      <div class="install-card"></div>
+      <div class="install-card">
+        <div class="card-art-top-wrap">
+          <img class="card-art-top" src="at-description.svg?v=1" alt="" draggable="false">
+        </div>
+        <div class="install-bottom-wrap">
+          <img class="install-art-bottom" src="${installAsset}" alt="" draggable="false">
+        </div>
+      </div>
     `;
   }
 
