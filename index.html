@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.076</div>
+        <div class="status-version" id="status-version">v.077</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -1090,6 +1090,26 @@
     renderUnderCard_('left');
   }
 
+  function syncStatusFromSession_(){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length){
+      if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+      if(statusCard) statusCard.textContent = 'Card ID: #0000';
+      return;
+    }
+
+    if(s.mode !== 'PLAY'){
+      if(statusDeck) statusDeck.textContent = formatDeckStatus_(0, s.total || s.cards.length);
+      if(statusCard) statusCard.textContent = 'Card ID: #0000';
+      return;
+    }
+
+    const idx = Math.max(0, Math.min(Number(s.index) || 0, s.cards.length - 1));
+    const cardObj = s.cards[idx];
+    if(statusDeck) statusDeck.textContent = formatDeckStatus_(idx + 1, s.total);
+    if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
+  }
+
   function startBuildNewDeck_(){
     clearSession();
     showInfoCardLoading_();
@@ -1438,6 +1458,7 @@
       s.index = firstIndex;
       s.mode = 'PLAY';
       saveSession(s);
+      syncStatusFromSession_();
     } else {
       renderUnderCard_(direction);
       if(direction === 'left'){
@@ -1445,6 +1466,7 @@
       } else {
         onBack_(true);
       }
+      syncStatusFromSession_();
     }
 
     topCard.classList.remove('is-dragging');
