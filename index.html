@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.077</div>
+        <div class="status-version" id="status-version">v.078</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -776,7 +776,7 @@
 
     const now = ctx.currentTime;
 
-    for(let k = 0; k < 7; k++){
+    for(let k = 0; k < 15; k++){
       const burstAt = now + (k * 0.055);
 
       const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * 0.06));
@@ -828,13 +828,17 @@
     requestMotionPermissionIfNeeded_();
 
     if(!ctx){
+      console.log('AUDIO no ctx');
       return Promise.resolve(false);
     }
 
     return ctx.resume()
-      .catch(function(){})
+      .catch(function(err){
+        console.log('AUDIO resume fail', err);
+      })
       .then(function(){
         audioPrimed_ = (ctx.state === 'running');
+        console.log('AUDIO primed', audioPrimed_, ctx.state);
 
         const s = loadSession();
         if(s && s.mode === 'INFO' && !s.audioReady && Array.isArray(s.cards) && s.cards.length){
