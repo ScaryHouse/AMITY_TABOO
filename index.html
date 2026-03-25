@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.074</div>
+        <div class="status-version" id="status-version">v.075</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -727,47 +727,21 @@
 
     const now = ctx.currentTime;
 
-    const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * 0.16));
-    const noiseBuffer = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
-    const noiseData = noiseBuffer.getChannelData(0);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
 
-    for(let i = 0; i < noiseLen; i++){
-      const env = 1 - (i / noiseLen);
-      noiseData[i] = (Math.random() * 2 - 1) * env * 0.7;
-    }
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(880, now);
 
-    const noise = ctx.createBufferSource();
-    const noiseFilter = ctx.createBiquadFilter();
-    const noiseGain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.22, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.20);
 
-    noiseFilter.type = 'lowpass';
-    noiseFilter.frequency.setValueAtTime(420, now);
-    noiseFilter.Q.setValueAtTime(0.8, now);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
 
-    noiseGain.gain.setValueAtTime(0.0001, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.32, now + 0.01);
-    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
-
-    noise.buffer = noiseBuffer;
-    noise.connect(noiseFilter);
-    noiseFilter.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
-    noise.start(now);
-
-    const tap = ctx.createOscillator();
-    const tapGain = ctx.createGain();
-    tap.type = 'triangle';
-    tap.frequency.setValueAtTime(150, now + 0.11);
-    tap.frequency.exponentialRampToValueAtTime(90, now + 0.15);
-
-    tapGain.gain.setValueAtTime(0.0001, now + 0.10);
-    tapGain.gain.exponentialRampToValueAtTime(0.11, now + 0.115);
-    tapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.17);
-
-    tap.connect(tapGain);
-    tapGain.connect(ctx.destination);
-    tap.start(now + 0.10);
-    tap.stop(now + 0.18);
+    osc.start(now);
+    osc.stop(now + 0.22);
   }
 
   function playShuffleSound_(){
