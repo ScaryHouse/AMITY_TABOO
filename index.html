@@ -335,7 +335,15 @@
       flex-direction:column;
       justify-content:flex-start;
       align-items:center;
-      padding:64px 18px 24px 18px;
+      padding:36px 18px 24px 18px;
+    }
+
+    .width-divider{
+      width:100%;
+      height:3px;
+      background:#000;
+      margin-top:14px;
+      margin-bottom:8px;
     }
 
     .width-target{
@@ -345,7 +353,6 @@
       font-size:clamp(36px,6.8vw,55px);
       line-height:1.0;
       color:#688828 !important;
-      text-shadow:3px 3px 0 #000;
     }
 
     .width-taboo-group{
@@ -353,9 +360,9 @@
       flex:1 1 auto;
       display:flex;
       flex-direction:column;
-      justify-content:center;
-      gap:56px;
-      margin-top:86px;
+      justify-content:flex-start;
+      gap:24px;
+      margin-top:26px;
     }
 
     .width-line{
@@ -365,7 +372,6 @@
       font-size:clamp(33px,6.1vw,49px);
       line-height:1.0;
       color:#C92417;
-      text-shadow:3px 3px 0 #000;
       text-align:center;
       white-space:nowrap;
       overflow:hidden;
@@ -375,7 +381,7 @@
 
     .width-line.is-stacked{
       white-space:normal;
-      line-height:0.92;
+      line-height:1.08;
     }
 
     .width-line.is-stacked .phrase-part{
@@ -664,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.068</div>
+        <div class="status-version" id="status-version">v.069</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -962,6 +968,7 @@
     return `
       <div class="width-test-card prompt-card">
         <div class="width-target width-line" data-phrase="${escapeHtml_(target)}">${escapeHtml_(target.toUpperCase())}</div>
+        <div class="width-divider"></div>
         <div class="width-taboo-group">
           ${taboo.map(function(t){
             const phrase = String(t || '').trim();
