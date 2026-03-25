@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.079</div>
+        <div class="status-version" id="status-version">v.080</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -740,13 +740,13 @@
     const noiseFilter = ctx.createBiquadFilter();
     const noiseGain = ctx.createGain();
 
-    noiseFilter.type = 'bandpass';
-    noiseFilter.frequency.setValueAtTime(2200, now);
-    noiseFilter.Q.setValueAtTime(1.6, now);
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(420, now);
+    noiseFilter.Q.setValueAtTime(0.8, now);
 
     noiseGain.gain.setValueAtTime(0.0001, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.42, now + 0.008);
-    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+    noiseGain.gain.exponentialRampToValueAtTime(0.32, now + 0.01);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
 
     noise.buffer = noiseBuffer;
     noise.connect(noiseFilter);
@@ -756,18 +756,18 @@
 
     const tap = ctx.createOscillator();
     const tapGain = ctx.createGain();
-    tap.type = 'square';
-    tap.frequency.setValueAtTime(210, now + 0.095);
-    tap.frequency.exponentialRampToValueAtTime(118, now + 0.125);
+    tap.type = 'triangle';
+    tap.frequency.setValueAtTime(150, now + 0.11);
+    tap.frequency.exponentialRampToValueAtTime(90, now + 0.15);
 
-    tapGain.gain.setValueAtTime(0.0001, now + 0.09);
-    tapGain.gain.exponentialRampToValueAtTime(0.16, now + 0.102);
-    tapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.145);
+    tapGain.gain.setValueAtTime(0.0001, now + 0.10);
+    tapGain.gain.exponentialRampToValueAtTime(0.11, now + 0.115);
+    tapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.17);
 
     tap.connect(tapGain);
     tapGain.connect(ctx.destination);
-    tap.start(now + 0.09);
-    tap.stop(now + 0.15);
+    tap.start(now + 0.10);
+    tap.stop(now + 0.18);
   }
 
   function playShuffleSound_(){
@@ -776,7 +776,7 @@
 
     const now = ctx.currentTime;
 
-    for(let k = 0; k < 9; k++){
+    for(let k = 0; k < 15; k++){
       const burstAt = now + (k * 0.055);
 
       const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * 0.06));
@@ -792,13 +792,13 @@
       const noiseFilter = ctx.createBiquadFilter();
       const noiseGain = ctx.createGain();
 
-      noiseFilter.type = 'bandpass';
-      noiseFilter.frequency.setValueAtTime(2200, burstAt);
-      noiseFilter.Q.setValueAtTime(1.6, burstAt);
+      noiseFilter.type = 'lowpass';
+      noiseFilter.frequency.setValueAtTime(520, burstAt);
+      noiseFilter.Q.setValueAtTime(0.8, burstAt);
 
       noiseGain.gain.setValueAtTime(0.0001, burstAt);
-      noiseGain.gain.exponentialRampToValueAtTime(0.34, burstAt + 0.006);
-      noiseGain.gain.exponentialRampToValueAtTime(0.0001, burstAt + 0.05);
+      noiseGain.gain.exponentialRampToValueAtTime(0.24, burstAt + 0.008);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, burstAt + 0.06);
 
       noise.buffer = noiseBuffer;
       noise.connect(noiseFilter);
@@ -808,18 +808,18 @@
 
       const tap = ctx.createOscillator();
       const tapGain = ctx.createGain();
-      tap.type = 'square';
-      tap.frequency.setValueAtTime(210, burstAt + 0.028);
-      tap.frequency.exponentialRampToValueAtTime(118, burstAt + 0.05);
+      tap.type = 'triangle';
+      tap.frequency.setValueAtTime(180, burstAt + 0.038);
+      tap.frequency.exponentialRampToValueAtTime(110, burstAt + 0.06);
 
-      tapGain.gain.setValueAtTime(0.0001, burstAt + 0.026);
-      tapGain.gain.exponentialRampToValueAtTime(0.11, burstAt + 0.034);
-      tapGain.gain.exponentialRampToValueAtTime(0.0001, burstAt + 0.055);
+      tapGain.gain.setValueAtTime(0.0001, burstAt + 0.034);
+      tapGain.gain.exponentialRampToValueAtTime(0.07, burstAt + 0.042);
+      tapGain.gain.exponentialRampToValueAtTime(0.0001, burstAt + 0.07);
 
       tap.connect(tapGain);
       tapGain.connect(ctx.destination);
-      tap.start(burstAt + 0.026);
-      tap.stop(burstAt + 0.055);
+      tap.start(burstAt + 0.034);
+      tap.stop(burstAt + 0.075);
     }
   }
 
