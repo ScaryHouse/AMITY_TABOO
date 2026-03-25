@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.072</div>
+        <div class="status-version" id="status-version">v.073</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -1036,11 +1036,18 @@
     const s = loadSession();
     if(!underBottom || !s || !Array.isArray(s.cards) || !s.cards.length){
       if(underBottom) underBottom.innerHTML = '';
+      underPreviewMode = '';
       return;
     }
 
     if(s.mode !== 'PLAY' && s.mode !== 'INFO'){
       underBottom.innerHTML = '';
+      underPreviewMode = '';
+      return;
+    }
+
+    const previewKey = 'play:' + direction;
+    if(underPreviewMode === previewKey){
       return;
     }
 
@@ -1054,6 +1061,7 @@
 
     underBottom.innerHTML = buildPromptMarkup_(s.cards[idx]);
     applyPhraseHandlingWithin_(underBottom);
+    underPreviewMode = previewKey;
   }
 
   function renderCurrentCard_(){
@@ -1095,23 +1103,8 @@
         return resp.json();
       })
       .then(function(res){
-        const cards = (res && res.cards) ? res.cards.slice() : [];
-
-        const testCard = {
-          rowId: 0,
-          target: 'builder / construction worker',
-          taboo: [
-            'bin / garbage can / trash can',
-            'waiter / waitress / server',
-            "doctor's / doctors office",
-            'table tennis / ping pong',
-            'cinema / movie theatre'
-          ]
-        };
-
-        cards.unshift(testCard);
-
-        const total = cards.length;
+        const cards = (res && res.cards) ? res.cards : [];
+        const total = (res && res.total) ? res.total : cards.length;
         const session = {
           schema: 1,
           deckId: (res && res.deckId) ? res.deckId : String(Date.now()),
@@ -1305,12 +1298,14 @@
   let lastX = 0;
   let lastY = 0;
   let tracking = false;
+  let underPreviewMode = '';
 
   function resetCardPosition_(){
     topCard.classList.remove('is-dragging', 'is-animating');
     topCard.style.transition = '';
     topCard.style.transform = '';
     topCard.style.opacity = '';
+    underPreviewMode = '';
   }
 
   function begin_(x, y){
@@ -1352,12 +1347,24 @@
 
     if(revealUnderCard){
       if(isInstallCardVisible_()){
-        if(underBottom) underBottom.innerHTML = infoMarkup;
+        if(underPreviewMode !== 'install-info'){
+          if(underBottom) underBottom.innerHTML = infoMarkup;
+          underPreviewMode = 'install-info';
+        }
       } else {
         renderUnderCard_(dx < 0 ? 'left' : 'right');
       }
     } else if(underBottom){
-      underBottom.innerHTML = isInstallCardVisible_() ? infoMarkup : '';
+      const emptyKey = isInstallCardVisible_() ? 'install-info' : 'empty';
+      if(emptyKey === 'install-info'){
+        if(underPreviewMode !== 'install-info'){
+          underBottom.innerHTML = infoMarkup;
+          underPreviewMode = 'install-info';
+        }
+      } else if(underPreviewMode !== 'empty'){
+        underBottom.innerHTML = '';
+        underPreviewMode = 'empty';
+      }
     }
   }
 
