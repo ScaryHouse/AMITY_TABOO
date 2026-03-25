@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.080</div>
+        <div class="status-version" id="status-version">v.081</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -721,11 +721,27 @@
     }
   }
 
-  function playDealSound_(){
+  function withRunningAudioContext_(fn){
     const ctx = getAudioContext_();
-    if(!ctx || ctx.state !== 'running') return;
+    if(!ctx) return;
 
-    const now = ctx.currentTime;
+    if(ctx.state === 'running'){
+      fn(ctx);
+      return;
+    }
+
+    ctx.resume()
+      .then(function(){
+        if(ctx.state === 'running'){
+          fn(ctx);
+        }
+      })
+      .catch(function(){});
+  }
+
+  function playDealSound_(){
+    withRunningAudioContext_(function(ctx){
+      const now = ctx.currentTime;
 
     const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * 0.16));
     const noiseBuffer = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
@@ -768,13 +784,12 @@
     tapGain.connect(ctx.destination);
     tap.start(now + 0.10);
     tap.stop(now + 0.18);
+    });
   }
 
   function playShuffleSound_(){
-    const ctx = getAudioContext_();
-    if(!ctx || ctx.state !== 'running') return;
-
-    const now = ctx.currentTime;
+    withRunningAudioContext_(function(ctx){
+      const now = ctx.currentTime;
 
     for(let k = 0; k < 15; k++){
       const burstAt = now + (k * 0.055);
@@ -821,6 +836,7 @@
       tap.start(burstAt + 0.034);
       tap.stop(burstAt + 0.075);
     }
+    });
   }
 
   function primeAudio_(){
