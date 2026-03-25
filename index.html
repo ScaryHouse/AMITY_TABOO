@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.073</div>
+        <div class="status-version" id="status-version">v.074</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -745,7 +745,7 @@
     noiseFilter.Q.setValueAtTime(0.8, now);
 
     noiseGain.gain.setValueAtTime(0.0001, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.18, now + 0.01);
+    noiseGain.gain.exponentialRampToValueAtTime(0.32, now + 0.01);
     noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
 
     noise.buffer = noiseBuffer;
@@ -761,7 +761,7 @@
     tap.frequency.exponentialRampToValueAtTime(90, now + 0.15);
 
     tapGain.gain.setValueAtTime(0.0001, now + 0.10);
-    tapGain.gain.exponentialRampToValueAtTime(0.055, now + 0.115);
+    tapGain.gain.exponentialRampToValueAtTime(0.11, now + 0.115);
     tapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.17);
 
     tap.connect(tapGain);
@@ -797,7 +797,7 @@
       noiseFilter.Q.setValueAtTime(0.8, burstAt);
 
       noiseGain.gain.setValueAtTime(0.0001, burstAt);
-      noiseGain.gain.exponentialRampToValueAtTime(0.12, burstAt + 0.008);
+      noiseGain.gain.exponentialRampToValueAtTime(0.24, burstAt + 0.008);
       noiseGain.gain.exponentialRampToValueAtTime(0.0001, burstAt + 0.06);
 
       noise.buffer = noiseBuffer;
@@ -813,7 +813,7 @@
       tap.frequency.exponentialRampToValueAtTime(110, burstAt + 0.06);
 
       tapGain.gain.setValueAtTime(0.0001, burstAt + 0.034);
-      tapGain.gain.exponentialRampToValueAtTime(0.03, burstAt + 0.042);
+      tapGain.gain.exponentialRampToValueAtTime(0.07, burstAt + 0.042);
       tapGain.gain.exponentialRampToValueAtTime(0.0001, burstAt + 0.07);
 
       tap.connect(tapGain);
