@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.088</div>
+        <div class="status-version" id="status-version">v.089</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -706,62 +706,110 @@
   let shakeState_ = { lastMagnitude: 0, lastShuffleAt: 0 };
 
   function getAudioContext_(){
-    return null;
+    try{
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if(!Ctx) return null;
+      if(!window.__amityAudioCtx){
+        window.__amityAudioCtx = new Ctx();
+      }
+      return window.__amityAudioCtx;
+    }catch(e){
+      return null;
+    }
   }
 
   function withRunningAudioContext_(fn){
-    return;
+    const ctx = getAudioContext_();
+    if(!ctx) return;
+
+    if(ctx.state === 'running'){
+      fn(ctx);
+      return;
+    }
+
+    ctx.resume().then(function(){
+      if(ctx.state === 'running'){
+        fn(ctx);
+      }
+    }).catch(function(){});
   }
 
   function playDealSound_(){
-    return;
+    withRunningAudioContext_(function(ctx){
+      const now = ctx.currentTime;
+
+      const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * 0.13));
+      const noiseBuffer = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
+      const noiseData = noiseBuffer.getChannelData(0);
+
+      for(let i = 0; i < noiseLen; i++){
+        const env = 1 - (i / noiseLen);
+        noiseData[i] = (Math.random() * 2 - 1) * env * 0.7;
+      }
+
+      const noise = ctx.createBufferSource();
+      const noiseFilter = ctx.createBiquadFilter();
+      const noiseGain = ctx.createGain();
+
+      noiseFilter.type = 'lowpass';
+      noiseFilter.frequency.setValueAtTime(900, now);
+      noiseFilter.Q.setValueAtTime(0.9, now);
+
+      noiseGain.gain.setValueAtTime(0.0001, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.26, now + 0.008);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+
+      noise.buffer = noiseBuffer;
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(now);
+
+      const tap = ctx.createOscillator();
+      const tapGain = ctx.createGain();
+
+      tap.type = 'triangle';
+      tap.frequency.setValueAtTime(170, now + 0.085);
+      tap.frequency.exponentialRampToValueAtTime(105, now + 0.12);
+
+      tapGain.gain.setValueAtTime(0.0001, now + 0.08);
+      tapGain.gain.exponentialRampToValueAtTime(0.09, now + 0.095);
+      tapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+
+      tap.connect(tapGain);
+      tapGain.connect(ctx.destination);
+      tap.start(now + 0.08);
+      tap.stop(now + 0.145);
+    });
   }
 
   function playShuffleSound_(){
     return;
   }
 
-  function playTestBeep_(){
-    try{
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if(!Ctx) return;
-
-      const ctx = new Ctx();
-
-      ctx.resume().then(function(){
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(880, now);
-
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.18, now + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start(now);
-        osc.stop(now + 0.14);
-      }).catch(function(){});
-    }catch(e){}
-  }
-
   function primeAudio_(){
     requestMotionPermissionIfNeeded_();
 
-    audioPrimed_ = true;
-
-    const s = loadSession();
-    if(s && s.mode === 'INFO' && !s.audioReady && Array.isArray(s.cards) && s.cards.length){
-      s.audioReady = true;
-      saveSession(s);
-      showInfoCardReady_(s.total);
+    const ctx = getAudioContext_();
+    if(!ctx){
+      audioPrimed_ = false;
+      return Promise.resolve(false);
     }
 
-    return Promise.resolve(true);
+    return ctx.resume()
+      .catch(function(){})
+      .then(function(){
+        audioPrimed_ = (ctx.state === 'running');
+
+        const s = loadSession();
+        if(s && s.mode === 'INFO' && !s.audioReady && Array.isArray(s.cards) && s.cards.length && audioPrimed_){
+          s.audioReady = true;
+          saveSession(s);
+          showInfoCardReady_(s.total);
+        }
+
+        return audioPrimed_;
+      });
   }
 
   function saveSession(session){
