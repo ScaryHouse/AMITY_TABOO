@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.083</div>
+        <div class="status-version" id="status-version">v.084</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -1525,6 +1525,36 @@
     begin_(t.clientX, t.clientY);
     e.preventDefault();
   }, { passive:false });
+
+  topCard.addEventListener('pointerdown', function(e){
+    if(e.pointerType === 'mouse' || e.pointerType === 'touch' || e.pointerType === 'pen'){
+      const s = loadSession();
+      if(s && s.mode === 'INFO' && !s.audioReady){
+        primeAudio_().then(function(){
+          const fresh = loadSession();
+          if(fresh && fresh.mode === 'INFO' && fresh.audioReady){
+            showInfoCardReady_(fresh.total);
+          }
+        });
+      } else {
+        primeAudio_();
+      }
+    }
+  }, { passive:true });
+
+  topCard.addEventListener('click', function(){
+    const s = loadSession();
+    if(s && s.mode === 'INFO' && !s.audioReady){
+      primeAudio_().then(function(){
+        const fresh = loadSession();
+        if(fresh && fresh.mode === 'INFO' && fresh.audioReady){
+          showInfoCardReady_(fresh.total);
+        }
+      });
+    } else {
+      primeAudio_();
+    }
+  }, { passive:true });
 
   topCard.addEventListener('touchmove', function(e){
     const t = e.touches && e.touches[0];
