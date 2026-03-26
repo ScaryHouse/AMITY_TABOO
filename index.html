@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.087</div>
+        <div class="status-version" id="status-version">v.088</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -1407,12 +1407,10 @@
         const fresh = loadSession();
         if(fresh && fresh.mode === 'INFO' && fresh.audioReady){
           showInfoCardReady_(fresh.total);
-      playTestBeep_();
         }
       });
     } else {
       primeAudio_();
-      playTestBeep_();
     }
 
     begin_(t.clientX, t.clientY);
