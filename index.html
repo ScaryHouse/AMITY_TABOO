@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.082</div>
+        <div class="status-version" id="status-version">v.083</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -709,13 +709,7 @@
     try{
       const Ctx = window.AudioContext || window.webkitAudioContext;
       if(!Ctx) return null;
-      if(!window.__amityAudioCtx){
-        window.__amityAudioCtx = new Ctx();
-      }
-      if(window.__amityAudioCtx.state === 'suspended'){
-        window.__amityAudioCtx.resume().catch(function(){});
-      }
-      return window.__amityAudioCtx;
+      return window.__amityAudioCtx || null;
     }catch(e){
       return null;
     }
@@ -840,32 +834,43 @@
   }
 
   function primeAudio_(){
-    const ctx = getAudioContext_();
     requestMotionPermissionIfNeeded_();
 
-    if(!ctx){
-      console.log('AUDIO no ctx');
+    try{
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if(!Ctx){
+        console.log('AUDIO no ctx');
+        return Promise.resolve(false);
+      }
+
+      if(!window.__amityAudioCtx){
+        window.__amityAudioCtx = new Ctx();
+      }
+
+      const ctx = window.__amityAudioCtx;
+
+      return ctx.resume()
+        .catch(function(err){
+          console.log('AUDIO resume fail', err);
+        })
+        .then(function(){
+          audioPrimed_ = (ctx.state === 'running');
+          console.log('AUDIO primed', audioPrimed_, ctx.state);
+
+          const s = loadSession();
+          if(s && s.mode === 'INFO' && !s.audioReady && Array.isArray(s.cards) && s.cards.length){
+            s.audioReady = true;
+            saveSession(s);
+            playShuffleSound_();
+            showInfoCardReady_(s.total);
+          }
+
+          return audioPrimed_;
+        });
+    }catch(e){
+      console.log('AUDIO init fail', e);
       return Promise.resolve(false);
     }
-
-    return ctx.resume()
-      .catch(function(err){
-        console.log('AUDIO resume fail', err);
-      })
-      .then(function(){
-        audioPrimed_ = (ctx.state === 'running');
-        console.log('AUDIO primed', audioPrimed_, ctx.state);
-
-        const s = loadSession();
-        if(s && s.mode === 'INFO' && !s.audioReady && Array.isArray(s.cards) && s.cards.length){
-          s.audioReady = true;
-          saveSession(s);
-          playShuffleSound_();
-          showInfoCardReady_(s.total);
-        }
-
-        return audioPrimed_;
-      });
   }
 
   function saveSession(session){
@@ -1549,6 +1554,7 @@
   bindDoubleTapShuffle_();
   bindKeyboardControls_();
 
+  document.addEventListener('pointerdown', primeAudio_, { once:true, capture:true });
   document.addEventListener('touchstart', primeAudio_, { passive:true, once:true, capture:true });
   document.addEventListener('click', primeAudio_, { passive:true, once:true, capture:true });
 
