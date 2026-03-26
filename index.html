@@ -571,88 +571,16 @@
       padding-left:0;
     }
 
-    .soundlab{
-      position:fixed;
-      inset:12px;
-      z-index:9999;
-      background:rgba(255,255,255,0.98);
-      border:4px solid #000;
-      border-radius:20px;
-      padding:12px;
-      overflow:auto;
-      display:none;
-      color:#000;
-      font-family:Arial, Helvetica, sans-serif;
-    }
-
-    .soundlab.is-open{
-      display:block;
-    }
-
-    .soundlab-title{
-      font-size:22px;
-      font-weight:700;
-      margin-bottom:10px;
-    }
-
-    .soundlab-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-    }
-
-    .soundlab-section{
-      border:2px solid #000;
-      border-radius:14px;
-      padding:10px;
-      background:#fff;
-    }
-
-    .soundlab-section-title{
-      font-size:18px;
-      font-weight:700;
-      margin-bottom:8px;
-    }
-
-    .soundlab-row{
-      display:grid;
-      grid-template-columns:130px 1fr 70px;
-      gap:8px;
-      align-items:center;
-      margin-bottom:6px;
-    }
-
-    .soundlab-row label{
-      font-size:14px;
-      font-weight:700;
-    }
-
-    .soundlab-row input[type="range"],
-    .soundlab-row input[type="number"]{
-      width:100%;
-    }
-
-    .soundlab-value{
-      font-size:13px;
-      text-align:right;
-      font-variant-numeric:tabular-nums;
-    }
-
-    .soundlab-actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:10px;
-    }
-
-    .soundlab button{
-      border:2px solid #000;
-      border-radius:999px;
-      background:#fff;
-      padding:8px 12px;
-      font-size:14px;
-      font-weight:700;
-      cursor:pointer;
+    .sr-only{
+      position:absolute !important;
+      width:1px !important;
+      height:1px !important;
+      padding:0 !important;
+      margin:-1px !important;
+      overflow:hidden !important;
+      clip:rect(0, 0, 0, 0) !important;
+      white-space:nowrap !important;
+      border:0 !important;
     }
 
     @media (min-width: 900px){
@@ -696,6 +624,7 @@
   </style>
 </head>
 <body>
+  <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <div class="screen">
     <div class="card" id="card">
       <div class="card-layer card-layer-under" aria-hidden="true">
@@ -728,7 +657,8 @@
             <img
               class="title-image"
               src="at-header.svg?v=1"
-              alt="Amity Games Amity Taboo"
+              alt=""
+              aria-hidden="true"
               draggable="false"
             >
             
@@ -737,60 +667,14 @@
         <div class="card-bottom">
           <div class="info-card">
             <div class="card-art-top-wrap">
-              <img class="card-art-top" src="at-description.svg?v=1" alt="" draggable="false">
+              <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
             </div>
             <div class="info-play-group">
               <div class="info-ready" id="info-ready">Loading deck...</div>
-              <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" draggable="false">
+              <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" aria-hidden="true" draggable="false">
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="soundlab" id="soundlab">
-      <div class="soundlab-title">SOUND LAB</div>
-      <div class="soundlab-grid">
-        <div class="soundlab-section">
-          <div class="soundlab-section-title">SOUND 1</div>
-          <div class="soundlab-row"><label for="sl-s1-attack">Attack</label><input id="sl-s1-attack" type="range" min="0" max="0.5" step="0.005"><div class="soundlab-value" id="sl-s1-attack-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s1-decay">Decay</label><input id="sl-s1-decay" type="range" min="0.02" max="2.0" step="0.01"><div class="soundlab-value" id="sl-s1-decay-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s1-duration">Duration</label><input id="sl-s1-duration" type="range" min="0.02" max="2.0" step="0.01"><div class="soundlab-value" id="sl-s1-duration-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s1-level">Level</label><input id="sl-s1-level" type="range" min="0.001" max="0.5" step="0.001"><div class="soundlab-value" id="sl-s1-level-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s1-cutoff">Cutoff</label><input id="sl-s1-cutoff" type="range" min="100" max="6000" step="10"><div class="soundlab-value" id="sl-s1-cutoff-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s1-q">Q</label><input id="sl-s1-q" type="range" min="0.1" max="8" step="0.1"><div class="soundlab-value" id="sl-s1-q-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s1-osc">Oscillators</label><input id="sl-s1-osc" type="range" min="0" max="4" step="1"><div class="soundlab-value" id="sl-s1-osc-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s1-wave">Wave</label><input id="sl-s1-wave" type="number" min="0" max="3" step="1"><div class="soundlab-value">0=sine 1=tri 2=saw 3=sq</div></div>
-          <div class="soundlab-row"><label for="sl-s1-pitch">Pitch</label><input id="sl-s1-pitch" type="range" min="50" max="3000" step="1"><div class="soundlab-value" id="sl-s1-pitch-v"></div></div>
-        </div>
-
-        <div class="soundlab-section">
-          <div class="soundlab-section-title">SOUND 2</div>
-          <div class="soundlab-row"><label for="sl-s2-enabled">Enabled</label><input id="sl-s2-enabled" type="range" min="0" max="1" step="1"><div class="soundlab-value" id="sl-s2-enabled-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-offset">Offset</label><input id="sl-s2-offset" type="range" min="0" max="2.0" step="0.005"><div class="soundlab-value" id="sl-s2-offset-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-attack">Attack</label><input id="sl-s2-attack" type="range" min="0" max="0.5" step="0.005"><div class="soundlab-value" id="sl-s2-attack-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-decay">Decay</label><input id="sl-s2-decay" type="range" min="0.02" max="2.0" step="0.01"><div class="soundlab-value" id="sl-s2-decay-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-duration">Duration</label><input id="sl-s2-duration" type="range" min="0.02" max="2.0" step="0.01"><div class="soundlab-value" id="sl-s2-duration-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-level">Level</label><input id="sl-s2-level" type="range" min="0.001" max="0.5" step="0.001"><div class="soundlab-value" id="sl-s2-level-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-cutoff">Cutoff</label><input id="sl-s2-cutoff" type="range" min="100" max="6000" step="10"><div class="soundlab-value" id="sl-s2-cutoff-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-q">Q</label><input id="sl-s2-q" type="range" min="0.1" max="8" step="0.1"><div class="soundlab-value" id="sl-s2-q-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-osc">Oscillators</label><input id="sl-s2-osc" type="range" min="0" max="4" step="1"><div class="soundlab-value" id="sl-s2-osc-v"></div></div>
-          <div class="soundlab-row"><label for="sl-s2-wave">Wave</label><input id="sl-s2-wave" type="number" min="0" max="3" step="1"><div class="soundlab-value">0=sine 1=tri 2=saw 3=sq</div></div>
-          <div class="soundlab-row"><label for="sl-s2-pitch">Pitch</label><input id="sl-s2-pitch" type="range" min="50" max="3000" step="1"><div class="soundlab-value" id="sl-s2-pitch-v"></div></div>
-        </div>
-
-        <div class="soundlab-section">
-          <div class="soundlab-section-title">REPEAT</div>
-          <div class="soundlab-row"><label for="sl-repeat-count">Count</label><input id="sl-repeat-count" type="range" min="1" max="20" step="1"><div class="soundlab-value" id="sl-repeat-count-v"></div></div>
-          <div class="soundlab-row"><label for="sl-repeat-gap">Gap</label><input id="sl-repeat-gap" type="range" min="0.01" max="1.5" step="0.01"><div class="soundlab-value" id="sl-repeat-gap-v"></div></div>
-        </div>
-      </div>
-
-      <div class="soundlab-actions">
-        <button id="sl-play-one" type="button">PLAY ONCE</button>
-        <button id="sl-play-repeat" type="button">PLAY REPEAT</button>
-        <button id="sl-save" type="button">SAVE</button>
-        <button id="sl-close" type="button">CLOSE</button>
       </div>
     </div>
 
@@ -800,7 +684,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.094</div>
+        <div class="status-version" id="status-version">v.095</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -827,7 +711,6 @@
   const underBottom = document.querySelector('.card-layer-under .card-bottom');
   const statusDeck = document.getElementById('status-deck');
   const statusCard = document.getElementById('status-cardid');
-  const statusVersion = document.getElementById('status-version');
   const infoMarkup = topBottom ? topBottom.innerHTML : '';
 
   let loadingTimer = null;
@@ -836,262 +719,35 @@
   let audioPrimed_ = true;
   let shakeState_ = { lastMagnitude: 0, lastShuffleAt: 0 };
 
-  const SOUNDLAB_KEY = 'amity_taboo_soundlab_v1';
-
-  const SOUNDLAB_DEFAULTS = {
-    s1_attack: 0.035,
-    s1_decay: 0.33,
-    s1_duration: 0.33,
-    s1_level: 0.24,
-    s1_cutoff: 1400,
-    s1_q: 0.7,
-    s1_osc: 0,
-    s1_wave: 3,
-    s1_pitch: 1800,
-    s2_enabled: 1,
-    s2_offset: 0.28,
-    s2_attack: 0.008,
-    s2_decay: 0.05,
-    s2_duration: 0.05,
-    s2_level: 0.09,
-    s2_cutoff: 3000,
-    s2_q: 1.0,
-    s2_osc: 1,
-    s2_wave: 3,
-    s2_pitch: 1900,
-    repeat_count: 9,
-    repeat_gap: 0.06
-  };
-
-  let soundLabState_ = null;
-
-  function waveTypeFromNumber_(n){
-    const v = Number(n || 0);
-    if(v === 1) return 'triangle';
-    if(v === 2) return 'sawtooth';
-    if(v === 3) return 'square';
-    return 'sine';
-  }
-
-  function loadSoundLabState_(){
-    try{
-      const raw = localStorage.getItem(SOUNDLAB_KEY);
-      if(!raw) return { ...SOUNDLAB_DEFAULTS };
-      return { ...SOUNDLAB_DEFAULTS, ...(JSON.parse(raw) || {}) };
-    }catch(e){
-      return { ...SOUNDLAB_DEFAULTS };
-    }
-  }
-
-  function saveSoundLabState_(){
-    try{
-      localStorage.setItem(SOUNDLAB_KEY, JSON.stringify(soundLabState_ || SOUNDLAB_DEFAULTS));
-    }catch(e){}
-  }
-
-  function getSoundLabRoot_(){
-    return document.getElementById('soundlab');
-  }
-
-  function setSoundLabOpen_(open){
-    const root = getSoundLabRoot_();
-    if(!root) return;
-    root.classList.toggle('is-open', !!open);
-  }
-
-  function updateSoundLabValueLabels_(){
-    if(!soundLabState_) return;
-    Object.keys(soundLabState_).forEach(function(key){
-      const id = 'sl-' + key.replace(/_/g, '-');
-      const input = document.getElementById(id);
-      const out = document.getElementById(id + '-v');
-      if(input){
-        input.value = String(soundLabState_[key]);
-      }
-      if(out){
-        out.textContent = String(soundLabState_[key]);
-      }
-    });
-  }
-
-  function scheduleSoundLayer_(ctx, now, prefix){
-    const attack = Number(soundLabState_[prefix + '_attack'] || 0.01);
-    const decay = Number(soundLabState_[prefix + '_decay'] || 0.1);
-    const duration = Number(soundLabState_[prefix + '_duration'] || 0.1);
-    const level = Number(soundLabState_[prefix + '_level'] || 0.1);
-    const cutoff = Number(soundLabState_[prefix + '_cutoff'] || 1000);
-    const q = Number(soundLabState_[prefix + '_q'] || 1);
-    const oscCount = Number(soundLabState_[prefix + '_osc'] || 0);
-    const waveNum = Number(soundLabState_[prefix + '_wave'] || 0);
-    const pitch = Number(soundLabState_[prefix + '_pitch'] || 440);
-
-    const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * duration));
-    const noiseBuffer = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
-    const noiseData = noiseBuffer.getChannelData(0);
-
-    let last = 0;
-    for(let i = 0; i < noiseLen; i++){
-      const white = (Math.random() * 2 - 1) * 0.7;
-      last = (last + (0.05 * white)) / 1.05;
-      noiseData[i] = last * 6.0;
-    }
-
-    const noise = ctx.createBufferSource();
-    const filter = ctx.createBiquadFilter();
-    const gain = ctx.createGain();
-
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(cutoff, now);
-    filter.Q.setValueAtTime(q, now);
-
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.linearRampToValueAtTime(level, now + attack);
-    gain.gain.setValueAtTime(level, Math.max(now + attack, now + duration - 0.001));
-    gain.gain.linearRampToValueAtTime(0.0001, Math.max(now + duration, now + attack + decay));
-
-    noise.buffer = noiseBuffer;
-    noise.connect(filter);
-    filter.connect(gain);
-    gain.connect(ctx.destination);
-    noise.start(now);
-    noise.stop(now + Math.max(duration, attack + decay));
-
-    for(let i = 0; i < oscCount; i++){
-      const osc = ctx.createOscillator();
-      const og = ctx.createGain();
-      osc.type = waveTypeFromNumber_(waveNum);
-      osc.frequency.setValueAtTime(pitch * (1 + (i * 0.015)), now);
-      og.gain.setValueAtTime(0.0001, now);
-      og.gain.linearRampToValueAtTime(level * 0.8, now + attack);
-      og.gain.linearRampToValueAtTime(0.0001, Math.max(now + duration, now + attack + decay));
-      osc.connect(og);
-      og.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + Math.max(duration, attack + decay));
-    }
-  }
-
-  function playSoundLabPattern_(countOverride){
-    withRunningAudioContext_(function(ctx){
-      const count = Number(countOverride || soundLabState_.repeat_count || 1);
-      const gap = Number(soundLabState_.repeat_gap || 0.06);
-      const s2Enabled = Number(soundLabState_.s2_enabled || 0) > 0;
-      const s2Offset = Number(soundLabState_.s2_offset || 0);
-
-      for(let i = 0; i < count; i++){
-        const t = ctx.currentTime + (i * gap);
-        scheduleSoundLayer_(ctx, t, 's1');
-        if(s2Enabled){
-          scheduleSoundLayer_(ctx, t + s2Offset, 's2');
-        }
-      }
-    });
-  }
-
-  function bindSoundLabInputs_(){
-    if(!soundLabState_) return;
-
-    Object.keys(soundLabState_).forEach(function(key){
-      const input = document.getElementById('sl-' + key.replace(/_/g, '-'));
-      if(!input) return;
-      const update = function(){
-        const value = input.type === 'number' ? Number(input.value) : parseFloat(input.value);
-        soundLabState_[key] = value;
-        updateSoundLabValueLabels_();
-      };
-      input.addEventListener('input', update);
-      input.addEventListener('change', update);
-    });
-
-    const playOne = document.getElementById('sl-play-one');
-    const playRepeat = document.getElementById('sl-play-repeat');
-    const saveBtn = document.getElementById('sl-save');
-    const closeBtn = document.getElementById('sl-close');
-
-    if(playOne) playOne.addEventListener('click', function(){
-      primeAudio_().then(function(){ playSoundLabPattern_(1); });
-    });
-
-    if(playRepeat) playRepeat.addEventListener('click', function(){
-      primeAudio_().then(function(){ playSoundLabPattern_(Number(soundLabState_.repeat_count || 1)); });
-    });
-
-    if(saveBtn) saveBtn.addEventListener('click', function(){
-      saveSoundLabState_();
-    });
-
-    if(closeBtn) closeBtn.addEventListener('click', function(){
-      saveSoundLabState_();
-      setSoundLabOpen_(false);
-    });
-  }
-
-  function initSoundLab_(){
-    soundLabState_ = loadSoundLabState_();
-    updateSoundLabValueLabels_();
-    bindSoundLabInputs_();
-  }
-
   function getAudioContext_(){
-    try{
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if(!Ctx) return null;
-      if(!window.__amityAudioCtx){
-        window.__amityAudioCtx = new Ctx();
-      }
-      return window.__amityAudioCtx;
-    }catch(e){
-      return null;
-    }
+    return null;
   }
 
   function withRunningAudioContext_(fn){
-    const ctx = getAudioContext_();
-    if(!ctx) return;
-
-    if(ctx.state === 'running'){
-      fn(ctx);
-      return;
-    }
-
-    ctx.resume().then(function(){
-      if(ctx.state === 'running'){
-        fn(ctx);
-      }
-    }).catch(function(){});
+    return;
   }
 
   function playDealSound_(){
-    playSoundLabPattern_(1);
+    return;
   }
 
   function playShuffleSound_(){
-    playSoundLabPattern_(Number(soundLabState_ && soundLabState_.repeat_count || 1));
+    return;
   }
 
   function primeAudio_(){
     requestMotionPermissionIfNeeded_();
 
-    const ctx = getAudioContext_();
-    if(!ctx){
-      audioPrimed_ = false;
-      return Promise.resolve(false);
+    audioPrimed_ = true;
+
+    const s = loadSession();
+    if(s && s.mode === 'INFO' && !s.audioReady && Array.isArray(s.cards) && s.cards.length){
+      s.audioReady = true;
+      saveSession(s);
+      showInfoCardReady_(s.total);
     }
 
-    return ctx.resume()
-      .catch(function(){})
-      .then(function(){
-        audioPrimed_ = (ctx.state === 'running');
-
-        const s = loadSession();
-        if(s && s.mode === 'INFO' && !s.audioReady && Array.isArray(s.cards) && s.cards.length && audioPrimed_){
-          s.audioReady = true;
-          saveSession(s);
-          showInfoCardReady_(s.total);
-        }
-
-        return audioPrimed_;
-      });
+    return Promise.resolve(true);
   }
 
   function saveSession(session){
@@ -1127,6 +783,51 @@
     return n ? ('Card ID: #' + String(n).padStart(4, '0')) : 'Card ID: #0000';
   }
 
+  let srAnnouncementTimer_ = null;
+
+  function announceScreenReader_(text){
+    const live = document.getElementById('sr-live');
+    if(!live) return;
+    if(srAnnouncementTimer_){
+      clearTimeout(srAnnouncementTimer_);
+      srAnnouncementTimer_ = null;
+    }
+    live.textContent = '';
+    srAnnouncementTimer_ = setTimeout(function(){
+      live.textContent = String(text || '');
+    }, 40);
+  }
+
+  function getInstallAnnouncement_(){
+    const ua = navigator.userAgent || '';
+    const intro = 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. ';
+    if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
+      return intro + 'For the best full screen play follow this path: Tap Share. View More. Add to Home Screen.';
+    }
+    if(/iPhone|iPad|iPod/i.test(ua)){
+      return intro + 'For the best full screen play follow this path: Tap More options. Share. View More. Add to Home Screen.';
+    }
+    if(/Android/i.test(ua)){
+      return intro + 'For the best full screen play follow this path: Tap Menu. Add to Home Screen.';
+    }
+    return intro + 'Install this app to play full screen.';
+  }
+
+  function getInfoLoadingAnnouncement_(){
+    return 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. Your deck is loading.';
+  }
+
+  function getInfoReadyAnnouncement_(total){
+    return 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. Your deck of ' + String(total || 0) + ' cards is ready. Swipe either way to play. Double tap to shuffle.';
+  }
+
+  function getPlayCardAnnouncement_(current, total, cardObj){
+    const target = String(cardObj && cardObj.target || '').trim();
+    const taboo = Array.isArray(cardObj && cardObj.taboo) ? cardObj.taboo.map(function(x){ return String(x || '').trim(); }).filter(Boolean) : [];
+    const tabooText = taboo.length ? taboo.join('. ') + '.' : '';
+    return 'Card ' + String(current || 0) + ' of ' + String(total || 0) + '. Target word: ' + target + '. Taboo words: ' + tabooText + ' Swipe for next card.';
+  }
+
   function isStandalone_(){
     try{
       return window.navigator.standalone === true ||
@@ -1158,10 +859,10 @@
     return `
       <div class="install-card">
         <div class="card-art-top-wrap">
-          <img class="card-art-top" src="at-description.svg?v=1" alt="" draggable="false">
+          <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
         </div>
         <div class="install-bottom-wrap">
-          <img class="install-art-bottom" src="${installAsset}" alt="" draggable="false">
+          <img class="install-art-bottom" src="${installAsset}" alt="" aria-hidden="true" draggable="false">
         </div>
       </div>
     `;
@@ -1173,6 +874,7 @@
     if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = infoMarkup;
+    announceScreenReader_(getInstallAnnouncement_());
   }
 
   function isInstallCardVisible_(){
@@ -1237,6 +939,7 @@
   function showInfoCardLoading_(){
     if(!topBottom) return;
     topBottom.innerHTML = infoMarkup;
+    announceScreenReader_(getInfoLoadingAnnouncement_());
     const readyText = document.getElementById('info-ready');
     if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
@@ -1276,6 +979,7 @@
     if(statusDeck) statusDeck.textContent = formatDeckStatus_(0, total || 0);
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = '';
+    announceScreenReader_(getInfoReadyAnnouncement_(total || 0));
   }
 
   function renderUnderCard_(direction){
@@ -1332,6 +1036,8 @@
 
     if(statusDeck) statusDeck.textContent = formatDeckStatus_(idx + 1, s.total);
     if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
+
+    announceScreenReader_(getPlayCardAnnouncement_(idx + 1, s.total, cardObj));
 
     renderUnderCard_('left');
   }
@@ -1808,14 +1514,6 @@
   document.addEventListener('pointerdown', primeAudio_, { once:true, capture:true });
   document.addEventListener('touchstart', primeAudio_, { passive:true, once:true, capture:true });
   document.addEventListener('click', primeAudio_, { passive:true, once:true, capture:true });
-
-  initSoundLab_();
-
-  if(statusVersion){
-    statusVersion.addEventListener('click', function(){
-      setSoundLabOpen_(true);
-    });
-  }
 
   if(!isStandalone_() && !isDesktopBrowser_()){
     showInstallCard_();
