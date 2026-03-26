@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.090</div>
+        <div class="status-version" id="status-version">v.091</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -738,7 +738,7 @@
     withRunningAudioContext_(function(ctx){
       const now = ctx.currentTime;
 
-      const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * 0.16));
+      const noiseLen = Math.max(1, Math.floor(ctx.sampleRate * 0.24));
       const noiseBuffer = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
       const noiseData = noiseBuffer.getChannelData(0);
 
@@ -759,8 +759,8 @@
       noiseFilter.Q.setValueAtTime(0.7, now);
 
       noiseGain.gain.setValueAtTime(0.0001, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.34, now + 0.01);
-      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.15);
+      noiseGain.gain.exponentialRampToValueAtTime(0.34, now + 0.012);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.23);
 
       noise.buffer = noiseBuffer;
       noise.connect(noiseFilter);
@@ -772,17 +772,17 @@
       const tapGain = ctx.createGain();
 
       tap.type = 'square';
-      tap.frequency.setValueAtTime(230, now + 0.108);
-      tap.frequency.exponentialRampToValueAtTime(130, now + 0.138);
+      tap.frequency.setValueAtTime(260, now + 0.188);
+      tap.frequency.exponentialRampToValueAtTime(150, now + 0.214);
 
-      tapGain.gain.setValueAtTime(0.0001, now + 0.103);
-      tapGain.gain.exponentialRampToValueAtTime(0.12, now + 0.112);
-      tapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.148);
+      tapGain.gain.setValueAtTime(0.0001, now + 0.184);
+      tapGain.gain.exponentialRampToValueAtTime(0.13, now + 0.192);
+      tapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.222);
 
       tap.connect(tapGain);
       tapGain.connect(ctx.destination);
-      tap.start(now + 0.103);
-      tap.stop(now + 0.15);
+      tap.start(now + 0.184);
+      tap.stop(now + 0.224);
     });
   }
 
