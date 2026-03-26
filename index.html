@@ -670,7 +670,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.086</div>
+        <div class="status-version" id="status-version">v.087</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -719,6 +719,34 @@
 
   function playShuffleSound_(){
     return;
+  }
+
+  function playTestBeep_(){
+    try{
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if(!Ctx) return;
+
+      const ctx = new Ctx();
+
+      ctx.resume().then(function(){
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, now);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.18, now + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.14);
+      }).catch(function(){});
+    }catch(e){}
   }
 
   function primeAudio_(){
@@ -1379,10 +1407,12 @@
         const fresh = loadSession();
         if(fresh && fresh.mode === 'INFO' && fresh.audioReady){
           showInfoCardReady_(fresh.total);
+      playTestBeep_();
         }
       });
     } else {
       primeAudio_();
+      playTestBeep_();
     }
 
     begin_(t.clientX, t.clientY);
