@@ -1422,6 +1422,7 @@
     topCard.style.opacity = '1';
 
     window.setTimeout(function(){
+      if(underBottom) underBottom.innerHTML = '';
       resetCardPosition_();
       renderCurrentCard_();
     }, 530);
