@@ -238,23 +238,6 @@
       color:#000;
     }
 
-    .info-play-group{
-      width:92%;
-      margin:0 auto;
-      margin-top:auto;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:8px;
-    }
-
-    .info-ready{
-      font-size:var(--fs-info-ready);
-      font-weight:900;
-      line-height:1.03;
-      color:#000;
-      margin-bottom:0;
-    }
 
     .info-swipe{
       display:flex;
@@ -684,7 +667,7 @@
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.095</div>
+        <div class="status-version" id="status-version">v.097</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -693,6 +676,10 @@
 
 <script>
 (function(){
+  /**
+   * GitHub Pages version of the client.
+   * Session state is kept locally so deck navigation stays instant.
+   */
   const LS_KEY = 'amity_taboo_session_v2';
 
   function escapeHtml_(value){
@@ -716,46 +703,25 @@
   let loadingTimer = null;
   let motionPermissionRequested_ = false;
   let shakeEnabled_ = false;
-  let audioPrimed_ = true;
-  let shakeState_ = { lastMagnitude: 0, lastShuffleAt: 0 };
+    let shakeState_ = { lastMagnitude: 0, lastShuffleAt: 0 };
 
-  function getAudioContext_(){
-    return null;
-  }
-
-  function withRunningAudioContext_(fn){
-    return;
-  }
-
-  function playDealSound_(){
-    return;
-  }
-
-  function playShuffleSound_(){
-    return;
-  }
-
-  function primeAudio_(){
+  /**
+   * Requests motion permission when the browser requires it.
+   * This only prepares optional motion access for shake-to-shuffle when allowed.
+   */
+  function prepareOptionalMotionFeatures_(){
     requestMotionPermissionIfNeeded_();
-
-    audioPrimed_ = true;
-
-    const s = loadSession();
-    if(s && s.mode === 'INFO' && !s.audioReady && Array.isArray(s.cards) && s.cards.length){
-      s.audioReady = true;
-      saveSession(s);
-      showInfoCardReady_(s.total);
-    }
-
-    return Promise.resolve(true);
+    return Promise.resolve(shakeEnabled_);
   }
 
+  /** Persist the current local session snapshot. */
   function saveSession(session){
     try{
       localStorage.setItem(LS_KEY, JSON.stringify(session));
     }catch(e){}
   }
 
+  /** Load and lightly normalize the saved session. */
   function loadSession(){
     try{
       const raw = localStorage.getItem(LS_KEY);
@@ -770,6 +736,7 @@
     }
   }
 
+  /** Remove the saved session so a fresh deck can be built. */
   function clearSession(){
     try{ localStorage.removeItem(LS_KEY); }catch(e){}
   }
@@ -936,6 +903,7 @@
     `;
   }
 
+  /** Show the loading card while a new deck is being built. */
   function showInfoCardLoading_(){
     if(!topBottom) return;
     topBottom.innerHTML = infoMarkup;
@@ -967,6 +935,7 @@
     }, 250);
   }
 
+  /** Show the ready card once a deck is available. */
   function showInfoCardReady_(total){
     if(loadingTimer){
       clearInterval(loadingTimer);
@@ -1014,6 +983,7 @@
     underPreviewMode = previewKey;
   }
 
+  /** Render the currently selected play card. */
   function renderCurrentCard_(){
     const s = loadSession();
     if(!s || !Array.isArray(s.cards) || !s.cards.length){
@@ -1062,6 +1032,7 @@
     if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
   }
 
+  /** Fetch a new shuffled deck from the Apps Script web app. */
   function startBuildNewDeck_(){
     clearSession();
     showInfoCardLoading_();
@@ -1084,13 +1055,9 @@
           total: total,
           cards: cards,
           mode: 'INFO',
-          audioReady: !!audioPrimed_
         };
         saveSession(session);
 
-        if(session.audioReady){
-          playShuffleSound_();
-        }
         showInfoCardReady_(total);
       })
       .catch(function(){
@@ -1171,6 +1138,7 @@
     startBuildNewDeck_();
   }
 
+  /** Treat a clean double tap as a request for a new deck. */
   function bindDoubleTapShuffle_(){
     const surface = document.querySelector('.card') || document.body;
     if(!surface) return;
@@ -1208,6 +1176,7 @@
     });
   }
 
+  /** Treat a deliberate shake as a request for a new deck. */
   function bindShakeToShuffle_(){
     window.addEventListener('devicemotion', function(e){
       if(!shakeEnabled_) return;
@@ -1227,6 +1196,7 @@
     }, { passive:true });
   }
 
+  /** Desktop keyboard fallbacks for testing and accessibility. */
   function bindKeyboardControls_(){
     let lastSpaceAt = 0;
 
@@ -1340,6 +1310,7 @@
     }
   }
 
+  /** Commit a swipe when it clearly crosses the horizontal threshold. */
   function finish_(x, y){
     if(!tracking){
       resetCardPosition_();
@@ -1399,7 +1370,6 @@
       return;
     }
 
-    playDealSound_();
 
     if(s.mode !== 'PLAY'){
       const firstIndex = (direction === 'left') ? 0 : (s.cards.length - 1);
@@ -1438,15 +1408,15 @@
     if(!t) return;
 
     const s = loadSession();
-    if(s && s.mode === 'INFO' && !s.audioReady){
-      primeAudio_().then(function(){
+    if(s && s.mode === 'INFO'){
+      prepareOptionalMotionFeatures_().then(function(){
         const fresh = loadSession();
-        if(fresh && fresh.mode === 'INFO' && fresh.audioReady){
+        if(fresh && fresh.mode === 'INFO'){
           showInfoCardReady_(fresh.total);
         }
       });
     } else {
-      primeAudio_();
+      prepareOptionalMotionFeatures_();
     }
 
     begin_(t.clientX, t.clientY);
@@ -1456,30 +1426,30 @@
   topCard.addEventListener('pointerdown', function(e){
     if(e.pointerType === 'mouse' || e.pointerType === 'touch' || e.pointerType === 'pen'){
       const s = loadSession();
-      if(s && s.mode === 'INFO' && !s.audioReady){
-        primeAudio_().then(function(){
+      if(s && s.mode === 'INFO'){
+        prepareOptionalMotionFeatures_().then(function(){
           const fresh = loadSession();
-          if(fresh && fresh.mode === 'INFO' && fresh.audioReady){
+          if(fresh && fresh.mode === 'INFO'){
             showInfoCardReady_(fresh.total);
           }
         });
       } else {
-        primeAudio_();
+        prepareOptionalMotionFeatures_();
       }
     }
   }, { passive:true });
 
   topCard.addEventListener('click', function(){
     const s = loadSession();
-    if(s && s.mode === 'INFO' && !s.audioReady){
-      primeAudio_().then(function(){
+    if(s && s.mode === 'INFO'){
+      prepareOptionalMotionFeatures_().then(function(){
         const fresh = loadSession();
-        if(fresh && fresh.mode === 'INFO' && fresh.audioReady){
+        if(fresh && fresh.mode === 'INFO'){
           showInfoCardReady_(fresh.total);
         }
       });
     } else {
-      primeAudio_();
+      prepareOptionalMotionFeatures_();
     }
   }, { passive:true });
 
@@ -1511,9 +1481,9 @@
   bindDoubleTapShuffle_();
   bindKeyboardControls_();
 
-  document.addEventListener('pointerdown', primeAudio_, { once:true, capture:true });
-  document.addEventListener('touchstart', primeAudio_, { passive:true, once:true, capture:true });
-  document.addEventListener('click', primeAudio_, { passive:true, once:true, capture:true });
+  document.addEventListener('pointerdown', prepareInteractionFeatures_, { once:true, capture:true });
+  document.addEventListener('touchstart', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
+  document.addEventListener('click', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
 
   if(!isStandalone_() && !isDesktopBrowser_()){
     showInstallCard_();
