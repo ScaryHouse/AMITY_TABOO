@@ -223,6 +223,17 @@
       margin-bottom:8px;
     }
 
+    .info-shuffle{
+      width:100%;
+      text-align:center;
+      font-size:var(--fs-info-ready);
+      font-weight:900;
+      line-height:1.03;
+      color:#000;
+      margin-top:8px;
+      text-transform:uppercase;
+    }
+
     .info-main{
       font-size:var(--fs-info-main);
       font-weight:900;
@@ -655,6 +666,7 @@
             <div class="info-play-group">
               <div class="info-ready" id="info-ready">Loading deck...</div>
               <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" aria-hidden="true" draggable="false">
+              <div class="info-shuffle">DOUBLE TAP TO SHUFFLE</div>
             </div>
           </div>
         </div>
@@ -663,7 +675,7 @@
 
     <div class="statusbar" aria-hidden="true">
       <div class="status-toprow">
-        <div class="status-mid" id="coffee-link"></div>
+        <a class="status-mid" id="coffee-link" href="https://buymeacoffee.com/scaryhouse" target="_blank" rel="noopener noreferrer external" aria-label="Buy me a Coffee">Buy me a Coffee</a>
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
@@ -698,7 +710,20 @@
   const underBottom = document.querySelector('.card-layer-under .card-bottom');
   const statusDeck = document.getElementById('status-deck');
   const statusCard = document.getElementById('status-cardid');
-  const infoMarkup = topBottom ? topBottom.innerHTML : '';
+  function getInfoCardMarkup_(){
+    return `
+      <div class="info-card">
+        <div class="card-art-top-wrap">
+          <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
+        </div>
+        <div class="info-play-group">
+          <div class="info-ready" id="info-ready">Loading deck...</div>
+          <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" aria-hidden="true" draggable="false">
+          <div class="info-shuffle">DOUBLE TAP TO SHUFFLE</div>
+        </div>
+      </div>
+    `;
+  }
 
   let loadingTimer = null;
   let motionPermissionRequested_ = false;
@@ -840,7 +865,7 @@
     topBottom.innerHTML = getInstallCardMarkup_();
     if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
-    if(underBottom) underBottom.innerHTML = infoMarkup;
+    if(underBottom) underBottom.innerHTML = getInfoCardMarkup_();
     announceScreenReader_(getInstallAnnouncement_());
   }
 
@@ -906,7 +931,7 @@
   /** Show the loading card while a new deck is being built. */
   function showInfoCardLoading_(){
     if(!topBottom) return;
-    topBottom.innerHTML = infoMarkup;
+    topBottom.innerHTML = getInfoCardMarkup_();
     announceScreenReader_(getInfoLoadingAnnouncement_());
     const readyText = document.getElementById('info-ready');
     if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
@@ -942,7 +967,7 @@
       loadingTimer = null;
     }
     if(!topBottom) return;
-    topBottom.innerHTML = infoMarkup;
+    topBottom.innerHTML = getInfoCardMarkup_();
     const readyText = document.getElementById('info-ready');
     if(readyText) readyText.textContent = 'Your deck is ready.';
     if(statusDeck) statusDeck.textContent = formatDeckStatus_(0, total || 0);
@@ -1065,7 +1090,7 @@
           clearInterval(loadingTimer);
           loadingTimer = null;
         }
-        if(topBottom) topBottom.innerHTML = infoMarkup;
+        if(topBottom) topBottom.innerHTML = getInfoCardMarkup_();
         const readyText = document.getElementById('info-ready');
         if(readyText) readyText.textContent = 'Unable to build deck.';
         if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
@@ -1290,7 +1315,7 @@
     if(revealUnderCard){
       if(isInstallCardVisible_()){
         if(underPreviewMode !== 'install-info'){
-          if(underBottom) underBottom.innerHTML = infoMarkup;
+          if(underBottom) underBottom.innerHTML = getInfoCardMarkup_();
           underPreviewMode = 'install-info';
         }
       } else {
@@ -1300,7 +1325,7 @@
       const emptyKey = isInstallCardVisible_() ? 'install-info' : 'empty';
       if(emptyKey === 'install-info'){
         if(underPreviewMode !== 'install-info'){
-          underBottom.innerHTML = infoMarkup;
+          underBottom.innerHTML = getInfoCardMarkup_();
           underPreviewMode = 'install-info';
         }
       } else if(underPreviewMode !== 'empty'){
