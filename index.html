@@ -1428,9 +1428,8 @@
     }, 530);
   }
 
-  topCard.addEventListener('touchstart', function(e){
-    const t = e.touches && e.touches[0];
-    if(!t) return;
+  topCard.addEventListener('pointerdown', function(e){
+    if(!(e.pointerType === 'mouse' || e.pointerType === 'touch' || e.pointerType === 'pen')) return;
 
     const s = loadSession();
     if(s && s.mode === 'INFO'){
@@ -1444,25 +1443,7 @@
       prepareOptionalMotionFeatures_();
     }
 
-    begin_(t.clientX, t.clientY);
-    e.preventDefault();
-  }, { passive:false });
-
-  topCard.addEventListener('pointerdown', function(e){
-    if(e.pointerType === 'mouse' || e.pointerType === 'touch' || e.pointerType === 'pen'){
-      const s = loadSession();
-      if(s && s.mode === 'INFO'){
-        prepareOptionalMotionFeatures_().then(function(){
-          const fresh = loadSession();
-          if(fresh && fresh.mode === 'INFO'){
-            showInfoCardReady_(fresh.total);
-          }
-        });
-      } else {
-        prepareOptionalMotionFeatures_();
-      }
-      begin_(e.clientX, e.clientY);
-    }
+    begin_(e.clientX, e.clientY);
   }, { passive:true });
 
   topCard.addEventListener('pointermove', function(e){
@@ -1494,30 +1475,6 @@
       prepareOptionalMotionFeatures_();
     }
   }, { passive:true });
-
-  topCard.addEventListener('touchmove', function(e){
-    const t = e.touches && e.touches[0];
-    if(!t) return;
-    move_(t.clientX, t.clientY);
-    e.preventDefault();
-  }, { passive:false });
-
-  topCard.addEventListener('touchend', function(e){
-    const t = e.changedTouches && e.changedTouches[0];
-    if(!t){
-      finish_(lastX, lastY);
-    } else {
-      finish_(t.clientX, t.clientY);
-    }
-    e.preventDefault();
-  }, { passive:false });
-
-  topCard.addEventListener('touchcancel', function(e){
-    tracking = false;
-    if(underBottom) underBottom.innerHTML = '';
-    resetCardPosition_();
-    e.preventDefault();
-  }, { passive:false });
 
   bindShakeToShuffle_();
   bindDoubleTapShuffle_();
