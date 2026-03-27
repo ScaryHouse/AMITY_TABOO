@@ -1506,9 +1506,9 @@
   bindDoubleTapShuffle_();
   bindKeyboardControls_();
 
-  document.addEventListener('pointerdown', prepareInteractionFeatures_, { once:true, capture:true });
-  document.addEventListener('touchstart', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
-  document.addEventListener('click', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
+  document.addEventListener('pointerdown', prepareOptionalMotionFeatures_, { once:true, capture:true });
+  document.addEventListener('touchstart', prepareOptionalMotionFeatures_, { passive:true, once:true, capture:true });
+  document.addEventListener('click', prepareOptionalMotionFeatures_, { passive:true, once:true, capture:true });
 
   if(!isStandalone_()){
     showInstallCard_();
