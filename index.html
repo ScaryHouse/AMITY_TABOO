@@ -1461,7 +1461,24 @@
       } else {
         prepareOptionalMotionFeatures_();
       }
+      begin_(e.clientX, e.clientY);
     }
+  }, { passive:true });
+
+  topCard.addEventListener('pointermove', function(e){
+    if(!tracking) return;
+    move_(e.clientX, e.clientY);
+  }, { passive:true });
+
+  topCard.addEventListener('pointerup', function(e){
+    if(!tracking) return;
+    finish_(e.clientX, e.clientY);
+  }, { passive:true });
+
+  topCard.addEventListener('pointercancel', function(){
+    tracking = false;
+    if(underBottom) underBottom.innerHTML = '';
+    resetCardPosition_();
   }, { passive:true });
 
   topCard.addEventListener('click', function(){
