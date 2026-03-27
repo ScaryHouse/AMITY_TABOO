@@ -1510,7 +1510,7 @@
   document.addEventListener('touchstart', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
   document.addEventListener('click', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
 
-  if(!isStandalone_() && !isDesktopBrowser_()){
+  if(!isStandalone_()){
     showInstallCard_();
   } else {
     const existing = loadSession();
