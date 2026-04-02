@@ -1446,7 +1446,7 @@ console.log("APP_BOOT_OK");
   }, { passive:false });
 
   topCard.addEventListener("pointerdown", function(e){
-  if(e.pointerType === "mouse") return;
+  if(e.pointerType === "mouse" && e.width === 1 && e.height === 1) return;
   let startX = e.clientX;
   let currentX = startX;
 
