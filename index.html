@@ -1126,22 +1126,18 @@
     renderCurrentCard_();
   }
 
-  function onNext_(deferRender){
+function onNext_(){
   const s = loadSession();
   if(!s || !s.cards || !s.cards.length) return;
 
-  const nextIndex = ((Number(s.index) || 0) + 1) % s.cards.length;
-  
-
-  s.index = nextIndex;
+  s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
   saveSession(s);
 
   topCard.style.transform = "";
   topCard.classList.remove("is-dragging","is-animating");
 
-  if(!deferRender){
-    renderCurrentCard_();
-  }
+  renderCurrentCard_();
+}
 
   return;
 
@@ -1165,22 +1161,18 @@
     if(!deferRender) renderCurrentCard_();
   }
 
-  function onBack_(deferRender){
+function onBack_(){
   const s = loadSession();
   if(!s || !s.cards || !s.cards.length) return;
 
-  const nextIndex = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
-  
-
-  s.index = nextIndex;
+  s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
   saveSession(s);
 
   topCard.style.transform = "";
   topCard.classList.remove("is-dragging","is-animating");
 
-  if(!deferRender){
-    renderCurrentCard_();
-  }
+  renderCurrentCard_();
+}
 
   return;
 
