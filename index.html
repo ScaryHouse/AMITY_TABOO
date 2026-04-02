@@ -15,6 +15,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.webmanifest">
   <style>
+html, body {
+  overscroll-behavior: none;
+}
+#card {
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
     html, body{
       height:100%;
       margin:0;
