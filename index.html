@@ -1445,17 +1445,32 @@ console.log("APP_BOOT_OK");
     e.preventDefault();
   }, { passive:false });
 
-  topCard.addEventListener('pointerdown', function(e){
-    if(e.pointerType === 'mouse' || e.pointerType === 'touch' || e.pointerType === 'pen'){
-      const s = loadSession();
-      if(s && s.mode === 'INFO'){
-        prepareOptionalMotionFeatures_().then(function(){
-          const fresh = loadSession();
-          if(fresh && fresh.mode === 'INFO'){
-            showInfoCardReady_(fresh.total);
-          }
-        });
+  topCard.addEventListener("pointerdown", function(e){
+  let startX = e.clientX;
+  let currentX = startX;
+
+  function onMove(ev){
+    currentX = ev.clientX;
+  }
+
+  function onUp(){
+    const delta = currentX - startX;
+
+    if(Math.abs(delta) > 60){
+      if(delta < 0){
+        onNext_();
       } else {
+        onBack_();
+      }
+    }
+
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+  }
+
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onUp);
+});      } else {
         prepareOptionalMotionFeatures_();
       }
     }
