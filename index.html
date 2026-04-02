@@ -1483,10 +1483,7 @@ console.log("APP_BOOT_OK");
   bindDoubleTapShuffle_();
   bindKeyboardControls_();
 
-  document.addEventListener('pointerdown', prepareInteractionFeatures_, { once:true, capture:true });
-  document.addEventListener('touchstart', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
-  document.addEventListener('click', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
-
+      
   if(!isStandalone_() && !isDesktopBrowser_()){
     showInstallCard_();
   } else {
