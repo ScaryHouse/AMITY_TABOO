@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Amity Taboo</title>
+  <link rel="apple-touch-icon" href="icon-180-gh002.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192-gh002.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Amity Taboo">
+  <meta name="theme-color" content="#6b8e23">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    html, body{
+      height:100%;
+      margin:0;
+      background:#000;
+      color:#111;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+      overflow:hidden !important;
+      overscroll-behavior:none;
+      width:100%;
+      min-height:100dvh;
+    }
+
+    :root{
+      --pad:10px;
+      --gap:0px;
+      --card-radius:40px;
+      --card-header-bg:#6f8f2a;
+
+      --fs-info-top:clamp(24px, 3.2vw, 34px);
+      --fs-info-main:clamp(32px, 4.6vw, 48px);
+      --fs-info-just:clamp(44px, 6.0vw, 62px);
+      --fs-info-ready:var(--fs-info-top);
+      --fs-swipe-label:clamp(18px, 2.2vw, 24px);
+      --fs-info-bottom:clamp(14px, 1.8vw, 18px);
+
+      --fs-install-copy:clamp(24px, 3.0vw, 30px);
+      --fs-install-final:clamp(34px, 4.6vw, 46px);
+      --fs-install-later:clamp(16px, 2.0vw, 18px);
+
+      --fs-status:clamp(16px, 2.0vw, 20px);
+      --fs-coffee:clamp(20px, 2.6vw, 30px);
+    }
+
+    *{ box-sizing:border-box; }
+
+    .screen{
+      min-height:100dvh;
+      display:flex;
+      flex-direction:column;
+      padding:
+        calc(var(--pad) + env(safe-area-inset-top))
+        calc(var(--pad) + env(safe-area-inset-right))
+        calc(var(--pad) + env(safe-area-inset-bottom))
+        calc(var(--pad) + env(safe-area-inset-left));
+      gap:var(--gap);
+      overflow:hidden !important;
+      touch-action:none;
+    }
+
+    .card{
+      width:100%;
+      aspect-ratio:5 / 7;
+      border-radius:var(--card-radius);
+      position:relative;
+      flex:1 1 auto;
+      min-height:0;
+    }
+
+    .card-layer{
+      position:absolute;
+      inset:0;
+      background:#fff;
+      opacity:1;
+      border-radius:var(--card-radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      border:1px solid #000;
+      box-shadow:0 0 0 1px rgba(0,0,0,0.14), 0 10px 22px rgba(0,0,0,0.24);
+    }
+
+    .card-layer-top{
+      z-index:2;
+    }
+
+    .card-layer-under{
+      z-index:1;
+    }
+
+    .card-top{
+      flex:0 0 140px;
+      height:140px;
+      background:var(--card-header-bg);
+      opacity:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 12px;
+      overflow:hidden;
+    }
+
+    .card-bottom{
+      flex:1 1 auto;
+      display:flex;
+      flex-direction:column;
+      background:#fff;
+      opacity:1;
+      border-top:3px solid #000;
+    }
+    .title-wrap{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      padding:4px 10px 4px 10px;
+      position:relative;
+    }
+
+    .build-tag{
+      position:absolute;
+      right:28px;
+      bottom:28px;
+      z-index:5;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:22px;
+      line-height:1.06;
+      font-weight:900;
+      -webkit-text-stroke:0.15px transparent;
+      color:#fff;
+      letter-spacing:0.2px;
+      pointer-events:none;
+      user-select:none;
+      text-shadow:0 1px 2px rgba(0,0,0,0.6);
+    }
+    .title-image{
+      width:100%;
+      height:auto;
+      max-height:100%;
+      object-fit:contain;
+      display:block;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+
+    .card-art-top,
+    .card-art-bottom,
+    .install-art-bottom{
+      display:block;
+      width:100%;
+      height:auto;
+    }
+
+    .info-card{
+      flex:1 1 auto;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      color:#000;
+      padding:10px 18px 24px 18px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    }
+
+    .install-card{
+      flex:1 1 auto;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      color:#000;
+      padding:10px 18px 24px 18px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    }
+
+    .card-art-top-wrap{
+      width:75%;
+      margin:0 auto;
+      flex:0 0 auto;
+    }
+
+    .info-play-group{
+      width:92%;
+      margin:0 auto;
+      margin-top:auto;
+      flex:0 0 auto;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-end;
+      gap:0;
+    }
+
+    .install-bottom-wrap{
+      width:92%;
+      margin:0 auto;
+      margin-top:auto;
+      flex:0 0 auto;
+      display:flex;
+      align-items:flex-end;
+    }
+
+    .info-ready{
+      width:100%;
+      text-align:center;
+      font-size:var(--fs-info-ready);
+      font-weight:900;
+      line-height:1.03;
+      color:#000;
+      margin-bottom:8px;
+    }
+
+    .info-shuffle{
+      width:100%;
+      text-align:center;
+      font-size:var(--fs-info-ready);
+      font-weight:900;
+      line-height:1.03;
+      color:#000;
+      margin-top:8px;
+      text-transform:uppercase;
+    }
+
+    .info-main{
+      font-size:var(--fs-info-main);
+      font-weight:900;
+      line-height:0.94;
+      color:#000;
+      margin-bottom:24px;
+    }
+
+    .info-just{
+      font-size:var(--fs-info-just);
+      font-weight:900;
+      line-height:1.01;
+      color:#000;
+    }
+
+
+    .info-swipe{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      font-weight:900;
+      color:#000;
+      background:var(--card-header-bg);
+      border:4px solid #000;
+      border-radius:999px;
+      padding:12px 22px;
+      width:100%;
+      line-height:1;
+      margin-top:0;
+      margin-bottom:12px;
+    }
+
+    .swipe-label{
+      font-size:clamp(26px, 3.2vw, 34px);
+      font-weight:900;
+      line-height:1;
+    }
+
+    .swipe-arrow{
+      position:relative;
+      display:block;
+      width:120px;
+      min-width:120px;
+      height:40px;
+      flex:0 0 120px;
+    }
+
+    .swipe-arrow::before{
+      content:"";
+      position:absolute;
+      top:50%;
+      left:16px;
+      right:16px;
+      height:8px;
+      background:#000;
+      transform:translateY(-50%);
+      border-radius:999px;
+    }
+
+    .swipe-arrow-left::after{
+      content:"";
+      position:absolute;
+      left:0;
+      top:50%;
+      transform:translateY(-50%);
+      border-top:20px solid transparent;
+      border-bottom:20px solid transparent;
+      border-right:30px solid #000;
+    }
+
+    .swipe-arrow-right::after{
+      content:"";
+      position:absolute;
+      right:0;
+      top:50%;
+      transform:translateY(-50%);
+      border-top:20px solid transparent;
+      border-bottom:20px solid transparent;
+      border-left:30px solid #000;
+    }
+
+    .info-bottom{
+      font-size:var(--fs-info-top);
+      font-style:italic;
+      font-weight:900;
+      line-height:1.03;
+      color:#000;
+    }
+
+    .width-test-card{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:center;
+      padding:34px 10px 34px 10px;
+    }
+
+    .width-divider{
+      width:100%;
+      height:3px;
+      background:#000;
+      margin-top:18px;
+      margin-bottom:10px;
+    }
+
+    .width-target{
+      margin-top:0;
+      font-family:"Anton", Impact, "Arial Black", sans-serif;
+      font-weight:400;
+      font-size:clamp(36px,6.8vw,55px);
+      line-height:1.0;
+      color:#688828 !important;
+    }
+
+    .width-taboo-group{
+      width:100%;
+      flex:1 1 auto;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      gap:24px;
+      margin-top:20px;
+    }
+
+    .width-line{
+      width:100%;
+      font-family:"Anton", Impact, "Arial Black", sans-serif;
+      font-weight:400;
+      font-size:clamp(33px,6.1vw,49px);
+      line-height:1.0;
+      color:#C92417;
+      text-align:center;
+      white-space:nowrap;
+      overflow:hidden;
+      text-transform:uppercase;
+      margin-top:0;
+    }
+
+    .width-line.is-stacked{
+      white-space:normal;
+      line-height:1.18;
+    }
+
+    .width-line.is-stacked .phrase-part{
+      display:block;
+    }
+
+    .width-test-card .width-target.width-line{
+      color:#688828 !important;
+    }
+
+    .card-layer.is-dragging{
+      transition:none !important;
+    }
+
+    .card-layer.is-animating{
+      transition:transform 360ms cubic-bezier(.2,.8,.2,1), opacity 360ms linear;
+    }
+
+    .install-choices{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:0;
+      margin-bottom:36px;
+    }
+
+    .install-choice{
+      width:100%;
+      border:4px solid #000;
+      border-radius:28px;
+      padding:10px 12px 12px;
+      box-sizing:border-box;
+      background:#fff;
+    }
+
+    .install-choice-copy{
+      white-space:normal;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:2px;
+      font-size:20px;
+      line-height:1.08;
+      font-weight:900;
+    }
+
+    .install-copy-lead,
+    .install-copy-path,
+    .install-copy-final{
+      display:block;
+      width:100%;
+      text-align:center;
+    }
+
+    .install-copy-lead{
+      text-decoration:underline;
+      text-underline-offset:4px;
+    }
+
+    .install-copy-path{
+      font-size:20px;
+      line-height:1;
+      white-space:nowrap;
+    }
+
+    .install-path-dots{
+      display:inline-block;
+      letter-spacing:0.12em;
+      transform:translateY(-4px);
+    }
+
+    .install-copy-final{
+      font-size:var(--fs-install-final);
+      line-height:1;
+      margin-top:6px;
+    }
+
+    .install-later-note{
+      display:block;
+      font-size:var(--fs-install-later);
+      line-height:1.08;
+      font-weight:900;
+      margin-top:8px;
+    }
+
+    .install-browser-button{
+      appearance:none;
+      border:4px solid #000;
+      border-radius:28px;
+      background:var(--card-header-bg);
+      color:#000;
+      padding:10px 12px 10px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      line-height:1;
+      font-weight:900;
+      cursor:pointer;
+      width:100%;
+      text-align:center;
+    }
+
+    .install-swipe-row{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+
+    .install-browser-button .swipe-arrow{
+      transform:scale(0.72);
+      transform-origin:center center;
+    }
+
+    .install-swipe-label{
+      display:inline-block;
+      font-size:clamp(22px,3.2vw,30px);
+      line-height:1;
+    }
+
+    .statusbar{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      font-size:var(--fs-status);
+      color:#fff;
+      padding:10px var(--pad) 0;
+      min-height:72px;
+    }
+
+    .status-toprow{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+
+    .status-bottomrow{
+      width:100%;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      gap:12px;
+    }
+
+    .status-mid{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:44px;
+      padding:8px 18px;
+      border:3px solid #000;
+      border-radius:999px;
+      background:#C62014;
+      color:#000;
+      font-size:var(--fs-coffee);
+      font-weight:900;
+      line-height:1;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+
+    .status-left,
+    .status-right,
+    .status-version{
+      min-width:0;
+      font-family:"Arial Narrow", "HelveticaNeue-CondensedBold", "Roboto Condensed", "Liberation Sans Narrow", Arial, Helvetica, sans-serif;
+      font-stretch:condensed;
+      font-weight:700;
+      letter-spacing:0.2px;
+      line-height:1;
+    }
+
+    .status-left{
+      text-align:left;
+      padding-right:0;
+    }
+
+    .status-version{
+      text-align:center;
+      white-space:nowrap;
+    }
+
+    .status-right{
+      text-align:right;
+      padding-left:0;
+    }
+
+    .sr-only{
+      position:absolute !important;
+      width:1px !important;
+      height:1px !important;
+      padding:0 !important;
+      margin:-1px !important;
+      overflow:hidden !important;
+      clip:rect(0, 0, 0, 0) !important;
+      white-space:nowrap !important;
+      border:0 !important;
+    }
+
+    @media (min-width: 900px){
+      .screen{
+        width:min(20vw, 320px);
+        min-width:260px;
+        max-width:320px;
+        margin:0 auto;
+      }
+
+      .info-main{
+        line-height:1.0;
+      }
+
+      .info-swipe{
+        margin-top:-28px;
+        margin-bottom:8px;
+        padding:6px 14px;
+      }
+
+      .swipe-arrow{
+        width:74px;
+        min-width:74px;
+        height:28px;
+        flex:0 0 74px;
+      }
+
+      .statusbar{
+        gap:6px;
+      }
+
+      .status-bottomrow{
+        gap:8px;
+      }
+
+      .status-mid{
+        min-height:34px;
+        padding:4px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <div class="screen">
+    <div class="card" id="card">
+      <div class="card-layer card-layer-under" aria-hidden="true">
+        <div class="card-top">
+          <div class="title-wrap">
+            <img
+              class="title-image"
+              src="at-header.svg?v=1"
+              alt=""
+              draggable="false"
+            >
+          </div>
+        </div>
+        <div class="card-bottom">
+          <div class="width-test-card">
+            <div class="width-target width-line" data-phrase="builder / construction worker">BUILDER / CONSTRUCTION WORKER</div>
+            <div class="width-taboo-group">
+              <div class="width-line" data-phrase="bin / garbage can / trash can">BIN / GARBAGE CAN / TRASH CAN</div>
+              <div class="width-line" data-phrase="waiter / waitress / server">WAITER / WAITRESS / SERVER</div>
+              <div class="width-line" data-phrase="doctor's / doctors office">DOCTOR'S / DOCTORS OFFICE</div>
+              <div class="width-line" data-phrase="table tennis / ping pong">TABLE TENNIS / PING PONG</div>
+              <div class="width-line" data-phrase="cinema / movie theatre">CINEMA / MOVIE THEATRE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-layer card-layer-top" id="card-top-layer">
+        <div class="card-top">
+          <div class="title-wrap">
+            <img
+              class="title-image"
+              src="at-header.svg?v=1"
+              alt=""
+              aria-hidden="true"
+              draggable="false"
+            >
+            
+          </div>
+        </div>
+        <div class="card-bottom">
+          <div class="info-card">
+            <div class="card-art-top-wrap">
+              <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
+            </div>
+            <div class="info-play-group">
+              <div class="info-ready" id="info-ready">Loading deck...</div>
+              <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" aria-hidden="true" draggable="false">
+              <div class="info-shuffle">DOUBLE TAP TO SHUFFLE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="statusbar" aria-hidden="true">
+      <div class="status-toprow">
+        <a class="status-mid" id="coffee-link" href="https://buymeacoffee.com/scaryhouse" target="_blank" rel="noopener noreferrer external" aria-label="Buy me a Coffee">Buy me a Coffee</a>
+      </div>
+      <div class="status-bottomrow">
+        <div class="status-left" id="status-deck">Deck: 0 of 000</div>
+        <div class="status-version" id="status-version">v.097</div>
+        <div class="status-right" id="status-cardid">Card ID: #0000</div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+(function(){
+  /**
+   * GitHub Pages version of the client.
+   * Session state is kept locally so deck navigation stays instant.
+   */
+  const LS_KEY = 'amity_taboo_session_v2';
+
+  function escapeHtml_(value){
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  const topCard = document.getElementById('card-top-layer');
+  if(!topCard) return;
+
+  const topBottom = topCard.querySelector('.card-bottom');
+  const underBottom = document.querySelector('.card-layer-under .card-bottom');
+  const statusDeck = document.getElementById('status-deck');
+  const statusCard = document.getElementById('status-cardid');
+  function getInfoCardMarkup_(){
+    return `
+      <div class="info-card">
+        <div class="card-art-top-wrap">
+          <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
+        </div>
+        <div class="info-play-group">
+          <div class="info-ready" id="info-ready">Loading deck...</div>
+          <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" aria-hidden="true" draggable="false">
+          <div class="info-shuffle">DOUBLE TAP TO SHUFFLE</div>
+        </div>
+      </div>
+    `;
+  }
+
+  let loadingTimer = null;
+  let motionPermissionRequested_ = false;
+  let shakeEnabled_ = false;
+    let shakeState_ = { lastMagnitude: 0, lastShuffleAt: 0 };
+
+  /**
+   * Requests motion permission when the browser requires it.
+   * This only prepares optional motion access for shake-to-shuffle when allowed.
+   */
+  function prepareOptionalMotionFeatures_(){
+    requestMotionPermissionIfNeeded_();
+    return Promise.resolve(shakeEnabled_);
+  }
+
+  /** Persist the current local session snapshot. */
+  function saveSession(session){
+    try{
+      localStorage.setItem(LS_KEY, JSON.stringify(session));
+    }catch(e){}
+  }
+
+  /** Load and lightly normalize the saved session. */
+  function loadSession(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return null;
+      const obj = JSON.parse(raw);
+      if(!obj || !Array.isArray(obj.cards) || !obj.cards.length) return null;
+      if(typeof obj.index !== 'number') obj.index = 0;
+      if(!obj.mode) obj.mode = 'INFO';
+      return obj;
+    }catch(e){
+      return null;
+    }
+  }
+
+  /** Remove the saved session so a fresh deck can be built. */
+  function clearSession(){
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  }
+
+  function formatDeckStatus_(current, total){
+    return 'Deck: ' + String(current || 0) + ' of ' + String(total || 0).padStart(3, '0');
+  }
+
+  function formatCardId_(rowId){
+    const n = Number(rowId || 0) || 0;
+    return n ? ('Card ID: #' + String(n).padStart(4, '0')) : 'Card ID: #0000';
+  }
+
+  let srAnnouncementTimer_ = null;
+
+  function announceScreenReader_(text){
+    const live = document.getElementById('sr-live');
+    if(!live) return;
+    if(srAnnouncementTimer_){
+      clearTimeout(srAnnouncementTimer_);
+      srAnnouncementTimer_ = null;
+    }
+    live.textContent = '';
+    srAnnouncementTimer_ = setTimeout(function(){
+      live.textContent = String(text || '');
+    }, 40);
+  }
+
+  function getInstallAnnouncement_(){
+    const ua = navigator.userAgent || '';
+    const intro = 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. ';
+    if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
+      return intro + 'For the best full screen play follow this path: Tap Share. View More. Add to Home Screen.';
+    }
+    if(/iPhone|iPad|iPod/i.test(ua)){
+      return intro + 'For the best full screen play follow this path: Tap More options. Share. View More. Add to Home Screen.';
+    }
+    if(/Android/i.test(ua)){
+      return intro + 'For the best full screen play follow this path: Tap Menu. Add to Home Screen.';
+    }
+    return intro + 'Install this app to play full screen.';
+  }
+
+  function getInfoLoadingAnnouncement_(){
+    return 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. Your deck is loading.';
+  }
+
+  function getInfoReadyAnnouncement_(total){
+    return 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. Your deck of ' + String(total || 0) + ' cards is ready. Swipe either way to play. Double tap to shuffle.';
+  }
+
+  function getPlayCardAnnouncement_(current, total, cardObj){
+    const target = String(cardObj && cardObj.target || '').trim();
+    const taboo = Array.isArray(cardObj && cardObj.taboo) ? cardObj.taboo.map(function(x){ return String(x || '').trim(); }).filter(Boolean) : [];
+    const tabooText = taboo.length ? taboo.join('. ') + '.' : '';
+    return 'Card ' + String(current || 0) + ' of ' + String(total || 0) + '. Target word: ' + target + '. Taboo words: ' + tabooText + ' Swipe for next card.';
+  }
+
+  function isStandalone_(){
+    try{
+      return window.navigator.standalone === true ||
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    }catch(e){
+      return false;
+    }
+  }
+
+  function getInstallCardMarkup_(){
+    const ua = navigator.userAgent || '';
+    let installAsset = 'at-install-ios-safari.svg?v=1';
+
+    if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
+      installAsset = 'at-install-ios-chrome.svg?v=1';
+    } else if(/iPhone|iPad|iPod/i.test(ua)){
+      installAsset = 'at-install-ios-safari.svg?v=1';
+    } else if(/Android/i.test(ua)){
+      installAsset = 'at-install-android.svg?v=1';
+    }
+
+    return `
+      <div class="install-card">
+        <div class="card-art-top-wrap">
+          <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
+        </div>
+        <div class="install-bottom-wrap">
+          <img class="install-art-bottom" src="${installAsset}" alt="" aria-hidden="true" draggable="false">
+        </div>
+      </div>
+    `;
+  }
+
+  function showInstallCard_(){
+    if(!topBottom) return;
+    renderTopAndStatus_(
+      getInstallCardMarkup_(),
+      'Deck: 0 of 000',
+      'Card ID: #0000',
+      getInfoCardMarkup_()
+    );
+    announceScreenReader_(getInstallAnnouncement_());
+  }
+
+  function isInstallCardVisible_(){
+    return !!(topBottom && topBottom.querySelector('.install-card'));
+  }
+
+  function applyPhraseHandlingWithin_(root){
+    if(!root) return;
+    root.querySelectorAll('.width-line[data-phrase]').forEach(function(el){
+      const raw = (el.getAttribute('data-phrase') || '').trim();
+      if(!raw) return;
+
+      el.classList.remove('is-stacked');
+      el.innerHTML = escapeHtml_(raw.toUpperCase());
+
+      if(el.scrollWidth <= el.clientWidth){
+        return;
+      }
+
+      const parts = raw.split(/\s*\/\s*/).map(function(part){
+        return part.trim();
+      }).filter(Boolean);
+
+      if(parts.length < 2){
+        return;
+      }
+
+      const grouped = [];
+      for(let i = 0; i < parts.length; i += 2){
+        if(i + 1 < parts.length){
+          grouped.push(parts[i] + ' / ' + parts[i + 1]);
+        } else {
+          grouped.push(parts[i]);
+        }
+      }
+
+      el.classList.add('is-stacked');
+      el.innerHTML = grouped.map(function(part){
+        return '<span class="phrase-part">' + escapeHtml_(part.toUpperCase()) + '</span>';
+      }).join('');
+    });
+  }
+
+  function buildPromptMarkup_(cardObj){
+    const target = cardObj && cardObj.target ? String(cardObj.target) : '';
+    const taboo = Array.isArray(cardObj && cardObj.taboo) ? cardObj.taboo : [];
+
+    return `
+      <div class="width-test-card prompt-card">
+        <div class="width-target width-line" data-phrase="${escapeHtml_(target)}">${escapeHtml_(target.toUpperCase())}</div>
+        <div class="width-divider"></div>
+        <div class="width-taboo-group">
+          ${taboo.map(function(t){
+            const phrase = String(t || '').trim();
+            return '<div class="width-line" data-phrase="' + escapeHtml_(phrase) + '">' + escapeHtml_(phrase.toUpperCase()) + '</div>';
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderTopAndStatus_(markup, deckText, cardText, underMarkup){
+    if(topBottom) topBottom.innerHTML = markup || '';
+    if(statusDeck) statusDeck.textContent = deckText || 'Deck: 0 of 000';
+    if(statusCard) statusCard.textContent = cardText || 'Card ID: #0000';
+    if(underBottom) underBottom.innerHTML = underMarkup || '';
+  }
+
+  /** Show the loading card while a new deck is being built. */
+  function showInfoCardLoading_(){
+    if(!topBottom) return;
+    renderTopAndStatus_(
+      getInfoCardMarkup_(),
+      'Deck: 0 of 000',
+      'Card ID: #0000',
+      ''
+    );
+    announceScreenReader_(getInfoLoadingAnnouncement_());
+    const readyText = document.getElementById('info-ready');
+
+    if(loadingTimer) clearInterval(loadingTimer);
+    const letters = 'Loading...';
+    const lead = '\u00A0';
+    let i = 0;
+    if(readyText){
+      readyText.style.display = 'inline-block';
+      readyText.style.minWidth = '15ch';
+      readyText.style.whiteSpace = 'pre';
+      readyText.textContent = lead;
+    }
+    loadingTimer = setInterval(function(){
+      if(!readyText) return;
+      if(i < letters.length){
+        readyText.textContent = lead + letters.slice(0, i + 1);
+        i++;
+      }else{
+        readyText.textContent = lead;
+        i = 0;
+      }
+    }, 250);
+  }
+
+  /** Show the ready card once a deck is available. */
+  function showInfoCardReady_(total){
+    if(loadingTimer){
+      clearInterval(loadingTimer);
+      loadingTimer = null;
+    }
+    if(!topBottom) return;
+    renderTopAndStatus_(
+      getInfoCardMarkup_(),
+      formatDeckStatus_(0, total || 0),
+      'Card ID: #0000',
+      ''
+    );
+    const readyText = document.getElementById('info-ready');
+    if(readyText) readyText.textContent = 'Your deck is ready.';
+    announceScreenReader_(getInfoReadyAnnouncement_(total || 0));
+  }
+
+  function renderUnderCard_(direction){
+    const s = loadSession();
+    if(!underBottom || !s || !Array.isArray(s.cards) || !s.cards.length){
+      if(underBottom) underBottom.innerHTML = '';
+      gestureState_.underPreviewMode = '';
+      return;
+    }
+
+    if(s.mode !== 'PLAY' && s.mode !== 'INFO'){
+      underBottom.innerHTML = '';
+      gestureState_.underPreviewMode = '';
+      return;
+    }
+
+    const previewKey = 'play:' + direction;
+    if(underPreviewMode === previewKey){
+      return;
+    }
+
+    const cur = s.mode === 'PLAY'
+      ? Math.max(0, Math.min(Number(s.index) || 0, s.cards.length - 1))
+      : 0;
+
+    const idx = direction === 'right'
+      ? ((cur - 1 + s.cards.length) % s.cards.length)
+      : ((cur + 1) % s.cards.length);
+
+    underBottom.innerHTML = buildPromptMarkup_(s.cards[idx]);
+    applyPhraseHandlingWithin_(underBottom);
+    underPreviewMode = previewKey;
+  }
+
+  /** Render the currently selected play card. */
+  function renderCurrentCard_(){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length){
+      showInfoCardLoading_();
+      return;
+    }
+
+    if(s.mode !== 'PLAY'){
+      showInfoCardReady_(s.total);
+      return;
+    }
+
+    const idx = Math.max(0, Math.min(Number(s.index) || 0, s.cards.length - 1));
+    const cardObj = s.cards[idx];
+
+    if(topBottom){
+      topBottom.innerHTML = buildPromptMarkup_(cardObj);
+      applyPhraseHandlingWithin_(topBottom);
+    }
+
+    if(statusDeck) statusDeck.textContent = formatDeckStatus_(idx + 1, s.total);
+    if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
+
+    announceScreenReader_(getPlayCardAnnouncement_(idx + 1, s.total, cardObj));
+
+    renderUnderCard_('left');
+  }
+
+  function syncStatusFromSession_(){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length){
+      if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+      if(statusCard) statusCard.textContent = 'Card ID: #0000';
+      return;
+    }
+
+    if(s.mode !== 'PLAY'){
+      if(statusDeck) statusDeck.textContent = formatDeckStatus_(0, s.total || s.cards.length);
+      if(statusCard) statusCard.textContent = 'Card ID: #0000';
+      return;
+    }
+
+    const idx = Math.max(0, Math.min(Number(s.index) || 0, s.cards.length - 1));
+    const cardObj = s.cards[idx];
+    if(statusDeck) statusDeck.textContent = formatDeckStatus_(idx + 1, s.total);
+    if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
+  }
+
+  function renderAppFromSession_(){
+    const existing = loadSession();
+    if(!isStandalone_()){
+      showInstallCard_();
+      return;
+    }
+    if(existing){
+      renderCurrentCard_();
+      return;
+    }
+    startBuildNewDeck_();
+  }
+
+  /** Fetch a new shuffled deck from the Apps Script web app. */
+  function startBuildNewDeck_(){
+    clearSession();
+    showInfoCardLoading_();
+
+    fetch('https://script.google.com/macros/s/AKfycbz1sG3PHLRYAyYNe7R3Vc792JIsmCKQNoKePptxPO6P-PsY2Omk2Jn73DMzgjdaXiARbw/exec?api=deck', {
+      method: 'GET',
+      cache: 'no-store'
+    })
+      .then(function(resp){
+        if(!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.json();
+      })
+      .then(function(res){
+        const cards = (res && res.cards) ? res.cards : [];
+        const total = (res && res.total) ? res.total : cards.length;
+        const session = {
+          schema: 1,
+          deckId: (res && res.deckId) ? res.deckId : String(Date.now()),
+          index: 0,
+          total: total,
+          cards: cards,
+          mode: 'INFO',
+        };
+        saveSession(session);
+
+        showInfoCardReady_(total);
+      })
+      .catch(function(){
+        if(loadingTimer){
+          clearInterval(loadingTimer);
+          loadingTimer = null;
+        }
+        if(topBottom) topBottom.innerHTML = getInfoCardMarkup_();
+        const readyText = document.getElementById('info-ready');
+        if(readyText) readyText.textContent = 'Unable to build deck.';
+        if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+        if(statusCard) statusCard.textContent = 'Card ID: #0000';
+      });
+  }
+
+  function onBeginPlay_(direction){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
+    s.index = (direction === 'back') ? (s.cards.length - 1) : 0;
+    s.mode = 'PLAY';
+    saveSession(s);
+    renderCurrentCard_();
+  }
+
+  function onNext_(deferRender){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
+    if(s.mode !== 'PLAY'){
+      onBeginPlay_('forward');
+      return;
+    }
+    s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
+    saveSession(s);
+    if(!deferRender) renderCurrentCard_();
+  }
+
+  function onBack_(deferRender){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
+    if(s.mode !== 'PLAY'){
+      onBeginPlay_('back');
+      return;
+    }
+    s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
+    saveSession(s);
+    if(!deferRender) renderCurrentCard_();
+  }
+
+  function requestMotionPermissionIfNeeded_(){
+    try{
+      const DM = window.DeviceMotionEvent;
+      if(!DM){
+        shakeEnabled_ = true;
+        return;
+      }
+      if(typeof DM.requestPermission !== 'function'){
+        shakeEnabled_ = true;
+        return;
+      }
+      if(motionPermissionRequested_) return;
+      motionPermissionRequested_ = true;
+      DM.requestPermission()
+        .then(function(state){
+          shakeEnabled_ = (state === 'granted');
+        })
+        .catch(function(){
+          shakeEnabled_ = false;
+        });
+    }catch(e){
+      shakeEnabled_ = false;
+    }
+  }
+
+  function triggerShuffle_(){
+    const now = Date.now();
+    if(now - shakeState_.lastShuffleAt < 2500) return;
+    shakeState_.lastShuffleAt = now;
+    startBuildNewDeck_();
+  }
+
+  /** Treat a clean double tap as a request for a new deck. */
+  function bindDoubleTapShuffle_(){
+    const surface = document.querySelector('.card') || document.body;
+    if(!surface) return;
+
+    let lastTapAt = 0;
+    let tapStartX = 0;
+    let tapStartY = 0;
+
+    surface.addEventListener('touchstart', function(e){
+      const t = e.touches && e.touches[0];
+      if(!t) return;
+      tapStartX = t.clientX;
+      tapStartY = t.clientY;
+    }, { passive:true });
+
+    surface.addEventListener('touchend', function(e){
+      const t = e.changedTouches && e.changedTouches[0];
+      if(!t) return;
+      const dx = Math.abs((t.clientX || 0) - tapStartX);
+      const dy = Math.abs((t.clientY || 0) - tapStartY);
+      if(dx > 14 || dy > 14) return;
+
+      const now = Date.now();
+      if(now - lastTapAt <= 350){
+        triggerShuffle_();
+        lastTapAt = 0;
+        return;
+      }
+      lastTapAt = now;
+    }, { passive:true });
+
+    surface.addEventListener('dblclick', function(e){
+      if(e && e.target && e.target.closest && e.target.closest('a')) return;
+      triggerShuffle_();
+    });
+  }
+
+  /** Treat a deliberate shake as a request for a new deck. */
+  function bindShakeToShuffle_(){
+    window.addEventListener('devicemotion', function(e){
+      if(!shakeEnabled_) return;
+      const a = e && e.accelerationIncludingGravity;
+      if(!a) return;
+
+      const x = Number(a.x || 0);
+      const y = Number(a.y || 0);
+      const z = Number(a.z || 0);
+      const magnitude = Math.sqrt((x * x) + (y * y) + (z * z));
+      const delta = Math.abs(magnitude - shakeState_.lastMagnitude);
+      shakeState_.lastMagnitude = magnitude;
+
+      if(delta > 18){
+        triggerShuffle_();
+      }
+    }, { passive:true });
+  }
+
+  /** Desktop keyboard fallbacks for testing and accessibility. */
+  function bindKeyboardControls_(){
+    let lastSpaceAt = 0;
+
+    window.addEventListener('keydown', function(e){
+      const active = document.activeElement;
+      const tag = active && active.tagName ? String(active.tagName).toUpperCase() : '';
+      const editing = !!(active && (active.isContentEditable || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'));
+      if(editing) return;
+
+      if(e.key === 'ArrowLeft'){
+        e.preventDefault();
+        onBack_(false);
+        return;
+      }
+
+      if(e.key === 'ArrowRight'){
+        e.preventDefault();
+        onNext_(false);
+        return;
+      }
+
+      if(e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar'){
+        e.preventDefault();
+        const now = Date.now();
+        if(now - lastSpaceAt <= 350){
+          triggerShuffle_();
+          lastSpaceAt = 0;
+          return;
+        }
+        lastSpaceAt = now;
+      }
+    });
+  }
+
+  const axisRatio = 1.6;
+  const revealThresholdX = 42;
+  const revealAxisRatio = 1.15;
+
+  const gestureState_ = {
+    startX: 0,
+    startY: 0,
+    lastX: 0,
+    lastY: 0,
+    tracking: false,
+    underPreviewMode: ''
+  };
+
+  function resetCardPosition_(){
+    topCard.classList.remove('is-dragging', 'is-animating');
+    topCard.style.transition = '';
+    topCard.style.transform = '';
+    topCard.style.opacity = '';
+    gestureState_.underPreviewMode = '';
+  }
+
+  function begin_(x, y){
+    gestureState_.startX = x;
+    gestureState_.startY = y;
+    gestureState_.lastX = x;
+    gestureState_.lastY = y;
+    gestureState_.tracking = true;
+    topCard.classList.remove('is-animating');
+    topCard.classList.add('is-dragging');
+  }
+
+  function getCommitThresholdX_(){
+    const cardWidth = topCard ? (topCard.getBoundingClientRect().width || 0) : 0;
+    return Math.max(95, Math.round(cardWidth * 0.60));
+  }
+
+  function move_(x, y){
+    if(!gestureState_.tracking) return;
+
+    gestureState_.lastX = x;
+    gestureState_.lastY = y;
+
+    const dx = gestureState_.lastX - gestureState_.startX;
+    const dy = gestureState_.lastY - gestureState_.startY;
+
+    const horizontalDrag =
+      Math.abs(dx) > 12 &&
+      Math.abs(dx) > Math.abs(dy);
+
+    if(!horizontalDrag) return;
+
+    topCard.style.transform = `translateX(${dx}px)`;
+    topCard.style.opacity = '1';
+
+    const revealUnderCard =
+      Math.abs(dx) >= revealThresholdX &&
+      Math.abs(dx) > (Math.abs(dy) * revealAxisRatio);
+
+    if(revealUnderCard){
+      if(isInstallCardVisible_()){
+        if(gestureState_.underPreviewMode !== 'install-info'){
+          if(underBottom) underBottom.innerHTML = getInfoCardMarkup_();
+          gestureState_.underPreviewMode = 'install-info';
+        }
+      } else {
+        renderUnderCard_(dx < 0 ? 'left' : 'right');
+      }
+    } else if(underBottom){
+      const emptyKey = isInstallCardVisible_() ? 'install-info' : 'empty';
+      if(emptyKey === 'install-info'){
+        if(gestureState_.underPreviewMode !== 'install-info'){
+          underBottom.innerHTML = getInfoCardMarkup_();
+          gestureState_.underPreviewMode = 'install-info';
+        }
+      } else if(gestureState_.underPreviewMode !== 'empty'){
+        underBottom.innerHTML = '';
+        gestureState_.underPreviewMode = 'empty';
+      }
+    }
+  }
+
+  /** Commit a swipe when it clearly crosses the horizontal threshold. */
+  function finish_(x, y){
+    if(!gestureState_.tracking){
+      resetCardPosition_();
+      return;
+    }
+
+    gestureState_.lastX = x;
+    gestureState_.lastY = y;
+
+    const dx = gestureState_.lastX - gestureState_.startX;
+    const dy = gestureState_.lastY - gestureState_.startY;
+
+    gestureState_.tracking = false;
+
+    const deliberateHorizontalSwipe =
+      Math.abs(dx) >= getCommitThresholdX_() &&
+      Math.abs(dx) > (Math.abs(dy) * axisRatio);
+
+    if(!deliberateHorizontalSwipe){
+      if(underBottom) underBottom.innerHTML = '';
+      topCard.classList.remove('is-dragging');
+      topCard.classList.add('is-animating');
+      topCard.style.transition = 'transform 360ms cubic-bezier(.2,.8,.2,1), opacity 360ms linear';
+      topCard.style.transform = 'translateX(0)';
+      topCard.style.opacity = '1';
+      window.setTimeout(function(){
+        resetCardPosition_();
+      }, 370);
+      return;
+    }
+
+    const direction = dx < 0 ? 'left' : 'right';
+
+    if(isInstallCardVisible_()){
+      topCard.classList.remove('is-dragging');
+      topCard.classList.add('is-animating');
+      topCard.style.transition = 'transform 520ms cubic-bezier(.22,.61,.36,1), opacity 520ms linear';
+      topCard.style.transform = direction === 'left' ? 'translateX(-120vw)' : 'translateX(120vw)';
+      topCard.style.opacity = '1';
+
+      window.setTimeout(function(){
+        showInfoCardLoading_();
+        resetCardPosition_();
+        const existing = loadSession();
+        if(existing && Array.isArray(existing.cards) && existing.cards.length){
+          showInfoCardReady_(existing.total);
+        } else {
+          startBuildNewDeck_();
+        }
+      }, 530);
+      return;
+    }
+
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length){
+      resetCardPosition_();
+      return;
+    }
+
+
+    if(s.mode !== 'PLAY'){
+      const firstIndex = (direction === 'left') ? 0 : (s.cards.length - 1);
+      if(underBottom){
+        underBottom.innerHTML = buildPromptMarkup_(s.cards[firstIndex]);
+        applyPhraseHandlingWithin_(underBottom);
+      }
+      s.index = firstIndex;
+      s.mode = 'PLAY';
+      saveSession(s);
+      syncStatusFromSession_();
+    } else {
+      if(direction === 'left'){
+        onNext_(true);
+      } else {
+        onBack_(true);
+      }
+      syncStatusFromSession_();
+    }
+
+    topCard.classList.remove('is-dragging');
+    topCard.classList.add('is-animating');
+    topCard.style.transition = 'transform 520ms cubic-bezier(.22,.61,.36,1), opacity 520ms linear';
+    topCard.style.transform = direction === 'left' ? 'translateX(-120vw)' : 'translateX(120vw)';
+    topCard.style.opacity = '1';
+
+    window.setTimeout(function(){
+      if(underBottom) underBottom.innerHTML = '';
+      resetCardPosition_();
+      renderCurrentCard_();
+    }, 530);
+  }
+
+  topCard.addEventListener('pointerdown', function(e){
+    if(!(e.pointerType === 'mouse' || e.pointerType === 'touch' || e.pointerType === 'pen')) return;
+
+    const s = loadSession();
+    if(s && s.mode === 'INFO'){
+      prepareOptionalMotionFeatures_().then(function(){
+        const fresh = loadSession();
+        if(fresh && fresh.mode === 'INFO'){
+          showInfoCardReady_(fresh.total);
+        }
+      });
+    } else {
+      prepareOptionalMotionFeatures_();
+    }
+
+    begin_(e.clientX, e.clientY);
+  }, { passive:true });
+
+  topCard.addEventListener('pointermove', function(e){
+    if(!gestureState_.tracking) return;
+    move_(e.clientX, e.clientY);
+  }, { passive:true });
+
+  topCard.addEventListener('pointerup', function(e){
+    if(!gestureState_.tracking) return;
+    finish_(e.clientX, e.clientY);
+  }, { passive:true });
+
+  topCard.addEventListener('pointercancel', function(){
+    gestureState_.tracking = false;
+    if(underBottom) underBottom.innerHTML = '';
+    resetCardPosition_();
+  }, { passive:true });
+
+  topCard.addEventListener('click', function(){
+    const s = loadSession();
+    if(s && s.mode === 'INFO'){
+      prepareOptionalMotionFeatures_().then(function(){
+        const fresh = loadSession();
+        if(fresh && fresh.mode === 'INFO'){
+          showInfoCardReady_(fresh.total);
+        }
+      });
+    } else {
+      prepareOptionalMotionFeatures_();
+    }
+  }, { passive:true });
+
+  bindShakeToShuffle_();
+  bindDoubleTapShuffle_();
+  bindKeyboardControls_();
+
+  document.addEventListener('pointerdown', prepareOptionalMotionFeatures_, { once:true, capture:true });
+  document.addEventListener('touchstart', prepareOptionalMotionFeatures_, { passive:true, once:true, capture:true });
+  document.addEventListener('click', prepareOptionalMotionFeatures_, { passive:true, once:true, capture:true });
+
+  renderAppFromSession_();
+
+  window.__amity = {
+    loadSession: loadSession,
+    saveSession: saveSession,
+    clearSession: clearSession,
+    startBuildNewDeck: startBuildNewDeck_
+  };
+})();
+</script>
+</body>
+</html>
