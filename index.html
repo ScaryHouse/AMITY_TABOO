@@ -1127,24 +1127,42 @@
   }
 
   function onNext_(deferRender){
-    const s = loadSession();
-    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
-    if(s.mode !== 'PLAY'){
-      onBeginPlay_('forward');
-      return;
-    }
+  const s = loadSession();
+  if(!s || !s.cards || !s.cards.length) return;
+
+  s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
+  saveSession(s);
+
+  renderUnderCard_("next");
+
+  topCard.style.transform = "";
+  topCard.classList.remove("is-dragging","is-animating");
+
+  if(!deferRender){
+    renderCurrentCard_();
+  }
+}
     s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
     saveSession(s);
     if(!deferRender) renderCurrentCard_();
   }
 
   function onBack_(deferRender){
-    const s = loadSession();
-    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
-    if(s.mode !== 'PLAY'){
-      onBeginPlay_('back');
-      return;
-    }
+  const s = loadSession();
+  if(!s || !s.cards || !s.cards.length) return;
+
+  s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
+  saveSession(s);
+
+  renderUnderCard_("back");
+
+  topCard.style.transform = "";
+  topCard.classList.remove("is-dragging","is-animating");
+
+  if(!deferRender){
+    renderCurrentCard_();
+  }
+}
     s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
     saveSession(s);
     if(!deferRender) renderCurrentCard_();
