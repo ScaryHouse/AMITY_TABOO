@@ -1131,7 +1131,7 @@
   if(!s || !s.cards || !s.cards.length) return;
 
   const nextIndex = ((Number(s.index) || 0) + 1) % s.cards.length;
-  renderUnderCard_("next");
+  
 
   s.index = nextIndex;
   saveSession(s);
@@ -1170,7 +1170,7 @@
   if(!s || !s.cards || !s.cards.length) return;
 
   const nextIndex = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
-  renderUnderCard_("back");
+  
 
   s.index = nextIndex;
   saveSession(s);
