@@ -1172,12 +1172,14 @@ console.log("APP_BOOT_OK");
     let tapStartX = 0;
     let tapStartY = 0;
 
+    surface.addEventListener('touchstart', function(e){
       const t = e.touches && e.touches[0];
       if(!t) return;
       tapStartX = t.clientX;
       tapStartY = t.clientY;
     }, { passive:true });
 
+    surface.addEventListener('touchend', function(e){
       const t = e.changedTouches && e.changedTouches[0];
       if(!t) return;
       const dx = Math.abs((t.clientX || 0) - tapStartX);
@@ -1426,6 +1428,7 @@ console.log("APP_BOOT_OK");
     }, 530);
   }
 
+  topCard.addEventListener('touchstart', function(e){
     const t = e.touches && e.touches[0];
     if(!t) return;
 
@@ -1475,12 +1478,14 @@ console.log("APP_BOOT_OK");
     }
   }, { passive:true });
 
+  topCard.addEventListener('touchmove', function(e){
     const t = e.touches && e.touches[0];
     if(!t) return;
     move_(t.clientX, t.clientY);
     e.preventDefault();
   }, { passive:false });
 
+  topCard.addEventListener('touchend', function(e){
     const t = e.changedTouches && e.changedTouches[0];
     if(!t){
       finish_(lastX, lastY);
