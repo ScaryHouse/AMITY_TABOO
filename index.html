@@ -1040,7 +1040,7 @@
 
     announceScreenReader_(getPlayCardAnnouncement_(idx + 1, s.total, cardObj));
 
-    renderUnderCard_('left');
+    
   }
 
   function syncStatusFromSession_(){
@@ -1130,10 +1130,28 @@
   const s = loadSession();
   if(!s || !s.cards || !s.cards.length) return;
 
+  const nextIndex = ((Number(s.index) || 0) + 1) % s.cards.length;
+  renderUnderCard_("next");
+
+  s.index = nextIndex;
+  saveSession(s);
+
+  topCard.style.transform = "";
+  topCard.classList.remove("is-dragging","is-animating");
+
+  if(!deferRender){
+    renderCurrentCard_();
+  }
+
+  return;
+
+  const s = loadSession();
+  if(!s || !s.cards || !s.cards.length) return;
+
   s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
   saveSession(s);
 
-  renderUnderCard_("next");
+  
 
   topCard.style.transform = "";
   topCard.classList.remove("is-dragging","is-animating");
@@ -1151,10 +1169,28 @@
   const s = loadSession();
   if(!s || !s.cards || !s.cards.length) return;
 
+  const nextIndex = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
+  renderUnderCard_("back");
+
+  s.index = nextIndex;
+  saveSession(s);
+
+  topCard.style.transform = "";
+  topCard.classList.remove("is-dragging","is-animating");
+
+  if(!deferRender){
+    renderCurrentCard_();
+  }
+
+  return;
+
+  const s = loadSession();
+  if(!s || !s.cards || !s.cards.length) return;
+
   s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
   saveSession(s);
 
-  renderUnderCard_("back");
+  
 
   topCard.style.transform = "";
   topCard.classList.remove("is-dragging","is-animating");
@@ -1358,7 +1394,7 @@
           gestureState_.underPreviewMode = 'install-info';
         }
       } else {
-        renderUnderCard_(dx < 0 ? 'left' : 'right');
+        
       }
     } else if(underBottom){
       const emptyKey = isInstallCardVisible_() ? 'install-info' : 'empty';
