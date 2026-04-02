@@ -1,0 +1,30 @@
+=======================================================
+AMITY_TABOO — HANDOFF SUMMARY — 2026-02-27_085834
+=======================================================
+
+1. PURPOSE
+A. See master spreadsheet description.
+B. This folder is canonical project root.
+
+2. CURRENT STATE
+A. Status: Active unless otherwise noted.
+B. GAS STATUS:
+   1. Determine if script exists only at script.google.com.
+   2. Determine if CLASP has been initialized locally.
+C. If GAS-only, document Script ID and deployment URL here.
+
+3. STRUCTURE
+A. _INCOMING = raw imports / exports.
+B. _WORKING = active builds and drafts.
+C. _OUTPUT = packaged deliverables.
+D. _ARCHIVE = retired versions.
+
+4. NEXT AGENT CHECKLIST
+A. Confirm GMR version.
+B. Confirm authoritative data source.
+C. Confirm deployment model (manual, trigger, web app).
+D. Document all experiments.
+
+=======================================================
+END OF HANDOFF
+=======================================================

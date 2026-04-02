@@ -1,0 +1,45 @@
+1.) PROJECT
+1.1.) AMITY TABOO
+
+2.) PURPOSE
+2.1.) Build and maintain an accessible no-timer Taboo-style prompt game.
+2.2.) Current implementation target is a Google Apps Script / CLASP web app with an operator-managed local project folder.
+2.3.) This project must remain handoff-safe for future agents.
+
+3.) PROJECT PATH
+3.1.) /Users/computerservices/PROJECTS/AMITY_TABOO
+
+4.) GMR PROJECT
+4.1.) /Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET
+
+5.) PROJECT STRUCTURE
+5.1.) Required internal folders:
+5.1.1.) _Incoming
+5.1.2.) _Working
+5.1.3.) _Output
+5.1.4.) _Archives
+5.1.5.) _Resources
+5.2.) Active root documents should be:
+5.2.1.) 00_PROJECT_PLAN.txt
+5.2.2.) Current PROJECT_REPORT_<date_time>.txt
+5.3.) Existing CLASP/runtime files remain in the project root until the project structure is authenticated and understood.
+5.4.) Do not delete or relocate any .json, .gs, .js, .html, or .xlsx files until CLASP authentication and project-state verification are complete.
+
+
+ROUTING
+
+PROJECT ROOT
+/Users/computerservices/PROJECTS/AMITY_TABOO/_ARCHIVE/AMITY_TABOO_PRE_REBUILD_2026-03-12_211610
+
+PROJECT INBOX
+/Users/computerservices/PROJECTS/AMITY_TABOO/_ARCHIVE/AMITY_TABOO_PRE_REBUILD_2026-03-12_211610/_Incoming
+
+GMR FOLDER
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET
+
+GMR PROJECT PLAN
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET/00_PROJECT_PLAN.txt
+
+GMR INBOX
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET/_Incoming
+

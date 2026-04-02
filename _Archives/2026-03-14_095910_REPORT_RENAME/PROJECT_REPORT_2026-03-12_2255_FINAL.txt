@@ -1,0 +1,126 @@
+=======================================================
+AMITY TABOO PROJECT REPORT — 2026-03-12 22:55 CT
+=======================================================
+
+1. PROJECT STATUS AT CLOSE
+
+A. Project is production-usable.
+
+B. No known blocking defects at close.
+
+C. Canonical live deployment is active and public.
+
+D. Public access works without Google login through the deployed /exec web app URL.
+
+2. CANONICAL PRODUCTION IDENTITY
+
+A. Canonical local folder:
+   /Users/computerservices/PROJECTS/AMITY_TABOO
+
+B. Canonical deployment description:
+   AMITY TABOO - PUBLIC LIVE
+
+C. Canonical deployed version:
+   284
+
+D. Canonical public URL:
+   Existing /exec URL currently in use and verified public.
+
+3. DEPLOYMENT RULE GOING FORWARD
+
+A. Do not create a new public deployment unless intentionally replacing production.
+
+B. Update only the canonical deployment labeled:
+   AMITY TABOO - PUBLIC LIVE
+
+C. /dev links are testing only.
+
+D. Editor URLs and deployment-management URLs are never public player links.
+
+4. REQUIRED FUTURE UPDATE WORKFLOW
+
+A. clasp pull --force
+
+B. Edit local files in:
+   /Users/computerservices/PROJECTS/AMITY_TABOO
+
+C. clasp push --force
+
+D. clasp version "brief note"
+
+E. Open Apps Script deployment manager.
+
+F. Edit canonical deployment only.
+
+G. Point canonical deployment to newest version.
+
+5. UI STATE AT CLOSE
+
+A. Card label uses:
+   Card #
+
+B. Deck counter uses:
+   Played: current card number of total
+
+C. Target word enlarged for low-vision readability.
+
+D. Target word displayed as green text.
+
+E. Taboo words enlarged substantially.
+
+F. Layout optimized for phone readability.
+
+6. ACCESSIBILITY STATE AT CLOSE
+
+A. Screen-reader live announcement implemented.
+
+B. Spoken format:
+   Target word: <word>. Taboo words: <list>.
+
+C. Status bar hidden from screen readers.
+
+D. Duplicate spoken reading suppressed from visible card text.
+
+E. Intended for blind-player usability with VoiceOver / similar readers.
+
+7. KNOWN INTENTIONAL DESIGN DECISIONS
+
+A. Target word no longer uses black text inside green block.
+
+B. Green target text chosen for readability balance.
+
+C. Status bar remains visible for sighted players but silent for screen readers.
+
+D. Card number reflects source row/card ID.
+
+8. KNOWN ACCEPTED LIMITATIONS
+
+A. Public Apps Script URL remains long.
+
+B. URL shortening deferred.
+
+C. Google Sites unsuitable for true automatic redirect.
+
+D. Registrar/domain redirect remains optional future enhancement.
+
+9. TESTING STATUS
+
+A. Local browser testing completed.
+
+B. Public deployment configured:
+   Execute as Me
+   Anyone
+
+C. Outside-phone public opening verified.
+
+10. REOPEN CONDITIONS
+
+A. Reopen only if live players report:
+   1. readability issue
+   2. screen-reader pacing issue
+   3. deck navigation confusion
+   4. mobile browser defect
+
+B. Otherwise treat current state as stable production.
+
+=======================================================

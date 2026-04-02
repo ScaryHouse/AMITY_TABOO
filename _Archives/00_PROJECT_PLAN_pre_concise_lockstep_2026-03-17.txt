@@ -1,0 +1,114 @@
+PROJECT
+AMITY_TABOO
+
+REQUIRED CONVERSATION TITLE
+
+AMITY_TABOO
+
+If already used:
+AMITY_TABOO 2
+AMITY_TABOO 3
+
+WHAT THIS PROJECT IS
+
+This project is a governed project within the project system rooted at:
+
+~/PROJECTS
+
+It is governed by the live Global Master Ruleset located at:
+
+~/PROJECTS/GLOBAL_MASTER_RULESET/GLOBAL_MASTER_RULESET.txt
+
+
+PURPOSE
+
+This project exists to maintain the AMITY_TABOO project and keep it handoff-safe for future agents.
+
+Project-specific scope, state, and operating details should be maintained in this file as the project evolves.
+
+
+PROJECT MODEL
+
+This project follows the normal governed-project root model:
+
+00_PROJECT_PLAN.txt
+PROJECT_REPORT.txt
+
+And these canonical folders:
+
+_Incoming
+_Working
+_Output
+_Archives
+_Resources
+
+Small events, partial work, failures, discoveries, and next-step state belong in PROJECT_REPORT.txt.
+
+
+CURRENT STATE
+
+Project structure has been normalized under the governed project model.
+
+Legacy planning material and superseded handoff fragments belong in _Archives.
+
+The live root should remain limited to the current plan and the current live project report.
+
+
+HOW AGENTS SHOULD OPERATE
+
+When beginning work on this project:
+
+1. Use this exact conversation title:
+   AMITY_TABOO
+
+2. Read this file:
+   00_PROJECT_PLAN.txt
+
+3. Read the live GMR:
+   ~/PROJECTS/GLOBAL_MASTER_RULESET/GLOBAL_MASTER_RULESET.txt
+
+4. Read this project's live continuity file:
+   PROJECT_REPORT.txt
+
+5. Then inspect the relevant working files, folders, scripts, or artifacts for the task at hand.
+
+Archived material in _Archives is historical support and should not be treated as the first-read continuity spine unless reconstruction is required.
+
+
+IF THIS PROJECT BECOMES CLASP-MANAGED
+
+1. Canonical local Apps Script source path:
+   /Users/computerservices/PROJECTS/AMITY_TABOO/_Working/clasp
+
+2. Run CLASP from:
+   /Users/computerservices/PROJECTS/AMITY_TABOO/_Working/clasp
+
+3. Required contents:
+   A. .clasp.json
+   B. appsscript.json
+   C. all .gs files
+   D. all .html files
+   E. any local source files used by clasp
+
+4. Keep project root clean unless a project-specific exception is explicitly documented in this file.
+
+5. If root-based CLASP layout is temporarily required, document the reason and intended normalization path here.
+
+
+PROJECT ROOT
+/Users/computerservices/PROJECTS/AMITY_TABOO
+
+PROJECT INBOX
+/Users/computerservices/PROJECTS/AMITY_TABOO/_Incoming
+
+GMR FOLDER
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET
+
+GMR PROJECT PLAN
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET/00_PROJECT_PLAN.txt
+
+GMR INBOX
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET/_Incoming
+
+GMR PATH
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET/GLOBAL_MASTER_RULESET.txt

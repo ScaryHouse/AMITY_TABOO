@@ -1,0 +1,161 @@
+=======================================================
+AMITY_TABOO PROJECT REPORT - 2026-03-22 14:39:20
+=======================================================
+
+1. PROJECT ROOT
+
+/Users/computerservices/PROJECTS/AMITY_TABOO
+
+2. CLASP WORKING DIRECTORY
+
+/Users/computerservices/PROJECTS/AMITY_TABOO/_Working/clasp
+
+3. CURRENT VISIBLE BUILD TAG
+
+113:    .build-tag{
+490:            <div class="build-tag">v.434</div>
+
+4. CURRENT HEADER ART URL
+
+462:              src="https://scaryhouse.github.io/scaryhouse-assets/amity-taboo-header.png?v=425"
+486:              src="https://scaryhouse.github.io/scaryhouse-assets/amity-taboo-header.png?v=425"
+
+5. CURRENT DEPLOY TARGET
+
+{
+  "scriptId": "1_sJkpFad90NXm13zvomLpP3vgaXZWWiCbI7NiPhx2rj5JAgPCBm_3tMC",
+  "scriptExtensions": [
+    ".gs"
+  ],
+  "htmlExtensions": [
+    ".html"
+  ],
+  "jsonExtensions": [
+    ".json"
+  ],
+  "filePushOrder": [],
+  "skipSubdirectories": true
+}
+
+6. CLASP STATUS
+
+Tracked files:
+└─ appsscript.json
+└─ Code.gs
+└─ phone.html
+Untracked files:
+└─ .clasp.json
+└─ .claspignore
+└─ icon-180.png
+└─ icon-192.png
+└─ icon-512.png
+└─ phone-old-20260321-105050.html
+└─ phone.html.bak_20260318_201532
+└─ phone.html.bak_20260319_185905
+└─ phone.html.bak_20260319_190446
+└─ phone.html.bak_20260319_190747
+└─ phone.html.bak_20260320_204331
+└─ phone.html.bak_20260320_211552
+└─ phone.html.bak_20260320_212526
+└─ phone.html.bak_20260320_212635
+└─ phone.html.bak_20260320_212727
+└─ phone.html.bak_20260320_212916
+└─ phone.html.bak_20260320_213711
+└─ phone.html.bak_20260320_214148
+└─ phone.html.bak_20260320_214350
+└─ phone.html.bak_20260320_215220
+└─ phone.html.bak_20260320_215722
+└─ phone.html.bak_20260320_220245
+└─ phone.html.bak_20260320_220725
+└─ phone.html.bak_20260320_221035
+└─ phone.html.bak_20260320_221420
+└─ phone.html.bak_20260320_221708
+└─ phone.html.bak_20260320_222107
+└─ phone.html.bak_20260320_223031
+└─ phone.html.bak_20260320_223319
+└─ phone.html.bak_20260320_224715
+└─ phone.html.bak_20260320_230109
+└─ phone.html.bak_20260320_230231
+└─ phone.html.bak_20260320_230415
+└─ phone.html.bak_20260320_230932
+└─ phone.html.bak_20260320_231412
+└─ phone.html.bak_20260320_232244
+└─ phone.html.bak_20260320_232555
+└─ phone.html.bak_20260320_233502
+└─ phone.html.bak_20260320_234127
+└─ phone.html.bak_20260320_234527
+└─ phone.html.bak_20260320_234852
+└─ phone.html.bak_20260320_235410
+└─ phone.html.bak_20260321_000105
+└─ phone.html.bak_20260321_000836
+└─ phone.html.bak_20260321_001646
+└─ phone.html.bak_20260321_002233
+└─ phone.html.bak_20260321_003119
+└─ phone.html.bak_20260321_003431
+└─ phone.html.bak_20260321_003712
+└─ phone.html.bak_20260321_004433
+└─ phone.html.bak_20260321_004510
+└─ phone.html.bak_20260321_010346
+└─ phone.html.bak_20260321_011104
+└─ phone.html.bak_20260321_072606
+└─ phone.html.bak_20260321_074308
+└─ phone.html.bak_20260321_074823
+└─ phone.html.bak_20260321_075532
+└─ phone.html.bak_20260321_075717
+└─ phone.html.bak_20260321_080251
+└─ phone.html.bak_20260321_081112
+└─ phone.html.bak_20260321_082318
+└─ phone.html.bak_20260321_084423
+└─ phone.html.bak_20260321_084819
+└─ phone.html.bak_20260321_084944
+└─ phone.html.bak_20260321_085044
+└─ phone.html.bak_20260321_085422
+└─ phone.html.bak_20260321_090400
+
+7. KEY SOURCE FILES
+
+-rw-r--r--  1 computerservices  staff    323 Mar 12 22:11 appsscript.json
+-rw-r--r--  1 computerservices  staff   7695 Mar 12 22:11 Code.gs
+-rw-r--r--  1 computerservices  staff  34464 Mar 22 14:18 phone.html
+
+8. BACKUP / OLD PHONE FILES
+
+phone-old-20260321-105050.html
+
+9. PROJECT ROOT FILES
+
+total 64
+drwxr-xr-x  18 computerservices  staff   576 Mar 18 21:40 _Archives
+drwxr-xr-x   2 computerservices  staff    64 Mar 18 21:32 _Incoming
+drwxr-xr-x   2 computerservices  staff    64 Mar 14 09:14 _Output
+drwxr-xr-x   2 computerservices  staff    64 Mar 14 09:14 _Resources
+drwxr-xr-x   5 computerservices  staff   160 Mar 19 19:35 _Working
+drwxr-xr-x  12 computerservices  staff   384 Mar 22 14:39 .
+drwxr-xr-x  36 computerservices  staff  1152 Mar 20 20:04 ..
+-rw-r--r--@  1 computerservices  staff  6148 Mar 19 19:36 .DS_Store
+-rw-r--r--   1 computerservices  staff  3795 Mar 22 14:39 00_PROJECT_REPORT_2026-03-22_143920.txt
+-rw-r--r--@  1 computerservices  staff  1490 Mar 20 07:26 00_START_HERE.txt
+-rw-------@  1 computerservices  staff  5625 Mar 18 21:40 PROJECT_PLAN.txt
+-rw-------@  1 computerservices  staff  6071 Mar 20 17:23 PROJECT_REPORT.txt
+
+10. CURRENT KNOWN STATE NOTES
+
+
+A. Visible version in phone.html is whatever the build-tag line reports above.
+
+B. Latest successful deployment number must be taken from the most recent terminal output in this chat unless re-deployed later.
+
+C. Recent issues under active work:
+   1. No audible generated shuffle/deal sounds.
+   2. First swipe preview still incorrect/blank before release.
+   3. Install overlay exists for non-standalone launches.
+
+D. User requirement reminders:
+   1. Always bump visible v.### on every deploy.
+   2. Always state expected visible version after deploy.
+   3. Do not judge a change until user confirms visible version.
+
+11. NEXT LIKELY TARGET FILE
+
+/Users/computerservices/PROJECTS/AMITY_TABOO/_Working/clasp/phone.html
+

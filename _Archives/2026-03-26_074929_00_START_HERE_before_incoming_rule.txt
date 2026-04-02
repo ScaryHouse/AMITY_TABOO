@@ -1,0 +1,68 @@
+STOP — REQUIRED STARTUP CONTRACT
+
+Authority: GLOBAL_MASTER_RULESET.txt section 2.5 controls startup truth and tool discipline.
+
+1. Read this file completely.
+
+2. Read PROJECT_PLAN.txt in this project.
+
+3. Read the required live authority file for this project:
+   A. Normal projects: PROJECT_REPORT.txt, then the live GMR at:
+      ~/PROJECTS/GLOBAL_MASTER_RULESET/GLOBAL_MASTER_RULESET.txt
+      Do not treat absence of GLOBAL_MASTER_RULESET.txt in this project root as a blocker.
+   B. GMR project: GLOBAL_MASTER_RULESET.txt.
+
+4. Startup is not complete when instructions are merely understood.
+   Startup is complete only after the assistant has stated:
+   A. current source actually being inspected
+   B. exact startup files actually read
+   C. blocker if any required source is missing or unavailable
+
+5. Do not reply with READY, OK, DONE, or any other single-word acknowledgment during startup.
+
+6. Preferred first reply format:
+   Startup understood. Current source is ____.
+   Files read: ____.
+   Blocker: ____.
+   If there is no blocker, say: Blocker: none.
+
+7. Wait for the user's first instruction.
+
+LOCKSTEP MODE
+
+Unless the user explicitly directs otherwise, work in lockstep.
+
+Each cycle follows this order:
+
+GOAL:
+Concise statement of the next task.
+
+ACTION:
+Concise statement of the immediate next action.
+
+Then one exchange only:
+
+A. Agent gives one immediate step, command stack, file read, click path, or focused instruction.
+
+B. Agent stops and waits for returned evidence.
+
+C. User returns output, result, screenshot, or confirmation.
+
+RESULT:
+Concise statement of what the returned evidence shows, including success, failure, discoveries, and what informs the next GOAL.
+
+WORKING RULES
+
+1. Do not begin task work before startup reading is complete.
+
+2. Do not combine multiple future branches before current evidence returns.
+
+3. RESULT exists only after evidence exists.
+
+4. Continue one observable step at a time unless the user requests broader execution.
+
+PURPOSE
+
+This keeps work observable, reduces assumption drift, and preserves handoff continuity.
+
+The project folder remains the primary source of truth.

@@ -1,0 +1,61 @@
+AMITY TABOO — UI-FIRST PROJECT PLAN (PATH B)
+
+PHASE 1 — UI + GAMEPLAY (DO FIRST)
+
+1. DEFINE CORE GAME BEHAVIOR
+A) What happens when BEGIN PLAY is pressed.
+B) How a 100-card deck is created (shuffle, optional seed).
+C) How cards advance (tap, button, or timer).
+D) End-of-deck behavior at Card 100.
+
+2. UI STATE MODEL
+State A: Ready to play.
+State B: Playing — card N of 100.
+State C: Finished.
+For each state, specify:
+- Visible text.
+- Enabled buttons.
+- Screen-reader focus target.
+
+3. IMPLEMENT GAMEPLAY (STILL HOSTED BY APPS SCRIPT)
+A) Generate deck on BEGIN PLAY.
+B) Render current card in the white field.
+C) Add Next Card logic.
+D) Test with keyboard, touch, and a screen reader.
+
+4. MILESTONE LOCK
+Create a ZIP snapshot and versioned deployment when gameplay feels correct.
+
+
+PHASE 2 — ARCHITECTURE SPLIT (DO LATER)
+
+5. CREATE SEPARATE UI PROJECT
+Local folder example:
+Documents/Amity-Taboo-UI/
+- phone.html
+- app.js
+- assets (if any)
+
+6. REFACTOR APPS SCRIPT TO API-ONLY
+Expose JSON endpoints such as:
+- ?action=newDeck
+- ?action=nextCard&id=...
+
+7. CONNECT EXTERNAL UI TO APPS SCRIPT
+Replace google.script.run with fetch() calls to the Apps Script URL.
+
+8. HOST THE UI
+Choose one:
+- Cloudflare Pages
+- Netlify
+- GitHub Pages
+
+9. OPTIONAL: MAKE IT A PWA
+Add manifest.json and a service worker.
+
+
+RATIONALE
+
+- Finish design and behavior first.
+- Avoid solving gameplay and hosting/CORS simultaneously.
+- Split architecture only after the game works well.

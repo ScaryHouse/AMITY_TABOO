@@ -1,0 +1,26 @@
+=======================================================
+AMITY_TABOO NEXT AGENT NOTE - 2026-03-22
+=======================================================
+
+1. CURRENT LIVE STATE
+
+A. Visible build in phone.html: v.434
+B. Last known deployment: @440
+C. Canonical working file:
+   /Users/computerservices/PROJECTS/AMITY_TABOO/_Working/clasp/phone.html
+
+2. FIRST TARGET
+
+A. Fix first swipe preview:
+   move_() and finish_() interaction still leaves under-card blank until release.
+
+3. SECOND TARGET
+
+A. Fix generated audio:
+   AudioContext exists, but synthesized shuffle/deal sounds are inaudible on device.
+
+4. DO NOT FORGET
+
+A. Increment visible v.### every deploy.
+B. State expected visible version before testing.
+C. Wait for user feedback before judging result.

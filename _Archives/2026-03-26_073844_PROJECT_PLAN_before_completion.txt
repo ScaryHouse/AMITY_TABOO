@@ -1,0 +1,244 @@
+PROJECT
+AMITY_TABOO
+
+WHAT THIS PROJECT IS
+
+Amity Taboo is an accessible Taboo-style prompt web app.
+
+It is intended to deliver a simple, single-screen card experience with no teams, no timers, and no scorekeeping.
+
+The current implementation is a Google Apps Script web app with HTML UI.
+
+
+PROJECT PURPOSE
+
+This project exists to finish and maintain the Amity Taboo game so it can be used reliably by real players.
+
+The priority is a working, accessible gameplay experience first.
+
+Architecture split, external hosting, and PWA work are later-path improvements, not the first finish line.
+
+
+CURRENT PRIORITY
+
+Finish the hosted Apps Script version so gameplay feels correct before tomorrow afternoon.
+
+That means the immediate focus is the playable phone UI and card-flow behavior, not larger platform refactoring.
+
+
+PRODUCT BEHAVIOR
+
+The app should present a clear, accessible, single-screen prompt experience.
+
+Core characteristics:
+
+1. Browser-based web app.
+
+2. Single-screen card UI.
+
+3. No teams.
+
+4. No timers.
+
+5. No scorekeeping.
+
+6. Card content should fit the viewport without requiring scrolling when possible.
+
+
+GAMEPLAY MODEL
+
+The gameplay path described in the recovered planning docs is:
+
+1. User starts in a ready state.
+
+2. User presses BEGIN PLAY.
+
+3. A 100-card deck is generated.
+
+4. The current card is rendered in the white field.
+
+5. User advances through cards one at a time.
+
+6. End-of-deck behavior must be explicit at Card 100.
+
+Recovered planning notes identify these required state models:
+
+A. Ready to play
+B. Playing — card N of 100
+C. Finished
+
+For each state, the UI should define:
+1. visible text
+2. enabled buttons
+3. screen-reader focus target
+
+
+UI / ACCESSIBILITY PRINCIPLES
+
+Recovered project notes emphasize a UI-first approach.
+
+Important behavior goals:
+
+1. Large, clear visual targets.
+
+2. Keyboard, touch, and screen-reader compatibility.
+
+3. High-clarity focus behavior.
+
+4. Avoid solving gameplay and hosting/CORS at the same time.
+
+5. Finish correct interaction design before larger architecture changes.
+
+Recovered notes also mention later ideas such as:
+A. Add to Home Screen instructions
+B. large logo / visual cue
+C. optional PWA work
+
+These are secondary to completing gameplay.
+
+
+CURRENT ARCHITECTURE
+
+The current project is CLASP-managed locally and served from Google Apps Script.
+
+Live local source location:
+ /Users/computerservices/PROJECTS/AMITY_TABOO/_Working/clasp
+
+Current local source files:
+1. .clasp.json
+2. appsscript.json
+3. Code.gs
+4. phone.html
+
+Current implementation model:
+1. Apps Script hosts the app.
+2. HTML UI is served from Apps Script.
+3. The current playable front end is in phone.html.
+4. Current server logic is in Code.gs.
+
+Recovered older documents reference filenames such as:
+A. AmityTaboo.js
+B. app.html
+
+Those appear to be older naming/state references and should be treated as historical unless verified back into current live code.
+
+
+DATA / PLUMBING
+
+Recovered project notes identify an authoritative container spreadsheet:
+
+Name:
+Amity Taboo
+
+Recovered URL:
+https://docs.google.com/spreadsheets/d/1dvWrl4YZ9wb8NjA9H0b7vWwDmv9Old_JYS1fz_Uxu48/edit?usp=sharing
+
+Recovered sheet structure:
+
+A. ADMIN
+Expected values include:
+1. TOTAL CARDS
+2. DECK SIZE
+3. EASY %
+4. MEDIUM %
+5. HARD %
+6. SHUFFLE SEED
+
+B. CARDS
+Expected prompt columns include:
+1. DIFFICULTY
+2. TARGET
+3. TABOO1
+4. TABOO2
+5. TABOO3
+6. TABOO4
+7. TABOO5
+8. SOURCE (optional)
+
+C. Hidden system sheets
+1. _DECK_INDEX
+2. _DECK_CARDS
+
+These hidden sheets are script-managed and should not be edited manually.
+
+
+ARCHITECTURE PATH
+
+Recovered planning docs describe the intended sequencing:
+
+PHASE 1 — DO FIRST
+1. Define core game behavior.
+2. Implement gameplay in the Apps Script-hosted version.
+3. Test keyboard, touch, and screen reader behavior.
+4. Lock a milestone when gameplay feels correct.
+
+PHASE 2 — DO LATER
+1. Split to separate UI project if still desired.
+2. Refactor Apps Script toward API-only endpoints.
+3. Replace google.script.run with fetch()-based calls if architecture split happens.
+4. Consider external hosting only after gameplay is stable.
+
+PHASE 3 — OPTIONAL LATER
+1. Add to Home Screen instructions.
+2. larger visual branding cue
+3. manifest / service worker / PWA work
+
+
+KNOWN PROJECT CONTEXT
+
+Recovered planning/history indicates:
+
+1. This project has gone through rebuild and migration phases.
+
+2. There are multiple archived handoff and snapshot documents under:
+   _Archives/AMITY_TABOO_PRE_REBUILD_2026-03-12_211610/
+
+3. The current project root has been intentionally simplified to:
+   A. 00_START_HERE.txt
+   B. PROJECT_PLAN.txt
+   C. PROJECT_REPORT.txt
+
+4. The project plan should now remain project-specific and should not be repopulated with startup-gate content.
+
+
+IMMEDIATE NEXT WORK
+
+Highest-priority next work should be:
+
+1. Verify the current playable behavior in phone.html and Code.gs.
+
+2. Confirm what BEGIN PLAY does now.
+
+3. Confirm how deck generation currently works.
+
+4. Confirm how card advancement currently works.
+
+5. Confirm end-of-deck behavior.
+
+6. Confirm accessibility behavior:
+   A. focus
+   B. announcements
+   C. keyboard operation
+   D. touch operation
+
+7. Make only the changes required to get the hosted game behaving correctly for the near-term deadline.
+
+
+RULE FOR FUTURE MAINTENANCE
+
+Keep this file focused on real project intelligence:
+
+1. product purpose
+2. architecture
+3. behavior
+4. data plumbing
+5. current state
+6. next priorities
+
+Do not turn this file back into a startup-contract wrapper.
+
+Startup behavior belongs in:
+00_START_HERE.txt
+
+Chronological continuity belongs in:
+PROJECT_REPORT.txt

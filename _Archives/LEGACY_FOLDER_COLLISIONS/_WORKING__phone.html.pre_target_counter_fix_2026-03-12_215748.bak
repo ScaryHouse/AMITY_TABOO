@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AMITY TABOO</title>
+  <style>
+    :root{
+      --bg:#000;
+      --pad:20px;             /* outer padding on all sides */
+      --gap:20px;             /* card-to-buttonbar gap */
+
+      --card-radius:38px;
+      --card-bg:#fff;
+      --card-header-bg:#6f8f2a;
+
+      /* typography scales with viewport width (≈ card width) */
+      /* DOUBLED TYPE FOR LOW VISION */
+      --fs-amity: clamp(36px, 9.6vw, 68px);
+  --fs-games: clamp(18px, 3.8vw, 34px);
+      --fs-taboo: clamp(58px, 15.2vw, 150px);
+      --fs-tagline: clamp(32px, 7.2vw, 52px);
+      --fs-body: clamp(40px, 8.8vw, 68px);
+      --fs-just: clamp(46px, 10.4vw, 78px);
+      --fs-ready: clamp(32px, 7.2vw, 52px);
+      --fs-btn: clamp(48px, 13.2vw, 88px);
+      --fs-status: clamp(28px, 6.4vw, 40px);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{
+      height:100%;
+      margin:0;
+      background:var(--bg);
+      color:#111;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+    }
+
+    /* Keep the 20px padding, but also respect iOS safe areas. */
+    .screen{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      padding:
+        calc(var(--pad) + env(safe-area-inset-top))
+        calc(var(--pad) + env(safe-area-inset-right))
+        calc(var(--pad) + env(safe-area-inset-bottom))
+        calc(var(--pad) + env(safe-area-inset-left));
+      gap:var(--gap);
+    }
+
+    .card{
+      width:100%;
+      aspect-ratio:5 / 7;
+      background:var(--card-bg);
+      border-radius:var(--card-radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Green field = ~20% of card height */
+    .header{
+      flex:0 0 20%;
+      background:var(--card-header-bg);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding:10px 12px;
+    }
+
+    /* Constrain AMITY GAMES + underline to the same width as AMITY TABOO */
+    .title-block{
+      width:fit-content;
+      max-width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .amity-games{
+  width:auto;
+  align-self:stretch;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  font-weight:800;
+  letter-spacing:0.42em;
+  font-size:var(--fs-games);
+  color:#fff;
+  line-height:1;
+  position:relative;
+  padding:0;
+}
+
+.amity-games .ag-left,
+.amity-games .ag-right{
+  display:inline-block;
+  white-space:nowrap;
+}
+
+.amity-games::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  height:4px;
+  background:#fff;
+  bottom:0;
+}
+
+.amity-taboo{
+      font-size:var(--fs-taboo);
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-weight:900;
+      color:#7b1f1f;
+      letter-spacing:0.02em;
+      line-height:1;
+      margin:0;
+      text-transform:uppercase;
+      text-align:center;
+      white-space:nowrap;
+    }
+
+    .content{
+      flex:1 1 auto;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:center;
+      padding:18px 18px 18px;
+      text-align:center;
+    }
+
+    .tagline{
+      font-size:var(--fs-tagline);
+      font-style:italic;
+      font-weight:700;
+      margin:10px 0 calc(var(--fs-body) * 1.6) 0;
+      opacity:0.9;
+    }
+
+    .rules{
+      font-size:var(--fs-body);
+      font-weight:700;
+      line-height:1.25;
+      margin:0 0 14px 0;
+    }
+
+    .just { font-size: var(--fs-body); font-weight: 700; text-transform: uppercase; margin:0 0 calc(var(--fs-ready) * 1.1) 0;}
+
+    .ready{
+      font-size:var(--fs-ready);
+      font-weight:650;
+      margin:0 0 12px 0;
+    }
+
+
+    #deck-status{
+      text-align:left;
+      width:78%;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .playCard{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .playGreen{
+      flex:0 0 20%;
+      background:var(--card-header-bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+
+    .playWhite{
+      flex:1 1 auto;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      padding:24px 18px;
+    }
+
+    .playTarget{
+      font-size:56px;
+      line-height:1.02;
+      font-weight:800;
+      color:#111;
+      text-align:center;
+      letter-spacing:0.5px;
+      text-transform:uppercase;
+    }
+
+    .playTaboo{
+      font-size:40px;
+      line-height:1.1;
+      font-weight:800;
+      color:#7b1f1f;
+      text-align:center;
+      text-transform:uppercase;
+      letter-spacing:0.3px;
+      white-space:pre-line;
+    }
+
+
+    .begin{
+      font-size:var(--fs-btn);
+      font-weight:900;
+      padding:14px 26px;
+      border:4px solid #111;
+      border-radius:16px;
+      background:#fff;
+      opacity:1;
+      color:#111;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      user-select:none;
+    }
+
+    .begin.disabled{
+      opacity:0.35;
+      pointer-events:none;
+      color:#111;
+    }
+
+    .begin.enabled{
+      opacity:1;
+      pointer-events:auto;
+      color:#000;
+    }
+
+    .btn.disabled{
+      opacity:0.35;
+      pointer-events:none;
+    }
+
+    .btn.enabled{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .loading-letters{
+      display:inline-block;
+      white-space:nowrap;
+      min-width:18ch;
+      text-align:left;
+    }
+
+    .loading-letters span{
+      display:inline-block;
+      animation: loadingPulse 1.2s infinite;
+    }
+
+    .loading-letters span:nth-child(1){ animation-delay:0ms; }
+    .loading-letters span:nth-child(2){ animation-delay:60ms; }
+    .loading-letters span:nth-child(3){ animation-delay:120ms; }
+    .loading-letters span:nth-child(4){ animation-delay:180ms; }
+    .loading-letters span:nth-child(5){ animation-delay:240ms; }
+    .loading-letters span:nth-child(6){ animation-delay:300ms; }
+    .loading-letters span:nth-child(7){ animation-delay:360ms; }
+    .loading-letters span:nth-child(8){ animation-delay:420ms; }
+    .loading-letters span:nth-child(9){ animation-delay:480ms; }
+    .loading-letters span:nth-child(10){ animation-delay:540ms; }
+    .loading-letters span:nth-child(11){ animation-delay:600ms; }
+
+    @keyframes loadingPulse{
+      0%{ transform:translateY(0); opacity:0.45; }
+      40%{ transform:translateY(-2px); opacity:1; }
+      100%{ transform:translateY(0); opacity:0.45; }
+    }
+
+
+    .buttonbar{
+      display:flex;
+      gap:16px;
+      align-items:stretch;
+      width:100%;
+      flex:0 0 auto;
+      height:min(clamp(84px, 16vh, 260px), calc((100% - 16px)/2));
+    }
+
+    .btn{
+      flex:1 1 0;
+      background:var(--card-header-bg);
+      border:4px solid #222;
+      border-radius:var(--btn-radius,18px);
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      font-size:var(--fs-btn);
+      font-weight:900;
+      text-transform:uppercase;
+      text-align:center;
+      color:#000;
+      user-select:none;
+      line-height:1;
+    }
+
+    .statusbar{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      font-size:var(--fs-status);
+      color:#fff;
+      padding:10px 0 0;
+    }
+
+    .status-mid{
+      width:calc(var(--fs-status) * 1.4);
+      height:calc(var(--fs-status) * 1.4);
+      border:3px solid rgba(255,255,255,0.65);
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:var(--fs-status);
+      font-weight:800;
+      opacity:0.9;
+      flex:0 0 auto;
+    }
+
+    /* Keep the card from getting absurdly tall on short screens */
+    @media (max-height: 700px){
+      :root{ --gap:14px; }
+      .content{ padding:18px 14px 14px; }
+      .begin{ padding:12px 22px; }
+      .btn{ padding:14px 8px; }
+    }
+  .just-prompts{font-size: var(--fs-body); font-weight: 700;}
+.taboo-words-label{display:none;}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card">
+      <div class="header">
+        <div class="title-block">
+          <div class="amity-games" aria-label="Amity Games"><span class="ag-left">AMITY</span><span class="ag-right">GAMES</span></div>
+          <div class="amity-taboo">AMITY TABOO</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="tagline">(a friendly game of taboo)</div>
+        <div class="rules">No teams.<br>No timers.<br>No scores.</div>
+        <div class="just"><span class="just-prompts">JUST PROMPTS.</span></div>
+        <div class="ready" id="deck-status">Your deck is ready.</div>
+        <div class="begin disabled" id="btn-begin" role="button" tabindex="0" aria-disabled="true">BEGIN PLAY</div>
+      </div>
+    </div>
+
+    <div class="buttonbar">
+      <div class="btn disabled" id="btn-back" role="button" tabindex="0" aria-disabled="true">◀ BACK</div>
+      <div class="btn disabled" id="btn-next" role="button" tabindex="0" aria-disabled="true">NEXT ▶</div>
+    </div>
+
+    <div class="statusbar">
+      <div class="status-left" id="status-deck">Deck: 0 of 0</div>
+      <div class="status-mid">i</div>
+      <div class="status-right" id="status-cardid">Card ID: #0000</div>
+    
+
+  <div id="sr-live" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+  </div>
+</div>
+  </div>
+
+<script>
+  (function(){
+    function _fitButtonBar(){
+      const screen = document.querySelector('.screen');
+      const card = document.querySelector('.card');
+      const bar = document.querySelector('.buttonbar');
+      const status = document.querySelector('.statusbar');
+      if(!screen || !card || !bar || !status) return;
+
+      // Reset to natural sizing so measurements are accurate
+      bar.style.height = '';
+
+      const gap = parseFloat(getComputedStyle(screen).gap || '0') || 0;
+      const total = screen.clientHeight;
+      const used = card.offsetHeight + status.offsetHeight + (2 * gap);
+      const free = Math.max(0, total - used);
+
+      const barGap = parseFloat(getComputedStyle(bar).gap || '0') || 0;
+      const btnWidth = Math.max(0, (bar.clientWidth - barGap) / 2);
+
+      const minH = 72; // avoid disappearing controls
+      const targetH = Math.max(minH, Math.min(free, btnWidth));
+
+      bar.style.height = Math.floor(targetH) + 'px';
+
+      // Keep corner radius proportional to height
+      const r = Math.max(14, Math.min(22, targetH * 0.28));
+      document.documentElement.style.setProperty('--btn-radius', Math.floor(r) + 'px');
+    }
+
+    window.addEventListener('resize', _fitButtonBar, {passive:true});
+    window.addEventListener('orientationchange', _fitButtonBar, {passive:true});
+    window.addEventListener('load', _fitButtonBar, {passive:true});
+    // After fonts/layout settle
+    setTimeout(_fitButtonBar, 0);
+    setTimeout(_fitButtonBar, 250);
+
+    // ==================================================
+    // GAMEPLAY / STATE (Milestone 1)
+    // ==================================================
+
+    const LS_KEY = 'amity_taboo_deck_v1';
+
+    const elDeckStatus = document.getElementById('deck-status');
+    const elBegin = document.getElementById('btn-begin');
+    const elBack = document.getElementById('btn-back');
+    const elNext = document.getElementById('btn-next');
+    const elStatusDeck = document.getElementById('status-deck');
+    const elStatusCard = document.getElementById('status-cardid');
+    const elSr = document.getElementById('sr-live');
+
+
+
+
+
+
+
+
+
+    function setBackEnabled(on){
+      setEnabled(elBack, !!on);
+    }
+
+    function setNextEnabled(on){
+      setEnabled(elNext, !!on);
+    }
+
+    // Back-compat shim. Older revisions called setNavEnabled(true/false).
+    // Newer flow can call setNavEnabled(backOn, nextOn).
+    function setNavEnabled(a, b){
+      if (arguments.length === 2){
+        setBackEnabled(a);
+        setNextEnabled(b);
+        return;
+      }
+      if (typeof a === 'boolean'){
+        setBackEnabled(a);
+        setNextEnabled(a);
+      }
+    }
+
+
+
+
+
+
+
+
+
+    function srSay(msg){
+      if(!elSr) return;
+      elSr.textContent = '';
+      // Small delay improves reliability in some SR/browser combos
+      setTimeout(function(){ elSr.textContent = msg; }, 30);
+    }
+
+    function setEnabled(el, on){
+      if(!el) return;
+      if(on){
+        el.classList.remove('disabled');
+        el.classList.add('enabled');
+        el.setAttribute('aria-disabled','false');
+      }else{
+        el.classList.add('disabled');
+        el.classList.remove('enabled');
+        el.setAttribute('aria-disabled','true');
+      }
+    }
+
+    function setInstructionLoading(){
+      // Visual progressive Loading... + disable controls
+      if(elDeckStatus){
+        // single span we can update
+        elDeckStatus.innerHTML = '<span class="loading-letters" aria-hidden="true"></span>';
+      }
+      setEnabled(elBegin, false);
+      setEnabled(elNext, false);
+      setEnabled(elBack, false);
+
+      const el = elDeckStatus ? elDeckStatus.querySelector('.loading-letters') : null;
+      if(!el) return;
+
+      const letters = "Loading...";
+      let i = 0;
+      el.textContent = "";
+
+      if(window._loadingTimer) clearInterval(window._loadingTimer);
+      window._loadingTimer = setInterval(function(){
+        if(i < letters.length){
+          el.textContent = letters.slice(0, i+1);
+          i++;
+        }else{
+          el.textContent = "";
+          i = 0;
+        }
+      }, 250);
+    }
+
+    function setInstructionReady(total){
+      if(elDeckStatus) elDeckStatus.textContent = 'Your deck is ready.';
+      if(elStatusDeck) elStatusDeck.textContent = 'Deck: 0 of ' + String(total || 0);
+      if(elStatusCard) elStatusCard.textContent = 'Card ID: #0000';
+
+      setEnabled(elBegin, true);
+      // On instruction-ready, NEXT starts play; BACK disabled
+      setEnabled(elNext, true);
+      setEnabled(elBack, false);
+
+      srSay('Your deck is ready. You may begin playing.');
+    }
+
+    function showInstructionCard(){
+      // Restore instruction layout (keep current title/header)
+      if(elDeckStatus) elDeckStatus.textContent = '';
+      const targetEl = document.querySelector('.target');
+      const tabooEl = document.querySelector('.taboo');
+      if(targetEl) targetEl.textContent = '';
+      if(tabooEl) tabooEl.textContent = '';
+      // Buttons will be set by loading/ready calls
+    }
+
+
+    function saveSession(session){
+      try{
+        localStorage.setItem(LS_KEY, JSON.stringify(session));
+      }catch(e){}
+    }
+
+    function loadSession(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw) return null;
+        const obj = JSON.parse(raw);
+        if(!obj || !Array.isArray(obj.cards) || !obj.cards.length) return null;
+        if(typeof obj.index !== 'number') obj.index = 0;
+        return obj;
+      }catch(e){
+        return null;
+      }
+    }
+
+    function clearSession(){
+      try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    }
+    function startBuildNewDeck(){
+      clearSession();
+      setInstructionLoading();
+      google.script.run
+        .withSuccessHandler(function(res){
+          const cards = (res && res.cards) ? res.cards : [];
+          const total = (res && res.total) ? res.total : cards.length;
+          const session = {
+            schema: 1,
+            deckId: (res && res.deckId) ? res.deckId : String(Date.now()),
+            index: 0,
+            total: total,
+            cards: cards
+          };
+          saveSession(session);
+          if(window._loadingTimer) clearInterval(window._loadingTimer);
+          setInstructionReady(total);
+        })
+        .withFailureHandler(function(err){
+          if(elDeckStatus) elDeckStatus.textContent = 'Unable to build deck.';
+          setEnabled(elBegin, false);
+          setEnabled(elBack, false);
+          setEnabled(elNext, false);
+        })
+        .buildDeck();
+    }
+
+
+    function renderCard(i){
+  const s = loadSession();
+  if(!s || !Array.isArray(s.cards) || s.cards.length === 0){
+    showInstructionCard();
+    return;
+  }
+
+  const idx = Math.max(0, Math.min(Number(i)||0, s.cards.length-1));
+  s.index = idx;
+  saveSession(s);
+
+  const card = s.cards[idx];
+  const elContent = document.querySelector('.content');
+  if(!elContent || !card){
+    return;
+  }
+
+  const esc = (v)=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+  const tabooLines = Array.isArray(card.taboo) ? card.taboo : [];
+
+  const targetText = String(card.target ?? '').trim();
+  const targetUpper = targetText.toUpperCase();
+
+  elContent.innerHTML = `
+    <div class="playCard">
+      <div class="playGreen">
+        <div class="playTarget" aria-label="Target word: ${esc(targetText)}">${esc(targetUpper)}</div>
+      </div>
+      <div class="playWhite" aria-label="Taboo words: ${esc(tabooLines.join(', '))}">
+        ${tabooLines.map(w=>`<div class="playTaboo">${esc(String(w).toUpperCase())}</div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  // Status
+  if(elStatusDeck){
+    elStatusDeck.textContent = `Played: ${idx} of ${s.total}`;
+  }
+  if(elStatusCard){
+    const n = Number(card.rowId)||0;
+    elStatusCard.textContent = n ? `Card #${n}` : '';
+  }
+
+  // Buttons
+  setBackEnabled(idx > 0);
+  setNextEnabled(idx < (s.total-1));
+}
+
+function onBeginPlay(){
+  const s = loadSession();
+  if(!s || !Array.isArray(s.cards) || s.cards.length===0) return;
+  // start at first card (index 0)
+  s.index = 0;
+  s.mode = 'PLAY';
+  saveSession(s);
+  renderCard(s.index);
+  if(elStatusDeck) elStatusDeck.textContent = 'Deck: 1 of ' + String(s.cards.length);
+}
+
+    function onNext(){
+      const s = loadSession();
+      // If no session or not ready yet, ignore
+      if(!s || !Array.isArray(s.cards) || s.cards.length===0) return;
+
+      // If we're on instruction card (index not set or mode not PLAY), start play at first card
+      if(s.mode !== 'PLAY'){
+        onBeginPlay();
+        return;
+      }
+
+      const nextIndex = (typeof s.index === 'number' ? s.index : 0) + 1;
+
+      // Past last card -> go back to instruction card and generate a new deck
+      if(nextIndex >= s.cards.length){
+        // Return to instruction card and rebuild deck
+        s.mode = 'INSTRUCTION';
+        s.index = 0;
+        saveSession(s);
+        showInstructionCard();
+        startBuildNewDeck();
+        return;
+      }
+
+      s.index = nextIndex;
+      saveSession(s);
+      renderCard(s.index);
+    }
+
+    function onBack(){
+      const s = loadSession();
+      if(!s || !Array.isArray(s.cards) || s.cards.length===0) return;
+
+      // On instruction card, back does nothing
+      if(s.mode !== 'PLAY') return;
+
+      const prevIndex = (typeof s.index === 'number' ? s.index : 0) - 1;
+      if(prevIndex < 0) return;
+
+      s.index = prevIndex;
+      saveSession(s);
+      renderCard(s.index);
+    }
+
+
+
+    function bindClick(el, fn){
+      if(!el) return;
+      el.addEventListener('click', function(){
+        if(el.getAttribute('aria-disabled') === 'true') return;
+        fn();
+      });
+      el.addEventListener('keydown', function(e){
+        if(el.getAttribute('aria-disabled') === 'true') return;
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          fn();
+        }
+      });
+    }
+
+    bindClick(elBegin, onBeginPlay);
+    bindClick(elNext, onNext);
+    bindClick(elBack, onBack);
+
+    // Bootstrap:
+    clearSession();
+      startBuildNewDeck();
+
+      window.__amity = { loadSession: loadSession, saveSession: saveSession, clearSession: clearSession };
+
+})();
+</script>
+
+</body>
+</html>

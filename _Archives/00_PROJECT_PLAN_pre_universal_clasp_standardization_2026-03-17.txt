@@ -1,0 +1,91 @@
+PROJECT
+AMITY_TABOO
+
+WHAT THIS PROJECT IS
+
+This project is a governed project within the project system rooted at:
+
+~/PROJECTS
+
+It is governed by the live Global Master Ruleset located at:
+
+~/PROJECTS/GLOBAL_MASTER_RULESET/GLOBAL_MASTER_RULESET.txt
+
+
+PURPOSE
+
+Build and maintain an accessible no-timer Taboo-style prompt game.
+
+The current implementation target is a Google Apps Script / CLASP web app with an operator-managed local project folder.
+
+The project should remain handoff-safe for future agents.
+
+
+PROJECT MODEL
+
+This project currently follows the normal governed-project root model:
+
+00_PROJECT_PLAN.txt
+PROJECT_REPORT.txt
+
+And these canonical folders:
+
+_Incoming
+_Working
+_Output
+_Archives
+_Resources
+
+Small events, partial work, failures, discoveries, and next-step state belong in PROJECT_REPORT.txt.
+
+
+CURRENT STATE
+
+The live project root is:
+
+/Users/computerservices/PROJECTS/AMITY_TABOO
+
+The project has been normalized back to the standard governed-project folder structure.
+
+Archived rebuild snapshots and older reconstruction material belong in _Archives and must not be treated as the live project root.
+
+If CLASP runtime files are reintroduced later, they should be documented against the live project structure rather than archived paths.
+
+
+HOW AGENTS SHOULD OPERATE
+
+When beginning work on this project:
+
+1. Use this exact conversation title:
+   AMITY_TABOO
+
+2. Read this file:
+   00_PROJECT_PLAN.txt
+
+3. Read the live GMR:
+   ~/PROJECTS/GLOBAL_MASTER_RULESET/GLOBAL_MASTER_RULESET.txt
+
+4. Read this project's live continuity file:
+   PROJECT_REPORT.txt
+
+5. Then inspect the relevant working files, folders, scripts, or artifacts for the task at hand.
+
+Archived material in _Archives is historical support and should not be treated as the first-read continuity spine unless reconstruction is required.
+
+PROJECT ROOT
+/Users/computerservices/PROJECTS/AMITY_TABOO
+
+PROJECT INBOX
+/Users/computerservices/PROJECTS/AMITY_TABOO/_Incoming
+
+GMR FOLDER
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET
+
+GMR PROJECT PLAN
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET/00_PROJECT_PLAN.txt
+
+GMR INBOX
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET/_Incoming
+
+GMR PATH
+/Users/computerservices/PROJECTS/GLOBAL_MASTER_RULESET/GLOBAL_MASTER_RULESET.txt

@@ -1,0 +1,125 @@
+PROJECT
+AMITY_TABOO
+
+CANONICAL PROJECT ROOT
+
+/Users/computerservices/PROJECTS/AMITY_TABOO
+
+WHAT THIS PROJECT IS
+
+Amity Taboo is an accessible Taboo-style prompt web app.
+
+It is intended to deliver a simple, single-screen card experience with no teams, no timers, and no scorekeeping.
+
+This project now supports both:
+1. Google Apps Script / CLASP workflow assets
+2. GitHub-hosted web app workflow assets
+
+PROJECT PURPOSE
+
+This project exists to finish and maintain the Amity Taboo game so it can be used reliably by real players.
+
+The priority is a working, accessible gameplay experience first.
+
+The project must remain organized so either workflow can continue:
+1. GAS-first
+2. GitHub-first
+3. dual-track during migration
+4. GitHub with later GAS support
+5. GAS with later GitHub replacement or mirroring
+
+CURRENT PROJECT STRUCTURE
+
+CANONICAL GOVERNANCE FOLDERS
+
+1. _Incoming
+2. _Archives
+3. _Output
+4. _Resources
+5. _Working
+
+LIVE ROOT GOVERNANCE FILES
+
+1. the root 00 startup file
+2. PROJECT_PLAN.txt
+3. PROJECT_REPORT.txt
+
+LIVE WORKFLOW / IMPLEMENTATION FOLDERS
+
+1. gas
+   A. Purpose:
+      Google Apps Script / CLASP project files
+
+2. github-pages
+   A. Purpose:
+      GitHub-backed web app / static hosting project files
+
+3. _Resources/original-source-assets
+   A. Purpose:
+      preserved original artwork/source material and non-runtime design assets
+
+CURRENT ARCHITECTURE POSITION
+
+The project is no longer Apps Script-only.
+
+The project now has two valid implementation/workflow paths:
+
+1. GAS / CLASP path
+   /Users/computerservices/PROJECTS/AMITY_TABOO/gas
+
+2. GitHub Pages path
+   /Users/computerservices/PROJECTS/AMITY_TABOO/github-pages
+
+GOVERNANCE VS IMPLEMENTATION RULE
+
+1. Governance folders remain canonical.
+2. Repo/runtime folders remain valid project infrastructure.
+3. Governance cleanup must not remove active repo folders.
+
+PRODUCT BEHAVIOR
+
+The app should present a clear, accessible, single-screen prompt experience.
+
+Core characteristics:
+
+1. Browser-based web app
+2. Single-screen card UI
+3. No teams
+4. No timers
+5. No scorekeeping
+6. Card content should fit viewport cleanly on phone screens
+
+CURRENT FUNCTIONAL PRIORITY
+
+1. Accessibility behavior must remain correct.
+2. Swipe/card interaction must remain correct.
+3. Visible version must increment every deploy.
+4. GitHub and GAS paths must stay intelligible for future maintenance.
+
+CURRENT LIVE PRIORITY
+
+Primary active UI continuity currently sits in:
+
+/Users/computerservices/PROJECTS/AMITY_TABOO/github-pages
+
+Historical GAS continuity remains preserved in:
+
+/Users/computerservices/PROJECTS/AMITY_TABOO/gas
+
+RULE FOR FUTURE MAINTENANCE
+
+Keep this file focused on:
+
+1. architecture
+2. live folders
+3. product behavior
+4. workflow priority
+5. real continuation state
+
+Startup behavior belongs only in:
+
+the root 00 startup file
+
+Chronological continuity belongs only in:
+
+PROJECT_REPORT.txt

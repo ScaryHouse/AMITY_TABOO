@@ -1,0 +1,55 @@
+GLOBAL MASTER RULESET — AMITY TABOO PROJECT STATUS — 2026-02-10 13:25 CT
+=======================================================
+
+PROJECT
+- Amity Games: “Amity Taboo” Google Apps Script web app (mobile-first UI).
+- Key UI file: phone.html (served by Apps Script web app).
+- Deployment policy: always update the SAME existing deployment ID (do not create parallel web app URLs).
+
+CURRENT STATE (KNOWN GOOD BASELINE)
+- Known-good baseline zip: AMITY_TABOO_PHONE_HEADER_SPACING_V28.zip (contains phone.html).
+- Baseline currently restored in project by copying phone.html from ZIP into $PROJECT_DIR and pushing.
+- The “Pixel 7 example” layout is the current target reference.
+
+WHAT WAS FIXED / WORKED
+- Restored a working phone.html after multiple “broken” iterations by:
+  1) Unzipping a known-good ZIP (v27/v28).
+  2) Copying its phone.html into the local clasp project.
+  3) Verifying the expected UI strings exist in the project copy (grep for AMITY / TABOO / BEGIN PLAY).
+  4) clasp push --force.
+  5) clasp deploy -i <SAME_DEPLOYMENT_ID> (update existing deployment).
+- Confirmed ZIP27 and ZIP28 contain the expected UI strings and differ by file size only.
+
+WHAT DID NOT WORK / FAILURE MODES
+- “Broken UI” incidents where the app rendered a mostly empty card + large black area, or lost the status bar:
+  - Root cause: phone.html in the project did not match the intended “known good” version (wrong file copied/pushed),
+    or layout CSS changed in a way that collapsed the content flow.
+- Deployments count limit:
+  - Attempting to create additional versioned deployments hit the “Scripts may only have up to 20 versioned deployments” error.
+  - The correct approach is updating the same deployment ID, not creating new ones.
+- clasp auth failures:
+  - Multiple runs returned invalid_grant / invalid_rapt errors (reauth required), blocking push/deploy until re-authenticated.
+
+OPEN WORK / NEXT STEPS
+- Mobile button bar responsiveness:
+  - Goal: BACK/NEXT buttons should grow to near-square on taller phones and compress on shorter phones while keeping the status bar visible.
+  - Risk: using fixed px heights or vh-based heuristics can make buttons non-responsive or push status bar off-screen.
+- Confirm consistent behavior on:
+  - Pixel 7 (tall Android)
+  - iPhone Safari (address bar + safe-area quirks)
+
+OPERATIONAL GUARDRAILS (DO THIS EVERY TIME)
+- Keep a “known-good” rollback ZIP in a stable location (Documents) and never overwrite it.
+- Before any push/deploy:
+  1) clasp pull --force (sync down).
+  2) Copy ONLY phone.html from the selected ZIP into the project.
+  3) grep the project phone.html for key UI strings.
+  4) clasp push --force.
+  5) clasp deploy -i <SAME_DEPLOYMENT_ID>.
+- If clasp returns invalid_rapt:
+  - Re-authenticate clasp, then retry push/deploy.
+
+KNOWN CONSTANTS
+- Project directory: $HOME/Documents/Amity-Taboo
+- Tracked files: AmityTaboo.js, appsscript.json, phone.html
+- Existing deployment ID to update: AKfycbwTmaDwGLeaBnDH8pYIuzf5Cnrl5hLIvFxilPv8yvv-mrlPItB4uYjkaO7ivQ5IkA8oTQ

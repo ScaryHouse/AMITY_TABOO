@@ -1,0 +1,1174 @@
+===== FILE: AMITY TABOO UI-FIRST PROJECT PLAN v2.txt =====
+AMITY TABOO — UI-FIRST PROJECT PLAN (PATH B) — NOTES UPDATED
+
+PHASE 1 — UI + GAMEPLAY (DO FIRST)
+
+1. DEFINE CORE GAME BEHAVIOR
+A) What happens when BEGIN PLAY is pressed.
+B) How a 100-card deck is created (shuffle, optional seed).
+C) How cards advance (tap, button, or timer).
+D) End-of-deck behavior at Card 100.
+
+2. UI STATE MODEL
+State A: Ready to play.
+State B: Playing — card N of 100.
+State C: Finished.
+For each state, specify:
+- Visible text.
+- Enabled buttons.
+- Screen-reader focus target.
+
+3. IMPLEMENT GAMEPLAY (STILL HOSTED BY APPS SCRIPT)
+A) Generate deck on BEGIN PLAY.
+B) Render current card in the white field.
+C) Add Next Card logic.
+D) Test with keyboard, touch, and a screen reader.
+
+4. MILESTONE LOCK
+Create a ZIP snapshot and versioned deployment when gameplay feels correct.
+
+
+PHASE 2 — ARCHITECTURE SPLIT (DO LATER)
+
+5. CREATE SEPARATE UI PROJECT
+Local folder example:
+Documents/Amity-Taboo-UI/
+- phone.html
+- app.js
+- assets (if any)
+
+6. REFACTOR APPS SCRIPT TO API-ONLY
+Expose JSON endpoints such as:
+- ?action=newDeck
+- ?action=nextCard&id=...
+
+7. CONNECT EXTERNAL UI TO APPS SCRIPT
+Replace google.script.run with fetch() calls to the Apps Script URL.
+
+8. HOST THE UI
+Choose one:
+- Cloudflare Pages
+- Netlify
+- GitHub Pages
+
+
+PHASE 3 — HOME-SCREEN / PWA CONSIDERATIONS (IDEAS TO REMEMBER)
+
+9. ADD TO HOME SCREEN (A2HS) INSTRUCTIONS
+A) On first load, show a simple, high-contrast instruction panel above or within the card.
+B) Android instruction example:
+   "Tap the three dots (⋮) in Chrome → Add to Home screen."
+C) iPhone instruction example:
+   "Tap Share → Add to Home Screen."
+D) Hide these instructions once the user taps BEGIN PLAY.
+
+10. BIG LOGO AS VISUAL CUE
+A) Consider placing a very large AMITY TABOO logo or mark at the top of the first screen.
+B) This can double as a clear visual target and an attractive home-screen icon preview.
+
+11. OPTIONAL: MAKE IT A PWA
+A) Add manifest.json with name, short_name, and high-resolution icons.
+B) Add a service worker for basic offline support.
+C) Expect better consistency on Android than iOS, but both will still allow “Add to Home Screen.”
+
+
+RATIONALE
+
+- Finish design and behavior first.
+- Avoid solving gameplay and hosting/CORS simultaneously.
+- Split architecture only after the game works well.
+
+===== FILE: AMITY TABOO UI-FIRST PROJECT PLAN.txt =====
+AMITY TABOO — UI-FIRST PROJECT PLAN (PATH B)
+
+PHASE 1 — UI + GAMEPLAY (DO FIRST)
+
+1. DEFINE CORE GAME BEHAVIOR
+A) What happens when BEGIN PLAY is pressed.
+B) How a 100-card deck is created (shuffle, optional seed).
+C) How cards advance (tap, button, or timer).
+D) End-of-deck behavior at Card 100.
+
+2. UI STATE MODEL
+State A: Ready to play.
+State B: Playing — card N of 100.
+State C: Finished.
+For each state, specify:
+- Visible text.
+- Enabled buttons.
+- Screen-reader focus target.
+
+3. IMPLEMENT GAMEPLAY (STILL HOSTED BY APPS SCRIPT)
+A) Generate deck on BEGIN PLAY.
+B) Render current card in the white field.
+C) Add Next Card logic.
+D) Test with keyboard, touch, and a screen reader.
+
+4. MILESTONE LOCK
+Create a ZIP snapshot and versioned deployment when gameplay feels correct.
+
+
+PHASE 2 — ARCHITECTURE SPLIT (DO LATER)
+
+5. CREATE SEPARATE UI PROJECT
+Local folder example:
+Documents/Amity-Taboo-UI/
+- phone.html
+- app.js
+- assets (if any)
+
+6. REFACTOR APPS SCRIPT TO API-ONLY
+Expose JSON endpoints such as:
+- ?action=newDeck
+- ?action=nextCard&id=...
+
+7. CONNECT EXTERNAL UI TO APPS SCRIPT
+Replace google.script.run with fetch() calls to the Apps Script URL.
+
+8. HOST THE UI
+Choose one:
+- Cloudflare Pages
+- Netlify
+- GitHub Pages
+
+9. OPTIONAL: MAKE IT A PWA
+Add manifest.json and a service worker.
+
+
+RATIONALE
+
+- Finish design and behavior first.
+- Avoid solving gameplay and hosting/CORS simultaneously.
+- Split architecture only after the game works well.
+
+===== FILE: AMITY TABOO PROJECT .txt =====
+=======================================================
+AMITY TABOO PROJECT
+=======================================================
+
+LAST UPDATED: 
+
+=======================================================
+PURPOSE OF THIS DOCUMENT
+=======================================================
+
+This document is the canonical working description of the Amity Taboo project.  
+It is intended to orient new agents quickly, preserve decisions, record technical plumbing, and capture ongoing design and operational notes in one place.  
+
+This document should be updated whenever the project structure, dependencies, or behavior change in a meaningful way.
+
+=======================================================
+PROJECT OVERVIEW
+=======================================================
+
+PROJECT NAME: Amity Taboo  
+
+Amity Taboo is a Google Apps Script + HTML web app that delivers an accessible, single-screen Taboo-style prompt experience.
+
+KEY CHARACTERISTICS:  
+
+1. Browser-based web app served from Google Apps Script.  
+
+2. No teams.  
+3. No timers.  
+4. No scores.  
+
+5. Card-based UI designed to fit the viewport without scrolling.  
+
+6. Logic lives in Apps Script; UI lives in app.html.
+
+=======================================================
+CORE ARCHITECTURE
+=======================================================
+
+A. GOOGLE APPS SCRIPT PROJECT  
+Houses server-side logic and HTML delivery.
+
+B. CONTAINER SPREADSHEET (AUTHORITATIVE DATA SOURCE)  
+Stores cards, settings, and deck state.
+
+C. WEB APP  
+Deployed from the Apps Script project and served to players.
+
+=======================================================
+CONTAINER SHEET (PLUMBING SECTION)
+=======================================================
+
+CONTAINER SPREADSHEET NAME: Amity Taboo  
+
+CONTAINER SPREADSHEET URL:  
+https://docs.google.com/spreadsheets/d/1dvWrl4YZ9wb8NjA9H0b7vWwDmv9Old_JYS1fz_Uxu48/edit?usp=sharing
+
+REQUIRED SHEETS:
+
+A. ADMIN  
+Contains configuration values such as:  
+
+- TOTAL CARDS (auto-filled by script)  
+- DECK SIZE  
+- EASY %  
+- MEDIUM %  
+- HARD %  
+- SHUFFLE SEED (optional)  
+
+B. CARDS  
+Master prompt list with at minimum these columns:  
+
+- DIFFICULTY  
+- TARGET  
+- TABOO1  
+- TABOO2  
+- TABOO3  
+- TABOO4  
+- TABOO5  
+- SOURCE (optional)  
+
+C. HIDDEN SYSTEM SHEETS (SCRIPT-MANAGED)  
+
+- _DECK_INDEX  
+- _DECK_CARDS  
+
+These store generated decks and should not be edited manually.
+
+=======================================================
+APPS SCRIPT PROJECT (PLUMBING SECTION)
+=======================================================
+
+SCRIPT ID:  
+1_sJkpFad90NXm13zvomLpP3vgaXZWWiCbI7NiPhx2rj5JAgPCBm_3tMC  
+
+PRIMARY FILES (CURRENT CLONE):  
+
+- AmityTaboo.js  
+- app.html  
+- appsscript.json  
+
+=======================================================
+DEPLOYMENTS (WEB APP)
+=======================================================
+
+KNOWN DEPLOYMENTS (FROM clasp list-deployments):
+
+- AKfycbx2oGxWTO9QhgSCxuNJCaXAVWM1w_OW47KYkI4_qUbz @HEAD  
+- AKfycbyY_EqmNYNAH9d1KbxReNCcmBhVjsevtGRyMbL__kc8IZ6aBVYxhTOJnDrBF-i340nLFg @13  
+- AKfycby0t1A9TFiCvL2r6w33Dzct1_5QkQMcDAW0oSyVi0dihbKMd4nV6T6h14ATGi-qd14SNw @114  
+
+ACTIVE DEPLOYMENT TO USE:  
+(leave blank until confirmed)
+
+=======================================================
+UI & BEHAVIOR PRINCIPLES
+=======================================================
+
+1. Single, fixed viewport — no scrolling.  
+
+2. Clean card layout: title, target word, taboo list, status bar.  
+
+3. Begin Play button should only activate once a deck is built.  
+
+4. Text must remain screen-reader friendly.  
+
+5. Minimal visual chrome; focus on readability.
+
+=======================================================
+KNOWN ISSUES / NOTES
+=======================================================
+
+1. If “Begin Play” does not activate, check whether a deck was actually generated in hidden sheets.  
+
+2. Deck generation depends on valid ADMIN percentages summing to 1.0.  
+
+3. Do not manually edit _DECK_INDEX or _DECK_CARDS.
+
+=======================================================
+WORKFLOW FOR NEW AGENTS
+=======================================================
+
+1. Provide a ZIP of the local project folder.  
+
+2. Instruct: “Read Amity Taboo Project.txt first.”  
+
+3. Confirm container sheet URL and script ID before making changes.
+===== FILE: AMITY_TABOO_GAMEPLAY_UI_BEHAVIOR_SPEC_v2.txt =====
+AMITY TABOO — GAMEPLAY/UI BEHAVIOR SPEC v2 (WITH localStorage PERSISTENCE)
+
+INSTRUCTION CARD VS INFORMATION CARD (TWO DIFFERENT THINGS)
+
+1) INSTRUCTION CARD (DECK CONTROL SCREEN)
+- Purpose:
+  - Controls the lifecycle of a deck (build, ready, start play, reset).
+- Rule:
+  - If the instruction card is reached/triggered, behavior returns to square one.
+  - A NEW deck is generated.
+  - BEGIN PLAY is disabled until the new deck is fully built.
+  - Any existing saved deck state is cleared (see PERSISTENCE).
+
+2) INFORMATION CARD (ABOUT/HELP SCREEN)
+- Purpose:
+  - About the game, why it exists, Buy Me A Coffee link, etc.
+- Rule:
+  - Information card must NOT reset the deck.
+  - Information card must provide a clear “BACK TO PLAY” control that returns the user to the exact card they were on.
+  - The game resumes at the same card index and same deck instance.
+
+
+STATE A — INSTRUCTION_LOADING (INSTRUCTION CARD VISIBLE, DECK BUILDING)
+
+BACKGROUND (GAS)
+- On entry to this state, Apps Script:
+  - Reads ADMIN percentages (Easy/Medium/Hard).
+  - Shuffles prompt rows.
+  - Selects 100 cards according to the percentages.
+  - Builds a 100-card deck.
+
+UI
+- Instruction card shows a working indicator in place of “Your deck is ready.”
+  - Text: “L, o, a, d, i, n, g, ., ., .”
+- Buttons:
+  - BEGIN PLAY: grey (disabled look)
+  - BACK: grey (disabled)
+  - NEXT: grey (disabled)
+- Status bar (not read by screen readers):
+  - Deck: 0 of 0
+  - Card ID: #0000
+
+SCREEN READER
+- Do NOT repeatedly announce “loading”.
+- Announce once (polite, complete sentence):
+  - “Building your deck. Please wait.”
+
+
+STATE B — INSTRUCTION_READY (INSTRUCTION CARD VISIBLE, DECK BUILT)
+
+UI
+- “Loading…” disappears.
+- “Your deck is ready.” appears.
+- Buttons:
+  - BEGIN PLAY: black (enabled)
+  - NEXT: green (enabled)
+  - BACK: grey (disabled; nothing to go back to yet)
+- Status bar:
+  - Deck: 0 of 100
+  - Card ID: #0000
+
+SCREEN READER
+- Announce once (polite, complete sentence):
+  - “Your deck is ready. You may begin playing.”
+
+
+STATE C — PLAYING (CARD MODE)
+
+ON BEGIN PLAY
+- Instruction card disappears.
+- Card 1 appears.
+- Status bar:
+  - Deck: 1 of 100
+  - Card ID: sheet row number for that prompt
+
+CARD LAYOUT
+- Green header field:
+  - Speak label: “Target word:” then the target word.
+  - Display: target word in BLACK, ALL CAPS.
+- White field:
+  - Speak label: “Taboo words:” then the taboo list.
+  - Display: taboo words in RED, ALL CAPS LIST.
+
+NAVIGATION (BACK / NEXT)
+- NEXT:
+  - Advances to the next card.
+  - Updates Deck: N of 100.
+  - Updates Card ID to the current card’s sheet row number.
+- BACK:
+  - Goes to the previous card.
+  - Updates Deck and Card ID accordingly.
+- Special rule:
+  - BACK on Card 1 returns to INSTRUCTION_LOADING AND STARTS A NEW DECK BUILD (square one).
+
+
+END OF DECK
+
+- When user is on Card 100 and presses NEXT:
+  - Return to INSTRUCTION_LOADING.
+  - Immediately begin building a NEW deck.
+  - While building:
+    - Deck: 0 of 0
+    - Card ID: #0000
+    - BEGIN PLAY disabled until deck is ready.
+
+
+STATUS BAR RULES
+
+- Status bar is NOT read by screen readers.
+- Values:
+  - Loading: Deck 0 of 0, Card ID #0000
+  - Ready (before play): Deck 0 of 100, Card ID #0000
+  - Playing: Deck N of 100, Card ID = sheet row number
+
+
+PERSISTENCE / RESUME POLICY (CHOSEN: localStorage)
+
+GOAL
+- The game must survive reloads, tab closes, and device restarts.
+- The user should return to the same deck and same card index after interruption.
+
+RULES
+1) Persist the active deck session in localStorage:
+- Deck data (100 cards)
+- Current card index (0..99)
+- Deck ID (nonce/timestamp)
+- Any metadata needed for debugging (optional)
+
+2) On page load:
+A) If a valid saved deck exists:
+- Resume directly into PLAYING at the saved index (or show a brief resume-ready state if desired later).
+B) If no valid saved deck exists:
+- Enter INSTRUCTION_LOADING and build a new deck.
+
+3) Reset behavior:
+- Any entry to INSTRUCTION_LOADING that represents “start over / new deck” MUST first clear localStorage deck/session state.
+- The INFORMATION CARD must NOT clear localStorage; it is non-destructive.
+
+4) User expectations:
+- The instruction card is the “new deck/reset” path.
+- The information card is “about/help” and returns to play.
+
+
+NOTES FOR FUTURE IMPLEMENTATION
+- Prefer a schema version field for the stored object so future changes can invalidate older saved sessions safely.
+
+===== FILE: AMITY_TABOO_IMPLEMENTATION_NOTES_v1.txt =====
+AMITY TABOO — IMPLEMENTATION NOTES (FOR FUTURE AGENTS)
+
+HIGH-LEVEL APPROACH
+- Model the UI as a small finite-state machine with explicit states:
+  A) INSTRUCTION_LOADING
+  B) INSTRUCTION_READY
+  C) PLAYING
+  D) INFO_OVERLAY (non-destructive; returns to PLAYING)
+- Keep one in-memory “session” object that owns:
+  - deck array (100 cards)
+  - currentIndex (0..99)
+  - deckId (timestamp/nonce, optional)
+  - isBuilding flag
+- Prefer client-side deck persistence (sessionStorage/localStorage) so play can continue through pauses and brief network interruptions.
+
+
+DATA MODEL (RECOMMENDED)
+DeckCard object (one per card):
+- index: 1..100 (position in deck)
+- sheetRow: integer (row number for Card ID)
+- target: string (ALL CAPS display)
+- taboo: string[] (ALL CAPS display list)
+- difficulty: "easy" | "medium" | "hard" (optional for debugging)
+
+DeckSession object:
+- deckId: string (e.g., ISO timestamp + random suffix)
+- createdAt: number (ms)
+- cards: DeckCard[100]
+- currentIndex: number (0..99)
+- adminMix: {easyPct, medPct, hardPct} (optional)
+- sourceSheetId / tab name (optional)
+- version: number (schema version for persistence)
+
+
+UI STATE MACHINE (BEHAVIOR MAP)
+
+STATE: INSTRUCTION_LOADING
+- Visual:
+  - Instruction card visible
+  - Working indicator text shown instead of “Your deck is ready.”
+  - BEGIN PLAY disabled (grey)
+  - BACK disabled (grey)
+  - NEXT disabled (grey)
+  - Status bar: Deck 0 of 0, Card ID #0000
+- Accessibility:
+  - aria-live polite: “Building your deck. Please wait.” (announce once)
+- Transition out:
+  - When deck build promise resolves -> INSTRUCTION_READY
+
+STATE: INSTRUCTION_READY
+- Visual:
+  - “Your deck is ready.” displayed
+  - BEGIN PLAY enabled (black)
+  - NEXT enabled (green)
+  - BACK disabled (grey)
+  - Status bar: Deck 0 of 100, Card ID #0000
+- Accessibility:
+  - aria-live polite: “Deck ready.” (announce once)
+- Actions:
+  - BEGIN PLAY -> PLAYING at currentIndex=0
+  - NEXT -> PLAYING at currentIndex=0 (optional shortcut if desired; spec currently allows NEXT to be enabled here)
+  - Any “reset/start new deck” action -> INSTRUCTION_LOADING and begins new build
+
+STATE: PLAYING
+- Visual:
+  - Card view replaces instruction text
+  - Header: TARGET WORD (black ALL CAPS)
+  - Body: TABOO WORDS (red ALL CAPS list)
+  - Buttons:
+    - NEXT enabled (green) unless at end-of-deck rule requires otherwise
+    - BACK enabled (green) except special rule below
+  - Status bar:
+    - Deck: (currentIndex+1) of 100
+    - Card ID: sheetRow for current card
+- Navigation rules:
+  - NEXT on 1..99: currentIndex++
+  - NEXT on 100:
+    - transition to INSTRUCTION_LOADING and immediately start a NEW deck build
+  - BACK on 2..100: currentIndex--
+  - BACK on 1:
+    - transition to INSTRUCTION_LOADING and immediately start a NEW deck build (“square one”)
+- Accessibility:
+  - The status bar should not be in the reading order.
+  - Use visible labels “Target word:” and “Taboo words:” (or aria-label equivalents) so screen readers speak those prefixes.
+
+STATE: INFO_OVERLAY (INFORMATION CARD)
+- Purpose:
+  - “About / why no-timer taboo / buy me a coffee” content
+- Critical rule:
+  - MUST NOT reset or rebuild the deck
+- UI:
+  - Present as an overlay/modal or a separate view that preserves DeckSession and currentIndex
+  - Provide a large “BACK TO PLAY” control at the bottom
+- Actions:
+  - BACK TO PLAY returns to PLAYING with the same currentIndex and same deck
+
+
+DECK BUILD IMPLEMENTATION OPTIONS
+
+OPTION 1 (CURRENT SINGLE-PAGE APPS SCRIPT HTMLSERVICE)
+- Build deck in Apps Script, send data to phone.html via templating or google.script.run callback.
+- Note: google.script.run is only available when the UI is served by Apps Script.
+
+OPTION 2 (FUTURE EXTERNAL HOSTING)
+- Apps Script becomes API-only and returns JSON via ContentService.
+- UI (hosted elsewhere) calls Apps Script endpoints to fetch a newly built deck.
+- Prefer returning the full 100-card deck in one response so the UI can operate offline once loaded.
+
+
+CLIENT-SIDE PERSISTENCE (RECOMMENDED)
+- Save DeckSession to sessionStorage (default) or localStorage (optional).
+- On page load:
+  - If a valid DeckSession exists and is “fresh enough,” restore it and resume in PLAYING.
+  - If not, start INSTRUCTION_LOADING and build a new deck.
+- If you want “always new deck on refresh,” then ignore stored sessions by default and only use persistence to survive transient reloads during play (opt-in flag).
+
+
+LOADING INDICATOR + SCREEN READER NOTES
+- Do not update aria-live text repeatedly (it will be spoken repeatedly).
+- Approach:
+  - Visual: animated “L, o, a, d, i, n, g…” is fine.
+  - Screen reader: one-time polite announcement on entry, and one-time “Deck ready.” on completion.
+
+
+TEST CASES (MINIMUM)
+1) Initial load -> loading -> ready -> begin play -> card 1.
+2) NEXT through card 100 -> NEXT -> instruction loading (new deck) -> ready.
+3) BACK on card 1 -> instruction loading (new deck) -> ready.
+4) INFO overlay from mid-deck -> BACK TO PLAY returns to same card index and card ID.
+5) Screen reader reads “Target word:” + target and “Taboo words:” + list; does not read status bar.
+6) Network interruption after deck built: BACK/NEXT still work (if client-side deck persisted).
+
+
+IMPLEMENTATION SAFETY
+- Keep state transitions centralized (one function) to avoid drift between UI and logic.
+- Keep button enable/disable derived from state and currentIndex (not ad-hoc toggles).
+
+===== FILE: HANDOFF_AMITY_TABOO.txt =====
+=======================================================
+AMITY_TABOO — HANDOFF SUMMARY — 2026-02-27_085834
+=======================================================
+
+1. PURPOSE
+A. See master spreadsheet description.
+B. This folder is canonical project root.
+
+2. CURRENT STATE
+A. Status: Active unless otherwise noted.
+B. GAS STATUS:
+   1. Determine if script exists only at script.google.com.
+   2. Determine if CLASP has been initialized locally.
+C. If GAS-only, document Script ID and deployment URL here.
+
+3. STRUCTURE
+A. _INCOMING = raw imports / exports.
+B. _WORKING = active builds and drafts.
+C. _OUTPUT = packaged deliverables.
+D. _ARCHIVE = retired versions.
+
+4. NEXT AGENT CHECKLIST
+A. Confirm GMR version.
+B. Confirm authoritative data source.
+C. Confirm deployment model (manual, trigger, web app).
+D. Document all experiments.
+
+=======================================================
+END OF HANDOFF
+=======================================================
+
+===== FILE: PROJECT_REPORT_2026-03-13_205000.txt =====
+1.) PROJECT REPORT
+1.1.) AMITY TABOO
+1.2.) REPORT FILE
+1.2.1.) PROJECT_REPORT_2026-03-13_205000.txt
+
+2.) TIMESTAMP
+2.1.) 2026-03-13_205000
+
+3.) DESCRIPTION OF EXPERIMENT OR CHANGE
+3.1.) Verified local AMITY_TABOO project root under /Users/computerservices/PROJECTS/AMITY_TABOO.
+3.2.) Confirmed tracked CLASP files are appsscript.json, Code.gs, and phone.html.
+3.3.) Confirmed required project folders now exist, including _Archives, _Working, _Output, _Resources, and _Incoming variants already present in legacy form.
+3.4.) Attempted clasp pull --force and received: The caller does not have permission.
+
+4.) COMMANDS EXECUTED
+4.1.) cd /Users/computerservices/PROJECTS/AMITY_TABOO
+4.2.) ls -la .clasp.json
+4.3.) clasp status
+4.4.) clasp pull --force
+
+5.) FILES CREATED OR MODIFIED
+5.1.) 00_PROJECT_PLAN.txt already installed at project root.
+5.2.) This project report created for handoff.
+
+6.) OBSERVED RESULT
+6.1.) Local project root is structurally usable.
+6.2.) CLASP authentication is currently invalid or bound to an account lacking permission for the script project.
+
+7.) PASS / FAIL
+7.1.) Project structure pass.
+7.2.) CLASP authorization fail.
+
+8.) NEXT REQUIRED ACTION
+8.1.) Run clasp logout.
+8.2.) Run clasp login using the correct Google account owning the Apps Script project.
+8.3.) Re-run clasp status and clasp pull --force.
+8.4.) Verify that remote source matches local files before any new edits.
+
+9.) HANDOFF NOTE
+9.1.) Do not move or clean root files yet.
+9.2.) Existing duplicate legacy folders (_ARCHIVE, _INCOMING, _notes_inbox, _assets) should remain untouched until post-authentication normalization.
+
+===== FILE: CURRENT _Working/clasp/Code.gs =====
+/**
+ * Amity Games Taboo (accessible Taboo prompt player)
+ *
+ * SHEETS EXPECTED:
+ * - ADMIN: settings
+ * - Cards: master prompt list with header row:
+ *     DIFFICULTY | TARGET | TABOO1..TABOO5 | SOURCE (SOURCE optional)
+ */
+
+const ADMIN_SHEET_NAME = 'ADMIN';
+const CARDS_SHEET_NAME = 'Cards';
+
+function doGet() {
+  // Default to phone-first UI unless explicitly overridden with ?ui=app
+  const ui = null;
+  const filename = (ui === 'app') ? 'app' : 'phone';
+  const html = HtmlService.createHtmlOutputFromFile(filename)
+    .setTitle('Amity Games Taboo')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+
+  return html;
+}
+
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+/**
+ * Returns one card at a given sheet row index (2-based; row 1 is header)
+ * plus total card count.
+ */
+function getCard(row) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(CARDS_SHEET_NAME);
+  if (!sheet) {
+    throw new Error(`Missing sheet: ${CARDS_SHEET_NAME}`);
+  }
+
+  const lastRow = sheet.getLastRow();
+  const total = Math.max(0, lastRow - 1); // exclude header row
+  if (total <= 0) {
+    return { total: 0, target: '', taboo: [] };
+  }
+
+  const safeRow = Math.min(Math.max(2, Number(row) || 2), lastRow);
+  const values = sheet.getRange(safeRow, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+  // Expected columns:
+  // A: DIFFICULTY, B: TARGET, C..G: TABOO1..TABOO5, H: SOURCE (optional)
+  const target = (values[1] ?? '').toString().trim();
+  const taboo = [];
+  for (let i = 2; i <= 6; i++) {
+    const v = (values[i] ?? '').toString().trim();
+    if (v) taboo.push(v);
+  }
+
+  return {
+    total,
+    target,
+    taboo
+  };
+}
+
+
+/**
+ * Build a 100-card deck based on ADMIN difficulty percentages.
+ * Returns:
+ * {
+ *   deckId: string,
+ *   total: number, // always 100 when possible
+ *   cards: [{ index: number, rowId: number, target: string, taboo: string[] }]
+ * }
+ */
+function buildDeck() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  const admin = ss.getSheetByName(ADMIN_SHEET_NAME);
+  const cardsSheet = ss.getSheetByName(CARDS_SHEET_NAME);
+  if (!cardsSheet) throw new Error(`Missing sheet: ${CARDS_SHEET_NAME}`);
+
+  const settings = _readAdminDifficultySettings_(admin);
+  const easyPct = settings.easyPct;
+  const mediumPct = settings.mediumPct;
+  const hardPct = settings.hardPct;
+
+  const lastRow = cardsSheet.getLastRow();
+  const lastCol = cardsSheet.getLastColumn();
+  if (lastRow < 2) return { deckId: _nonce_(), total: 0, cards: [] };
+
+  const rows = cardsSheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+
+  const easy = [];
+  const medium = [];
+  const hard = [];
+  const all = [];
+
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    const difficulty = (r[0] ?? '').toString().trim().toLowerCase();
+    const target = (r[1] ?? '').toString().trim();
+    const taboo = [];
+    for (let t = 2; t <= 6; t++) {
+      const v = (r[t] ?? '').toString().trim();
+      if (v) taboo.push(v);
+    }
+    if (!target) continue;
+
+    const rowId = i + 2; // sheet row number
+
+    const card = { rowId, target, taboo };
+
+    all.push(card);
+
+    if (difficulty.includes('easy')) easy.push(card);
+    else if (difficulty.includes('med')) medium.push(card);
+    else if (difficulty.includes('hard')) hard.push(card);
+    else {
+      // Unlabeled difficulty goes to general pool
+    }
+  }
+
+  _shuffleInPlace_(easy);
+  _shuffleInPlace_(medium);
+  _shuffleInPlace_(hard);
+
+  const targetTotal = 100;
+
+  let easyN = Math.round(targetTotal * (easyPct / 100));
+  let mediumN = Math.round(targetTotal * (mediumPct / 100));
+  let hardN = targetTotal - easyN - mediumN;
+
+  if (hardN < 0) { hardN = 0; mediumN = targetTotal - easyN; }
+  if (mediumN < 0) { mediumN = 0; easyN = targetTotal; }
+
+  const picked = [];
+  function take(fromArr, n) {
+    while (n > 0 && fromArr.length > 0) {
+      picked.push(fromArr.shift());
+      n--;
+    }
+    return n;
+  }
+
+  let remEasy = take(easy, easyN);
+  let remMed = take(medium, mediumN);
+  let remHard = take(hard, hardN);
+
+  // Fill any shortfall from remaining pools, then from all
+  const pool = [].concat(easy, medium, hard);
+  _shuffleInPlace_(pool);
+
+  let missing = remEasy + remMed + remHard;
+  while (missing > 0 && pool.length > 0) {
+    picked.push(pool.shift());
+    missing--;
+  }
+
+  if (missing > 0) {
+    _shuffleInPlace_(all);
+    const seen = new Set(picked.map(c => c.rowId));
+    for (let i = 0; i < all.length && missing > 0; i++) {
+      const c = all[i];
+      if (seen.has(c.rowId)) continue;
+      picked.push(c);
+      missing--;
+    }
+  }
+
+  const deckId = _nonce_();
+  const cards = picked.slice(0, targetTotal).map((c, idx) => ({
+    index: idx + 1,
+    rowId: c.rowId,
+    target: c.target,
+    taboo: c.taboo
+  }));
+
+  return { deckId, total: cards.length, cards };
+}
+
+/**
+ * Reads ADMIN difficulty percentages with tolerant parsing.
+ * Defaults to 34/33/33 if not found or invalid.
+ */
+function _readAdminDifficultySettings_(adminSheet) {
+  const def = { easyPct: 34, mediumPct: 33, hardPct: 33 };
+  if (!adminSheet) return def;
+
+  const values = adminSheet.getDataRange().getValues();
+  if (!values || values.length === 0) return def;
+
+  // Strategy 1: key/value in first two columns
+  const kv = {};
+  for (let r = 0; r < values.length; r++) {
+    const k = (values[r][0] ?? '').toString().trim().toLowerCase();
+    const v = values[r][1];
+    if (!k) continue;
+    kv[k] = v;
+  }
+
+  function num(x) {
+    const n = Number(String(x).replace('%','').trim());
+    return Number.isFinite(n) ? n : NaN;
+  }
+
+  function findPct(name) {
+    // look for any key containing name + percent-ish
+    const keys = Object.keys(kv);
+    for (const k of keys) {
+      if (k.includes(name) && (k.includes('%') || k.includes('percent') || k.includes('pct'))) {
+        const n = num(kv[k]);
+        if (Number.isFinite(n) && n >= 0) return n;
+      }
+    }
+    // look for exact name key
+    for (const k of keys) {
+      if (k === name || k.includes(name + ' ')) {
+        const n = num(kv[k]);
+        if (Number.isFinite(n) && n >= 0) return n;
+      }
+    }
+    return NaN;
+  }
+
+  let easyPct = findPct('easy');
+  let mediumPct = findPct('medium');
+  let hardPct = findPct('hard');
+
+  // Strategy 2: header row "Easy/Medium/Hard" with next row values
+  if (![easyPct, mediumPct, hardPct].some(Number.isFinite)) {
+    const header = values[0].map(x => (x ?? '').toString().trim().toLowerCase());
+    const row1 = values[1] || [];
+    function headerIdx(term) {
+      return header.findIndex(h => h.includes(term));
+    }
+    const ei = headerIdx('easy');
+    const mi = headerIdx('med');
+    const hi = headerIdx('hard');
+    if (ei >= 0) easyPct = num(row1[ei]);
+    if (mi >= 0) mediumPct = num(row1[mi]);
+    if (hi >= 0) hardPct = num(row1[hi]);
+  }
+
+  if (!Number.isFinite(easyPct)) easyPct = def.easyPct;
+  if (!Number.isFinite(mediumPct)) mediumPct = def.mediumPct;
+  if (!Number.isFinite(hardPct)) hardPct = def.hardPct;
+
+  // Normalize if totals are off
+  let sum = easyPct + mediumPct + hardPct;
+  if (!Number.isFinite(sum) || sum <= 0) return def;
+
+  easyPct = (easyPct / sum) * 100;
+  mediumPct = (mediumPct / sum) * 100;
+  hardPct = (hardPct / sum) * 100;
+
+  return {
+    easyPct: Math.round(easyPct),
+    mediumPct: Math.round(mediumPct),
+    hardPct: Math.max(0, 100 - Math.round(easyPct) - Math.round(mediumPct))
+  };
+}
+
+===== FILE: CURRENT _Working/clasp/phone.html =====
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AMITY TABOO</title>
+  <style>
+    :root{
+      --bg:#000;
+      --pad:20px;             /* outer padding on all sides */
+      --gap:20px;             /* card-to-buttonbar gap */
+
+      --card-radius:38px;
+      --card-bg:#fff;
+      --card-header-bg:#6f8f2a;
+
+      /* typography scales with viewport width (≈ card width) */
+      /* DOUBLED TYPE FOR LOW VISION */
+      --fs-amity: clamp(36px, 9.6vw, 68px);
+  --fs-games: clamp(18px, 3.8vw, 34px);
+      --fs-taboo: clamp(58px, 15.2vw, 150px);
+      --fs-tagline: clamp(32px, 7.2vw, 52px);
+      --fs-body: clamp(40px, 8.8vw, 68px);
+      --fs-just: clamp(46px, 10.4vw, 78px);
+      --fs-ready: clamp(32px, 7.2vw, 52px);
+      --fs-btn: clamp(48px, 13.2vw, 88px);
+      --fs-status: clamp(28px, 6.4vw, 40px);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{
+      height:100%;
+      margin:0;
+      background:var(--bg);
+      color:#111;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+    }
+
+    /* Keep the 20px padding, but also respect iOS safe areas. */
+    .screen{
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      padding:
+        calc(var(--pad) + env(safe-area-inset-top))
+        calc(var(--pad) + env(safe-area-inset-right))
+        calc(var(--pad) + env(safe-area-inset-bottom))
+        calc(var(--pad) + env(safe-area-inset-left));
+      gap:var(--gap);
+    }
+
+    .card{
+      width:100%;
+      aspect-ratio:5 / 7;
+      background:var(--card-bg);
+      border-radius:var(--card-radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Green field = ~20% of card height */
+    .header{
+      flex:0 0 20%;
+      background:var(--card-header-bg);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      padding:10px 12px;
+    }
+
+    /* Constrain AMITY GAMES + underline to the same width as AMITY TABOO */
+    .title-block{
+      width:fit-content;
+      max-width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .amity-games{
+  width:auto;
+  align-self:stretch;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  font-weight:800;
+  letter-spacing:0.42em;
+  font-size:var(--fs-games);
+  color:#fff;
+  line-height:1;
+  position:relative;
+  padding:0;
+}
+
+.amity-games .ag-left,
+.amity-games .ag-right{
+  display:inline-block;
+  white-space:nowrap;
+}
+
+.amity-games::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  height:4px;
+  background:#fff;
+  bottom:0;
+}
+
+.amity-taboo{
+      font-size:var(--fs-taboo);
+      font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-weight:900;
+      color:#7b1f1f;
+      letter-spacing:0.02em;
+      line-height:1;
+      margin:0;
+      text-transform:uppercase;
+      text-align:center;
+      white-space:nowrap;
+    }
+
+    .content{
+      flex:1 1 auto;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:center;
+      padding:18px 18px 18px;
+      text-align:center;
+    }
+
+    .tagline{
+      font-size:var(--fs-tagline);
+      font-style:italic;
+      font-weight:700;
+      margin:10px 0 calc(var(--fs-body) * 1.6) 0;
+      opacity:0.9;
+    }
+
+    .rules{
+      font-size:var(--fs-body);
+      font-weight:700;
+      line-height:1.25;
+      margin:0 0 14px 0;
+    }
+
+    .just { font-size: var(--fs-body); font-weight: 700; text-transform: uppercase; margin:0 0 calc(var(--fs-ready) * 1.1) 0;}
+
+    .ready{
+      font-size:var(--fs-ready);
+      font-weight:650;
+      margin:0 0 12px 0;
+    }
+
+
+    #deck-status{
+      text-align:left;
+      width:78%;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .playCard{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .playGreen{
+      flex:0 0 20%;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 16px 4px 16px;
+    }
+
+    .playWhite{
+      flex:1 1 auto;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:24px;
+      padding:28px 20px;
+    }
+
+    .playTarget{
+      width:100%;
+      font-size:clamp(64px, 12vw, 124px);
+      line-height:1;
+      font-weight:900;
+      color:var(--card-header-bg);
+      text-align:center;
+      letter-spacing:0.02em;
+      text-transform:uppercase;
+    }
+
+    .playTaboo{
+      width:100%;
+      font-size:clamp(40px, 8vw, 72px);
+      line-height:1.05;
+      font-weight:900;
+      color:#7b1f1f;
+      text-align:center;
+      text-transform:uppercase;
+      letter-spacing:0.02em;
+      white-space:pre-line;
+    }
+
+
+    .begin{
+      font-size:var(--fs-btn);
+      font-weight:900;
+      padding:14px 26px;
+      border:4px solid #111;
+      border-radius:16px;
+      background:#fff;
+      opacity:1;
+      color:#111;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      user-select:none;
+    }
+
+    .begin.disabled{
+      opacity:0.35;
+      pointer-events:none;
+      color:#111;
+    }
+
+    .begin.enabled{
+      opacity:1;
+      pointer-events:auto;
+      color:#000;
+    }
+
+    .btn.disabled{
+      opacity:0.35;
+      pointer-events:none;
+    }
+
+    .btn.enabled{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .loading-letters{
+      display:inline-block;
+      white-space:nowrap;
+      min-width:18ch;
+      text-align:left;

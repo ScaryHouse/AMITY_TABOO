@@ -1,0 +1,136 @@
+AMITY TABOO — IMPLEMENTATION NOTES (FOR FUTURE AGENTS)
+
+HIGH-LEVEL APPROACH
+- Model the UI as a small finite-state machine with explicit states:
+  A) INSTRUCTION_LOADING
+  B) INSTRUCTION_READY
+  C) PLAYING
+  D) INFO_OVERLAY (non-destructive; returns to PLAYING)
+- Keep one in-memory “session” object that owns:
+  - deck array (100 cards)
+  - currentIndex (0..99)
+  - deckId (timestamp/nonce, optional)
+  - isBuilding flag
+- Prefer client-side deck persistence (sessionStorage/localStorage) so play can continue through pauses and brief network interruptions.
+
+
+DATA MODEL (RECOMMENDED)
+DeckCard object (one per card):
+- index: 1..100 (position in deck)
+- sheetRow: integer (row number for Card ID)
+- target: string (ALL CAPS display)
+- taboo: string[] (ALL CAPS display list)
+- difficulty: "easy" | "medium" | "hard" (optional for debugging)
+
+DeckSession object:
+- deckId: string (e.g., ISO timestamp + random suffix)
+- createdAt: number (ms)
+- cards: DeckCard[100]
+- currentIndex: number (0..99)
+- adminMix: {easyPct, medPct, hardPct} (optional)
+- sourceSheetId / tab name (optional)
+- version: number (schema version for persistence)
+
+
+UI STATE MACHINE (BEHAVIOR MAP)
+
+STATE: INSTRUCTION_LOADING
+- Visual:
+  - Instruction card visible
+  - Working indicator text shown instead of “Your deck is ready.”
+  - BEGIN PLAY disabled (grey)
+  - BACK disabled (grey)
+  - NEXT disabled (grey)
+  - Status bar: Deck 0 of 0, Card ID #0000
+- Accessibility:
+  - aria-live polite: “Building your deck. Please wait.” (announce once)
+- Transition out:
+  - When deck build promise resolves -> INSTRUCTION_READY
+
+STATE: INSTRUCTION_READY
+- Visual:
+  - “Your deck is ready.” displayed
+  - BEGIN PLAY enabled (black)
+  - NEXT enabled (green)
+  - BACK disabled (grey)
+  - Status bar: Deck 0 of 100, Card ID #0000
+- Accessibility:
+  - aria-live polite: “Deck ready.” (announce once)
+- Actions:
+  - BEGIN PLAY -> PLAYING at currentIndex=0
+  - NEXT -> PLAYING at currentIndex=0 (optional shortcut if desired; spec currently allows NEXT to be enabled here)
+  - Any “reset/start new deck” action -> INSTRUCTION_LOADING and begins new build
+
+STATE: PLAYING
+- Visual:
+  - Card view replaces instruction text
+  - Header: TARGET WORD (black ALL CAPS)
+  - Body: TABOO WORDS (red ALL CAPS list)
+  - Buttons:
+    - NEXT enabled (green) unless at end-of-deck rule requires otherwise
+    - BACK enabled (green) except special rule below
+  - Status bar:
+    - Deck: (currentIndex+1) of 100
+    - Card ID: sheetRow for current card
+- Navigation rules:
+  - NEXT on 1..99: currentIndex++
+  - NEXT on 100:
+    - transition to INSTRUCTION_LOADING and immediately start a NEW deck build
+  - BACK on 2..100: currentIndex--
+  - BACK on 1:
+    - transition to INSTRUCTION_LOADING and immediately start a NEW deck build (“square one”)
+- Accessibility:
+  - The status bar should not be in the reading order.
+  - Use visible labels “Target word:” and “Taboo words:” (or aria-label equivalents) so screen readers speak those prefixes.
+
+STATE: INFO_OVERLAY (INFORMATION CARD)
+- Purpose:
+  - “About / why no-timer taboo / buy me a coffee” content
+- Critical rule:
+  - MUST NOT reset or rebuild the deck
+- UI:
+  - Present as an overlay/modal or a separate view that preserves DeckSession and currentIndex
+  - Provide a large “BACK TO PLAY” control at the bottom
+- Actions:
+  - BACK TO PLAY returns to PLAYING with the same currentIndex and same deck
+
+
+DECK BUILD IMPLEMENTATION OPTIONS
+
+OPTION 1 (CURRENT SINGLE-PAGE APPS SCRIPT HTMLSERVICE)
+- Build deck in Apps Script, send data to phone.html via templating or google.script.run callback.
+- Note: google.script.run is only available when the UI is served by Apps Script.
+
+OPTION 2 (FUTURE EXTERNAL HOSTING)
+- Apps Script becomes API-only and returns JSON via ContentService.
+- UI (hosted elsewhere) calls Apps Script endpoints to fetch a newly built deck.
+- Prefer returning the full 100-card deck in one response so the UI can operate offline once loaded.
+
+
+CLIENT-SIDE PERSISTENCE (RECOMMENDED)
+- Save DeckSession to sessionStorage (default) or localStorage (optional).
+- On page load:
+  - If a valid DeckSession exists and is “fresh enough,” restore it and resume in PLAYING.
+  - If not, start INSTRUCTION_LOADING and build a new deck.
+- If you want “always new deck on refresh,” then ignore stored sessions by default and only use persistence to survive transient reloads during play (opt-in flag).
+
+
+LOADING INDICATOR + SCREEN READER NOTES
+- Do not update aria-live text repeatedly (it will be spoken repeatedly).
+- Approach:
+  - Visual: animated “L, o, a, d, i, n, g…” is fine.
+  - Screen reader: one-time polite announcement on entry, and one-time “Deck ready.” on completion.
+
+
+TEST CASES (MINIMUM)
+1) Initial load -> loading -> ready -> begin play -> card 1.
+2) NEXT through card 100 -> NEXT -> instruction loading (new deck) -> ready.
+3) BACK on card 1 -> instruction loading (new deck) -> ready.
+4) INFO overlay from mid-deck -> BACK TO PLAY returns to same card index and card ID.
+5) Screen reader reads “Target word:” + target and “Taboo words:” + list; does not read status bar.
+6) Network interruption after deck built: BACK/NEXT still work (if client-side deck persisted).
+
+
+IMPLEMENTATION SAFETY
+- Keep state transitions centralized (one function) to avoid drift between UI and logic.
+- Keep button enable/disable derived from state and currentIndex (not ad-hoc toggles).

@@ -1,0 +1,147 @@
+=======================================================
+AMITY TABOO PROJECT
+=======================================================
+
+LAST UPDATED: 
+
+=======================================================
+PURPOSE OF THIS DOCUMENT
+=======================================================
+
+This document is the canonical working description of the Amity Taboo project.  
+It is intended to orient new agents quickly, preserve decisions, record technical plumbing, and capture ongoing design and operational notes in one place.  
+
+This document should be updated whenever the project structure, dependencies, or behavior change in a meaningful way.
+
+=======================================================
+PROJECT OVERVIEW
+=======================================================
+
+PROJECT NAME: Amity Taboo  
+
+Amity Taboo is a Google Apps Script + HTML web app that delivers an accessible, single-screen Taboo-style prompt experience.
+
+KEY CHARACTERISTICS:  
+
+1. Browser-based web app served from Google Apps Script.  
+
+2. No teams.  
+3. No timers.  
+4. No scores.  
+
+5. Card-based UI designed to fit the viewport without scrolling.  
+
+6. Logic lives in Apps Script; UI lives in app.html.
+
+=======================================================
+CORE ARCHITECTURE
+=======================================================
+
+A. GOOGLE APPS SCRIPT PROJECT  
+Houses server-side logic and HTML delivery.
+
+B. CONTAINER SPREADSHEET (AUTHORITATIVE DATA SOURCE)  
+Stores cards, settings, and deck state.
+
+C. WEB APP  
+Deployed from the Apps Script project and served to players.
+
+=======================================================
+CONTAINER SHEET (PLUMBING SECTION)
+=======================================================
+
+CONTAINER SPREADSHEET NAME: Amity Taboo  
+
+CONTAINER SPREADSHEET URL:  
+https://docs.google.com/spreadsheets/d/1dvWrl4YZ9wb8NjA9H0b7vWwDmv9Old_JYS1fz_Uxu48/edit?usp=sharing
+
+REQUIRED SHEETS:
+
+A. ADMIN  
+Contains configuration values such as:  
+
+- TOTAL CARDS (auto-filled by script)  
+- DECK SIZE  
+- EASY %  
+- MEDIUM %  
+- HARD %  
+- SHUFFLE SEED (optional)  
+
+B. CARDS  
+Master prompt list with at minimum these columns:  
+
+- DIFFICULTY  
+- TARGET  
+- TABOO1  
+- TABOO2  
+- TABOO3  
+- TABOO4  
+- TABOO5  
+- SOURCE (optional)  
+
+C. HIDDEN SYSTEM SHEETS (SCRIPT-MANAGED)  
+
+- _DECK_INDEX  
+- _DECK_CARDS  
+
+These store generated decks and should not be edited manually.
+
+=======================================================
+APPS SCRIPT PROJECT (PLUMBING SECTION)
+=======================================================
+
+SCRIPT ID:  
+1_sJkpFad90NXm13zvomLpP3vgaXZWWiCbI7NiPhx2rj5JAgPCBm_3tMC  
+
+PRIMARY FILES (CURRENT CLONE):  
+
+- AmityTaboo.js  
+- app.html  
+- appsscript.json  
+
+=======================================================
+DEPLOYMENTS (WEB APP)
+=======================================================
+
+KNOWN DEPLOYMENTS (FROM clasp list-deployments):
+
+- AKfycbx2oGxWTO9QhgSCxuNJCaXAVWM1w_OW47KYkI4_qUbz @HEAD  
+- AKfycbyY_EqmNYNAH9d1KbxReNCcmBhVjsevtGRyMbL__kc8IZ6aBVYxhTOJnDrBF-i340nLFg @13  
+- AKfycby0t1A9TFiCvL2r6w33Dzct1_5QkQMcDAW0oSyVi0dihbKMd4nV6T6h14ATGi-qd14SNw @114  
+
+ACTIVE DEPLOYMENT TO USE:  
+(leave blank until confirmed)
+
+=======================================================
+UI & BEHAVIOR PRINCIPLES
+=======================================================
+
+1. Single, fixed viewport — no scrolling.  
+
+2. Clean card layout: title, target word, taboo list, status bar.  
+
+3. Begin Play button should only activate once a deck is built.  
+
+4. Text must remain screen-reader friendly.  
+
+5. Minimal visual chrome; focus on readability.
+
+=======================================================
+KNOWN ISSUES / NOTES
+=======================================================
+
+1. If “Begin Play” does not activate, check whether a deck was actually generated in hidden sheets.  
+
+2. Deck generation depends on valid ADMIN percentages summing to 1.0.  
+
+3. Do not manually edit _DECK_INDEX or _DECK_CARDS.
+
+=======================================================
+WORKFLOW FOR NEW AGENTS
+=======================================================
+
+1. Provide a ZIP of the local project folder.  
+
+2. Instruct: “Read Amity Taboo Project.txt first.”  
+
+3. Confirm container sheet URL and script ID before making changes.

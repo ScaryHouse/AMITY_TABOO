@@ -1,0 +1,93 @@
+=======================================================
+AMITY_TABOO PROJECT REPORT — 2026-03-26 23:36
+=======================================================
+
+1. CURRENT LIVE / REPO STATE
+
+A. Repository and live main were force-reset to commit a4d3539.
+
+B. Commit message:
+group swipe state into gesture object
+
+C. This is the current known-safe checkpoint where:
+1. Card visuals look correct again.
+2. Later label/comment cleanup changes are removed.
+3. Later card-surface and geometry experiments are removed.
+
+2. CURRENT STATUS
+
+A. Card visuals are acceptable again.
+
+B. Build and motion issues remain unresolved.
+
+C. Card art and layout must remain untouched unless explicitly approved.
+
+D. Future work must avoid:
+1. Card geometry changes
+2. Offsets
+3. Scaling
+4. Padding changes
+5. Art-bound changes
+
+3. DISCARDED EXPERIMENTS AFTER a4d3539
+
+A. Section labels / architecture comments
+
+B. Startup render-router cleanup
+
+C. Shared top-card / status renderer extraction
+
+D. Under-card preload-at-start experiment
+
+E. Under-card depth offset / scale / translate experiments
+
+F. Top-card gesture-area expansion
+
+G. will-change and pointer-events suppression
+
+H. translate3d drag swap
+
+I. Frozen under-card during drag
+
+J. Other card-surface CSS experiments
+
+4. FUTURE CONSTRAINTS
+
+A. Only motion / gesture behavior should be touched next.
+
+B. No CSS, layout, or art modifications unless explicitly approved.
+
+C. Make one motion-only change at a time.
+
+D. Test immediately after each change.
+
+5. KNOWN REMAINING PROBLEMS
+
+A. Sticky feel during drag / motion.
+
+B. Motion quality does not yet match expected simple smooth swipe.
+
+C. Build / motion issues remain even though visuals are restored.
+
+6. SAFE ROLLBACK ANCHOR
+
+A. Commit a4d3539 is the current handoff anchor.
+
+B. If future experiments fail, return to a4d3539.
+
+7. RECOMMENDED FIRST STEP FOR NEXT AGENT
+
+A. Verify live app behavior at a4d3539.
+
+B. Reproduce motion issue without changing visuals.
+
+C. Inspect only:
+1. begin_()
+2. move_()
+3. finish_()
+4. pointer / touch listener wiring
+
+8. VERIFICATION
+
+A. Expected current repo short hash:
+a4d3539

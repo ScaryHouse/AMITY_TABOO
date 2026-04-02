@@ -1,0 +1,41 @@
+1.) PROJECT REPORT
+1.1.) AMITY TABOO
+1.2.) REPORT FILE
+1.2.1.) PROJECT_REPORT_2026-03-13_205000.txt
+
+2.) TIMESTAMP
+2.1.) 2026-03-13_205000
+
+3.) DESCRIPTION OF EXPERIMENT OR CHANGE
+3.1.) Verified local AMITY_TABOO project root under /Users/computerservices/PROJECTS/AMITY_TABOO.
+3.2.) Confirmed tracked CLASP files are appsscript.json, Code.gs, and phone.html.
+3.3.) Confirmed required project folders now exist, including _Archives, _Working, _Output, _Resources, and _Incoming variants already present in legacy form.
+3.4.) Attempted clasp pull --force and received: The caller does not have permission.
+
+4.) COMMANDS EXECUTED
+4.1.) cd /Users/computerservices/PROJECTS/AMITY_TABOO
+4.2.) ls -la .clasp.json
+4.3.) clasp status
+4.4.) clasp pull --force
+
+5.) FILES CREATED OR MODIFIED
+5.1.) 00_PROJECT_PLAN.txt already installed at project root.
+5.2.) This project report created for handoff.
+
+6.) OBSERVED RESULT
+6.1.) Local project root is structurally usable.
+6.2.) CLASP authentication is currently invalid or bound to an account lacking permission for the script project.
+
+7.) PASS / FAIL
+7.1.) Project structure pass.
+7.2.) CLASP authorization fail.
+
+8.) NEXT REQUIRED ACTION
+8.1.) Run clasp logout.
+8.2.) Run clasp login using the correct Google account owning the Apps Script project.
+8.3.) Re-run clasp status and clasp pull --force.
+8.4.) Verify that remote source matches local files before any new edits.
+
+9.) HANDOFF NOTE
+9.1.) Do not move or clean root files yet.
+9.2.) Existing duplicate legacy folders (_ARCHIVE, _INCOMING, _notes_inbox, _assets) should remain untouched until post-authentication normalization.

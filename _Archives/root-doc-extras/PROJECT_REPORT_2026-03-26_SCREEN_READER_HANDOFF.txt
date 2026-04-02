@@ -1,0 +1,101 @@
+======================================================= PROJECT REPORT -
+2026-03-26 06:58 CT
+=======================================================
+
+1.  PROJECT A. AMITY_TABOO B. Working branch: github-pages C. Live
+    version at handoff: v.095
+
+======================================================= 2. COMPLETED IN
+THIS SESSION =======================================================
+
+1.  Removed in-app temporary sound lab from production interface.
+
+2.  Disabled gameplay sound output in main app: A. playDealSound_ now
+    returns immediately. B. playShuffleSound_ now returns
+    immediately. C. Audio context startup path no longer produces
+    audible output.
+
+3.  Created standalone sound experiment file outside production app: A.
+    File created in Downloads:
+    /Users/computerservices/Downloads/AMITY_TABOO_SOUND_LAB.html B. This
+    standalone file preserves adjustable synth controls: attack, decay,
+    duration, level, cutoff, Q, oscillator count, waveform, pitch,
+    second layer, repeat count, repeat gap.
+
+4.  Added screen-reader live region framework to production app: A.
+    Hidden live region: id=“sr-live” B. aria-live=“polite” C.
+    aria-atomic=“true”
+
+5.  Added screen-reader announcement functions: A.
+    announceScreenReader_() B. getInstallAnnouncement_() C.
+    getInfoLoadingAnnouncement_() D. getInfoReadyAnnouncement_() E.
+    getPlayCardAnnouncement_()
+
+6.  Connected announcements to app states: A. Install card announcement
+    triggers when install card shows. B. Info loading announcement
+    triggers when deck begins loading. C. Info ready announcement
+    triggers when deck ready state appears. D. Play card announcement
+    triggers on rendered card.
+
+7.  Decorative presentation assets were separated from spoken
+    content: A. Hidden-reader utility class added: .sr-only
+
+======================================================= 3. VERIFIED BY
+TERMINAL =======================================================
+
+1.  Verified live region markers exist: A. sr-live B. sr-only
+
+2.  Verified callable announcement hooks exist: A.
+    announceScreenReader_ B. install/info/play announcement generators
+
+3.  Verified active call sites exist: A. install card call B. info
+    loading call C. info ready call D. play card call
+
+4.  Verified live deployed version: A. status-version = v.095
+
+======================================================= 4. NOT YET
+VERIFIED ON DEVICE
+=======================================================
+
+1.  Actual VoiceOver / TalkBack spoken behavior still requires physical
+    test.
+
+2.  Decorative SVG suppression should be tested on: A. iPhone Safari B.
+    iPhone Chrome C. Android Chrome
+
+3.  Spoken pacing still needs validation: A. taboo word pause quality B.
+    instruction phrasing C. loading-to-ready transition timing
+
+======================================================= 5. CURRENT
+DESIGN POSITION =======================================================
+
+1.  Sounds are currently removed from gameplay pending accessibility
+    decision.
+
+2.  Install/info startup sounds are intentionally absent because browser
+    autoplay policy remains restrictive before user gesture.
+
+3.  Accessibility now has priority over sound effects.
+
+======================================================= 6. RECOMMENDED
+NEXT AGENT START =======================================================
+
+1.  Test v.095 with actual screen reader enabled.
+
+2.  Record exact spoken output for: A. install card B. info card C.
+    first play card
+
+3.  Adjust spoken strings only after hearing actual platform behavior.
+
+4.  Decide whether: A. keep sound permanently removed B. restore sound
+    only after first interaction C. keep sound solely in standalone
+    experiment tool
+
+======================================================= 7. HANDOFF STATE
+=======================================================
+
+1.  Repository clean after push.
+
+2.  Latest pushed commit: 4dc3a15
+
+3.  Safe continuation point: github-pages/index.html at v.095

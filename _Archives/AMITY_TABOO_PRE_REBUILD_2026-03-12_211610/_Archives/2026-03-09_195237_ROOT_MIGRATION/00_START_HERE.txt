@@ -1,0 +1,20 @@
+=======================================================
+AMITY_TABOO — PROJECT ENTRY POINT
+=======================================================
+
+1. CANONICAL RULESET
+A. Global Master Ruleset lives at:
+/Users/computerservices/Documents/GLOBAL_MASTER_RULESET/00_START_HERE.txt
+
+2. REQUIRED FIRST ACTION
+A. Read the current GLOBAL MASTER RULESET before any changes.
+B. Then read HANDOFF_AMITY_TABOO.txt.
+C. Then read the most recent HANDOFF_SNAPSHOT_*.txt.
+
+3. DO NOT
+A. Do not create duplicate project folders.
+B. Do not modify structure without documenting in HANDOFF.
+
+=======================================================
+END
+=======================================================

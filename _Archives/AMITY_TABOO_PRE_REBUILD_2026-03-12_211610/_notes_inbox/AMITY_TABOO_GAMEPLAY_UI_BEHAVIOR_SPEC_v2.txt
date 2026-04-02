@@ -1,0 +1,145 @@
+AMITY TABOO — GAMEPLAY/UI BEHAVIOR SPEC v2 (WITH localStorage PERSISTENCE)
+
+INSTRUCTION CARD VS INFORMATION CARD (TWO DIFFERENT THINGS)
+
+1) INSTRUCTION CARD (DECK CONTROL SCREEN)
+- Purpose:
+  - Controls the lifecycle of a deck (build, ready, start play, reset).
+- Rule:
+  - If the instruction card is reached/triggered, behavior returns to square one.
+  - A NEW deck is generated.
+  - BEGIN PLAY is disabled until the new deck is fully built.
+  - Any existing saved deck state is cleared (see PERSISTENCE).
+
+2) INFORMATION CARD (ABOUT/HELP SCREEN)
+- Purpose:
+  - About the game, why it exists, Buy Me A Coffee link, etc.
+- Rule:
+  - Information card must NOT reset the deck.
+  - Information card must provide a clear “BACK TO PLAY” control that returns the user to the exact card they were on.
+  - The game resumes at the same card index and same deck instance.
+
+
+STATE A — INSTRUCTION_LOADING (INSTRUCTION CARD VISIBLE, DECK BUILDING)
+
+BACKGROUND (GAS)
+- On entry to this state, Apps Script:
+  - Reads ADMIN percentages (Easy/Medium/Hard).
+  - Shuffles prompt rows.
+  - Selects 100 cards according to the percentages.
+  - Builds a 100-card deck.
+
+UI
+- Instruction card shows a working indicator in place of “Your deck is ready.”
+  - Text: “L, o, a, d, i, n, g, ., ., .”
+- Buttons:
+  - BEGIN PLAY: grey (disabled look)
+  - BACK: grey (disabled)
+  - NEXT: grey (disabled)
+- Status bar (not read by screen readers):
+  - Deck: 0 of 0
+  - Card ID: #0000
+
+SCREEN READER
+- Do NOT repeatedly announce “loading”.
+- Announce once (polite, complete sentence):
+  - “Building your deck. Please wait.”
+
+
+STATE B — INSTRUCTION_READY (INSTRUCTION CARD VISIBLE, DECK BUILT)
+
+UI
+- “Loading…” disappears.
+- “Your deck is ready.” appears.
+- Buttons:
+  - BEGIN PLAY: black (enabled)
+  - NEXT: green (enabled)
+  - BACK: grey (disabled; nothing to go back to yet)
+- Status bar:
+  - Deck: 0 of 100
+  - Card ID: #0000
+
+SCREEN READER
+- Announce once (polite, complete sentence):
+  - “Your deck is ready. You may begin playing.”
+
+
+STATE C — PLAYING (CARD MODE)
+
+ON BEGIN PLAY
+- Instruction card disappears.
+- Card 1 appears.
+- Status bar:
+  - Deck: 1 of 100
+  - Card ID: sheet row number for that prompt
+
+CARD LAYOUT
+- Green header field:
+  - Speak label: “Target word:” then the target word.
+  - Display: target word in BLACK, ALL CAPS.
+- White field:
+  - Speak label: “Taboo words:” then the taboo list.
+  - Display: taboo words in RED, ALL CAPS LIST.
+
+NAVIGATION (BACK / NEXT)
+- NEXT:
+  - Advances to the next card.
+  - Updates Deck: N of 100.
+  - Updates Card ID to the current card’s sheet row number.
+- BACK:
+  - Goes to the previous card.
+  - Updates Deck and Card ID accordingly.
+- Special rule:
+  - BACK on Card 1 returns to INSTRUCTION_LOADING AND STARTS A NEW DECK BUILD (square one).
+
+
+END OF DECK
+
+- When user is on Card 100 and presses NEXT:
+  - Return to INSTRUCTION_LOADING.
+  - Immediately begin building a NEW deck.
+  - While building:
+    - Deck: 0 of 0
+    - Card ID: #0000
+    - BEGIN PLAY disabled until deck is ready.
+
+
+STATUS BAR RULES
+
+- Status bar is NOT read by screen readers.
+- Values:
+  - Loading: Deck 0 of 0, Card ID #0000
+  - Ready (before play): Deck 0 of 100, Card ID #0000
+  - Playing: Deck N of 100, Card ID = sheet row number
+
+
+PERSISTENCE / RESUME POLICY (CHOSEN: localStorage)
+
+GOAL
+- The game must survive reloads, tab closes, and device restarts.
+- The user should return to the same deck and same card index after interruption.
+
+RULES
+1) Persist the active deck session in localStorage:
+- Deck data (100 cards)
+- Current card index (0..99)
+- Deck ID (nonce/timestamp)
+- Any metadata needed for debugging (optional)
+
+2) On page load:
+A) If a valid saved deck exists:
+- Resume directly into PLAYING at the saved index (or show a brief resume-ready state if desired later).
+B) If no valid saved deck exists:
+- Enter INSTRUCTION_LOADING and build a new deck.
+
+3) Reset behavior:
+- Any entry to INSTRUCTION_LOADING that represents “start over / new deck” MUST first clear localStorage deck/session state.
+- The INFORMATION CARD must NOT clear localStorage; it is non-destructive.
+
+4) User expectations:
+- The instruction card is the “new deck/reset” path.
+- The information card is “about/help” and returns to play.
+
+
+NOTES FOR FUTURE IMPLEMENTATION
+- Prefer a schema version field for the stored object so future changes can invalidate older saved sessions safely.

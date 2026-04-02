@@ -1,0 +1,118 @@
+STARTUP COMES BEFORE TASK WORK.
+
+Read this file fully before any project action.
+
+If a ZIP is present, treat the ZIP root as startup source unless told otherwise.
+
+Do not state file facts until startup reading and live inspection are complete.
+
+If this file exists, it controls startup.
+
+Read it fully before any other project action.
+
+If this project was provided as a ZIP:
+1. Do not inspect structure first.
+2. Do not summarize contents first.
+3. Do not offer menus first.
+4. Do not ask for objectives first.
+5. Do not ask what the user wants next.
+6. Do not assess completeness, cleanliness, or handoff readiness first.
+
+The first valid reply must be startup declaration only.
+
+No menu, option list, goal request, next-action request, objective request, or task categorization is allowed before startup declaration.
+
+STARTUP EXECUTION DISCIPLINE
+
+1. Do not report command results as complete, successful, failed, or verified before the operator pastes terminal output.
+2. Treat expected outcome as provisional until pasted output is reviewed.
+3. Do not begin task work until startup reading and live inspection are complete.
+
+Authority: GLOBAL_MASTER_RULESET.txt controls startup truth, continuity routing, canonical folders, _Incoming lifecycle behavior, and lockstep discipline.
+
+1. Read this file completely.
+
+2. Read PROJECT_PLAN.txt in this project.
+   A. If PROJECT_PLAN.txt is missing, state that blocker explicitly.
+
+3. Read the active authority files for this project in this order:
+   A. PROJECT_REPORT.txt
+   B. GLOBAL_MASTER_RULESET.txt
+
+4. Read every file currently present in:
+   A. _Incoming
+
+5. Startup is not complete when instructions are merely understood.
+   Startup is complete only after the assistant has stated:
+   A. current source actually being inspected
+   B. exact startup files actually read
+   C. live GMR path actually being used
+   D. blocker if any required source is missing or unavailable
+
+6. If _Incoming is not empty:
+   A. task work must pause until each file is read
+   B. lasting meaning must be merged into canonical docs if needed
+   C. resolved notes must be moved to:
+      _Archives/incoming-resolved
+
+7. Forbidden first replies during startup:
+   A. READY
+   B. OK
+   C. DONE
+   D. any other single-word acknowledgment
+
+8. Preferred first reply format:
+   Startup understood. Current source is ____.
+   Files read: ____.
+   Live GMR path: ____.
+   Blocker: ____.
+   If there is no blocker, say: Blocker: none.
+
+9. During startup, do not:
+   A. begin task work
+   B. create deliverables
+   C. create placeholder content
+   D. pretend live-folder inspection happened when only uploaded files, file-search results, or conversation text were available
+   E. summarize project quality
+   F. assess project readiness
+   G. offer action menus or letter choices
+   H. recommend development direction
+   I. ask what goal to pursue before startup
+   J. ask what next action to take before startup
+   K. attribute statements to earlier user questions unless quoted from the current interaction or current project files
+
+10. Wait for the user's first instruction after truthful startup state is declared.
+
+LOCKSTEP MODE
+
+Unless the user explicitly directs otherwise, work in lockstep.
+
+Each cycle follows this order:
+
+GOAL:
+Concise statement of the next task.
+
+ACTION:
+Concise statement of the immediate next action.
+
+Then one exchange only:
+
+A. Agent gives one immediate step, command stack, file read, click path, or focused instruction.
+B. Agent stops and waits for returned evidence.
+C. User returns output, result, screenshot, or confirmation.
+
+RESULT:
+Concise statement of what the returned evidence shows, including success, failure, discoveries, and what informs the next GOAL.
+
+WORKING RULES
+
+1. Do not begin task work before startup reading is complete.
+2. Do not combine multiple future branches before current evidence returns.
+3. RESULT exists only after evidence exists.
+4. Continue one observable step at a time unless the user requests broader execution.
+
+PURPOSE
+
+This keeps work observable, reduces assumption drift, and preserves handoff continuity.
+
+The project folder remains the primary source of truth.

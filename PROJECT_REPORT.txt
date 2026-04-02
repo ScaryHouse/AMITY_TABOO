@@ -1,0 +1,289 @@
+=======================================================
+AMITY TABOO PROJECT REPORT — 2026-03-12 22:55 CT
+=======================================================
+
+1. PROJECT STATUS AT CLOSE
+
+A. Project is production-usable.
+
+B. No known blocking defects at close.
+
+C. Canonical live deployment is active and public.
+
+D. Public access works without Google login through the deployed /exec web app URL.
+
+2. CANONICAL PRODUCTION IDENTITY
+
+A. Canonical local folder:
+   /Users/computerservices/PROJECTS/AMITY_TABOO
+
+B. Canonical deployment description:
+   AMITY TABOO - PUBLIC LIVE
+
+C. Canonical deployed version:
+   284
+
+D. Canonical public URL:
+   Existing /exec URL currently in use and verified public.
+
+3. DEPLOYMENT RULE GOING FORWARD
+
+A. Do not create a new public deployment unless intentionally replacing production.
+
+B. Update only the canonical deployment labeled:
+   AMITY TABOO - PUBLIC LIVE
+
+C. /dev links are testing only.
+
+D. Editor URLs and deployment-management URLs are never public player links.
+
+4. REQUIRED FUTURE UPDATE WORKFLOW
+
+A. clasp pull --force
+
+B. Edit local files in:
+   /Users/computerservices/PROJECTS/AMITY_TABOO
+
+C. clasp push --force
+
+D. clasp version "brief note"
+
+E. Open Apps Script deployment manager.
+
+F. Edit canonical deployment only.
+
+G. Point canonical deployment to newest version.
+
+5. UI STATE AT CLOSE
+
+A. Card label uses:
+   Card #
+
+B. Deck counter uses:
+   Played: current card number of total
+
+C. Target word enlarged for low-vision readability.
+
+D. Target word displayed as green text.
+
+E. Taboo words enlarged substantially.
+
+F. Layout optimized for phone readability.
+
+6. ACCESSIBILITY STATE AT CLOSE
+
+A. Screen-reader live announcement implemented.
+
+B. Spoken format:
+   Target word: <word>. Taboo words: <list>.
+
+C. Status bar hidden from screen readers.
+
+D. Duplicate spoken reading suppressed from visible card text.
+
+E. Intended for blind-player usability with VoiceOver / similar readers.
+
+7. KNOWN INTENTIONAL DESIGN DECISIONS
+
+A. Target word no longer uses black text inside green block.
+
+B. Green target text chosen for readability balance.
+
+C. Status bar remains visible for sighted players but silent for screen readers.
+
+D. Card number reflects source row/card ID.
+
+8. KNOWN ACCEPTED LIMITATIONS
+
+A. Public Apps Script URL remains long.
+
+B. URL shortening deferred.
+
+C. Google Sites unsuitable for true automatic redirect.
+
+D. Registrar/domain redirect remains optional future enhancement.
+
+9. TESTING STATUS
+
+A. Local browser testing completed.
+
+B. Public deployment configured:
+   Execute as Me
+   Anyone
+
+C. Outside-phone public opening verified.
+
+10. REOPEN CONDITIONS
+
+A. Reopen only if live players report:
+   1. readability issue
+   2. screen-reader pacing issue
+   3. deck navigation confusion
+   4. mobile browser defect
+
+B. Otherwise treat current state as stable production.
+
+=======================================================
+
+=======================================================
+AMITY TABOO PROJECT REPORT — 2026-03-19 19:40 CT
+=======================================================
+
+1. LIVE DEPLOYMENT STATUS
+
+A. Existing canonical deployment remained in use.
+
+B. Public URL unchanged.
+
+C. Deployment advanced through versions during UI/accessibility refinement.
+
+D. Current live deployment at close:
+   @298
+
+2. SCREEN READER CHANGES
+
+A. BEGIN PLAY, BACK, and NEXT converted to real HTML button elements.
+
+B. Duplicate card live-region removed.
+
+C. Single announcement path retained through sr-live.
+
+D. Instruction screen now speaks:
+
+   Amity Taboo. A friendly game of taboo.
+   No teams. No timers. No scores.
+   Just prompts. Your deck is ready.
+   Begin play button.
+
+E. Status bar marked aria-hidden so screen readers do not read:
+   deck count
+   Buy me a Coffee button
+   card id
+
+3. CARD SPEECH MODEL
+
+A. Card speech now announces:
+
+   Card N of 100.
+   Target word.
+   Taboo words.
+
+B. Final card announces:
+
+   Final card. Card 100 of 100.
+
+4. STATUS BAR UI CHANGE
+
+A. Center info icon removed.
+
+B. Replaced with orange Buy me a Coffee button.
+
+C. Live link:
+   https://buymeacoffee.com/scaryhouse
+
+D. Button enlarged substantially for visibility.
+
+5. KNOWN REMAINING BEHAVIOR
+
+A. End-of-deck still rebuilds immediately.
+
+B. Formal Finished state still not implemented.
+
+
+=======================================================
+AMITY TABOO PROJECT REPORT — 2026-03-20 21:00 CT
+=======================================================
+
+1. BACKUP STATE
+
+A. Pre-change rollback archive created outside live project:
+
+   AMITY_TABOO_LOCKED_CURRENT_VERSION_2026-03-19.zip
+
+B. Archive represents exact pre-gesture UI baseline.
+
+C. Intended rollback point if gesture experiment fails.
+
+2. EXPERIMENTAL UI DIRECTION APPROVED
+
+A. User chose to remove visible navigation buttons.
+
+B. Intended navigation model:
+
+   Swipe right = next card
+   Swipe left = previous card
+   Shake = reshuffle new deck
+
+C. Instruction text target:
+
+   Swipe right for next card.
+   Swipe left for previous card.
+   Shake for a new shuffle.
+
+3. EXPERIMENTAL BUILD STATUS
+
+A. Separate non-live modified ZIP was generated.
+
+B. No live clasp push performed.
+
+C. Live deployment therefore remains unchanged from prior report state.
+
+4. LIVE DEPLOYMENT STATUS AT CLOSE
+
+A. Canonical live deployment still running prior button-based version.
+
+B. BEGIN PLAY, BACK, NEXT remain live until explicit source edit and push.
+
+C. No deployment version advanced during this note cycle.
+
+5. ACCESSIBILITY CAUTION FOR FUTURE AGENT
+
+A. iPhone VoiceOver likely conflicts with custom left/right swipe gestures.
+
+B. Real-device blind-user testing required before final acceptance.
+
+C. Shake may require Safari motion permission approval.
+
+6. REQUIRED NEXT STARTUP RULE
+
+A. Before any future task work:
+   read 00_START_HERE.txt first.
+
+B. Inspect live source on disk before editing.
+
+C. Do not treat external ZIP as canonical source.
+
+7. NEXT SAFE EXECUTION PATH
+
+A. Read startup files.
+
+B. Compare live clasp source against intended gesture model.
+
+C. Edit canonical source.
+
+D. Push only after source review complete.
+
+
+--------------------------------------------------
+2026-03-26_073844 GMR NORMALIZATION PASS
+--------------------------------------------------
+
+1. Root normalized:
+   A. Removed legacy _Archive
+   B. Removed extra root continuity files from root
+
+2. Extra root documents moved to:
+   _Archives/root-doc-extras
+
+3. Original design/source assets normalized to:
+   _Resources/original-source-assets
+
+4. Project plan corrected to reflect dual live structure:
+   A. gas
+   B. github-pages
+
+5. Root canonical files now:
+   A. 00_START_HERE.txt
+   B. PROJECT_PLAN.txt
+   C. PROJECT_REPORT.txt
+

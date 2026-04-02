@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AMITY TABOO</title>
+  <link rel="apple-touch-icon" href="https://scaryhouse.github.io/scaryhouse-assets/ATlogo.png?v=463">
+  <link rel="icon" type="image/png" sizes="192x192" href="https://scaryhouse.github.io/scaryhouse-assets/ATlogo.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Amity Taboo">
+  <meta name="theme-color" content="#6b8e23">
+  <style>
+    html, body{
+      height:100%;
+      margin:0;
+      background:#000;
+      color:#111;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+      overflow:hidden !important;
+      overscroll-behavior:none;
+      position:fixed;
+      inset:0;
+      width:100%;
+      touch-action:none;
+    }
+
+    :root{
+      --pad:20px;
+      --gap:20px;
+      --card-radius:68px;
+      --card-header-bg:#6f8f2a;
+      --fs-status:clamp(28px, 6.4vw, 40px);
+      --fs-coffee:30px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    .screen{
+      height:100vh;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      padding:
+        calc(var(--pad) + env(safe-area-inset-top) + 12px)
+        calc(var(--pad) + env(safe-area-inset-right))
+        calc(var(--pad) + env(safe-area-inset-bottom) + 18px)
+        calc(var(--pad) + env(safe-area-inset-left));
+      gap:var(--gap);
+      overflow:hidden !important;
+      touch-action:none;
+    }
+
+    .card{
+      width:100%;
+      aspect-ratio:5 / 7;
+      border-radius:var(--card-radius);
+      position:relative;
+      flex:1 1 auto;
+      min-height:0;
+    }
+
+    .card-layer{
+      position:absolute;
+      inset:0;
+      background:#fff;
+      opacity:1;
+      border-radius:var(--card-radius);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      border:4px solid #000;
+      box-shadow:0 0 0 2px rgba(0,0,0,0.18), 0 16px 34px rgba(0,0,0,0.36);
+    }
+
+    .card-layer-top{
+      z-index:2;
+    }
+
+    .card-layer-under{
+      z-index:1;
+    }
+
+    .card-top{
+      flex:0 0 20%;
+      background:var(--card-header-bg);
+      opacity:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 12px;
+      overflow:hidden;
+    }
+
+    .card-bottom{
+      flex:1 1 auto;
+      background:#fff;
+      opacity:1;
+    }
+    .title-wrap{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      padding:4px 10px 4px 10px;
+      position:relative;
+    }
+
+    .build-tag{
+      position:absolute;
+      right:28px;
+      bottom:28px;
+      z-index:5;
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:36px;
+      line-height:1;
+      font-weight:900;
+      -webkit-text-stroke:0.15px transparent;
+      color:#fff;
+      letter-spacing:0.2px;
+      pointer-events:none;
+      user-select:none;
+      text-shadow:0 1px 2px rgba(0,0,0,0.6);
+    }
+    .title-image{
+      width:100%;
+      height:auto;
+      max-height:100%;
+      object-fit:contain;
+      display:block;
+      pointer-events:none;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+
+    .info-card{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:space-between;
+      text-align:center;
+      color:#000;
+      padding:10px 18px 24px 18px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    }
+
+    .info-top{
+      margin-top:2px;
+      font-size:clamp(32px,5.4vw,46px);
+      font-style:italic;
+      font-weight:900;
+      line-height:1.03;
+      color:#000;
+    }
+
+    .info-main{
+      font-size:clamp(46px,8.8vw,70px);
+      font-weight:900;
+      line-height:1.08;
+      color:#000;
+    }
+
+    .info-just{
+      font-size:clamp(54px,10vw,84px);
+      font-weight:900;
+      line-height:1.01;
+      color:#000;
+    }
+
+    .info-ready{
+      font-size:clamp(38px,6.4vw,54px);
+      font-weight:900;
+      line-height:1.03;
+      color:#000;
+      margin-bottom:-8px;
+    }
+
+    .info-swipe{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      font-weight:900;
+      color:#000;
+      background:var(--card-header-bg);
+      border:4px solid #000;
+      border-radius:999px;
+      padding:8px 18px;
+      width:92%;
+      line-height:1;
+      margin-top:-152px;
+      margin-bottom:10px;
+    }
+
+    .swipe-label{
+      font-size:clamp(42px,8.2vw,64px);
+      font-weight:900;
+      line-height:1;
+    }
+
+    .swipe-arrow{
+      position:relative;
+      display:block;
+      width:98px;
+      min-width:98px;
+      height:34px;
+      flex:0 0 98px;
+    }
+
+    .swipe-arrow::before{
+      content:"";
+      position:absolute;
+      top:50%;
+      left:16px;
+      right:16px;
+      height:8px;
+      background:#000;
+      transform:translateY(-50%);
+      border-radius:999px;
+    }
+
+    .swipe-arrow-left::after{
+      content:"";
+      position:absolute;
+      left:0;
+      top:50%;
+      transform:translateY(-50%);
+      border-top:17px solid transparent;
+      border-bottom:17px solid transparent;
+      border-right:24px solid #000;
+    }
+
+    .swipe-arrow-right::after{
+      content:"";
+      position:absolute;
+      right:0;
+      top:50%;
+      transform:translateY(-50%);
+      border-top:17px solid transparent;
+      border-bottom:17px solid transparent;
+      border-left:24px solid #000;
+    }
+
+    .info-bottom{
+      font-size:clamp(38px,6.4vw,54px);
+      font-weight:900;
+      line-height:1.03;
+      color:#000;
+    }
+
+    .width-test-card{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      align-items:center;
+      padding:64px 18px 24px 18px;
+    }
+
+    .width-target{
+      margin-top:0;
+      font-size:clamp(54px,10.2vw,82px);
+      line-height:1.0;
+      color:#688828 !important;
+    }
+
+    .width-taboo-group{
+      width:100%;
+      flex:1 1 auto;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:56px;
+      margin-top:86px;
+    }
+
+    .width-line{
+      width:100%;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-weight:900;
+      font-size:clamp(50px,9.2vw,74px);
+      line-height:1.0;
+      color:#C92417;
+      text-align:center;
+      white-space:nowrap;
+      overflow:hidden;
+      text-transform:uppercase;
+      margin-top:0;
+    }
+
+    .width-line.is-stacked{
+      white-space:normal;
+      line-height:0.92;
+    }
+
+    .width-line.is-stacked .phrase-part{
+      display:block;
+    }
+
+    .width-test-card .width-target.width-line{
+      color:#688828 !important;
+    }
+
+    .card-layer.is-dragging{
+      transition:none !important;
+    }
+
+    .card-layer.is-animating{
+      transition:transform 360ms cubic-bezier(.2,.8,.2,1), opacity 360ms linear;
+    }
+
+    .install-card{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:space-between;
+      text-align:center;
+      color:#000;
+      padding:10px 18px 24px 18px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+    }
+
+    .install-choices{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      margin-top:8px;
+      margin-bottom:6px;
+    }
+
+    .install-choice{
+      width:100%;
+      border:4px solid #000;
+      border-radius:28px;
+      padding:16px 10px 18px;
+      box-sizing:border-box;
+      background:#fff;
+    }
+
+    .install-choice-label{
+      font-size:clamp(52px,7.8vw,74px);
+      line-height:1;
+      margin-bottom:10px;
+    }
+
+    .install-choice-copy{
+      white-space:pre-line;
+      font-size:clamp(40px,6.6vw,58px);
+      line-height:1.04;
+      font-weight:900;
+    }
+
+    .install-later-note{
+      display:block;
+      font-size:clamp(36px,5.6vw,44px);
+      line-height:1.08;
+      font-weight:900;
+      margin-top:8px;
+    }
+
+    .install-browser-button{
+      appearance:none;
+      border:4px solid #000;
+      border-radius:28px;
+      background:var(--card-header-bg);
+      color:#000;
+      padding:14px 14px 12px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      line-height:1;
+      font-weight:900;
+      cursor:pointer;
+      width:100%;
+      text-align:center;
+    }
+
+    .install-swipe-row{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+
+    .install-browser-button .swipe-arrow{
+      transform:scale(0.72);
+      transform-origin:center center;
+    }
+
+    .install-swipe-label{
+      display:inline-block;
+      font-size:clamp(34px,5.2vw,46px);
+      line-height:1;
+    }
+
+    .statusbar{
+      width:100%;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      font-size:var(--fs-status);
+      color:#fff;
+      padding:10px 0 0;
+      min-height:72px;
+    }
+
+    .status-mid{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:56px;
+      padding:8px 18px;
+      border:3px solid #000;
+      border-radius:999px;
+      background:#ED7437;
+      color:#000;
+      font-size:var(--fs-coffee);
+      font-weight:900;
+      line-height:1;
+      text-decoration:none;
+      white-space:nowrap;
+      z-index:2;
+    }
+
+    .status-left,
+    .status-right{
+      position:relative;
+      z-index:1;
+      flex:1 1 0;
+      min-width:0;
+      font-family:"Arial Narrow", "HelveticaNeue-CondensedBold", "Roboto Condensed", "Liberation Sans Narrow", Arial, Helvetica, sans-serif;
+      font-stretch:condensed;
+      font-weight:700;
+      letter-spacing:0.2px;
+      line-height:1;
+    }
+
+    .status-left{
+      text-align:left;
+      padding-right:180px;
+    }
+
+    .status-right{
+      text-align:right;
+      padding-left:180px;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="card" id="card">
+      <div class="card-layer card-layer-under" aria-hidden="true">
+        <div class="card-top">
+          <div class="title-wrap">
+            <img
+              class="title-image"
+              src="https://scaryhouse.github.io/scaryhouse-assets/amity-taboo-header.png?v=425"
+              alt=""
+              draggable="false"
+            >
+          </div>
+        </div>
+        <div class="card-bottom">
+          <div class="width-test-card">
+            <div class="width-target width-line" data-phrase="builder / construction worker">BUILDER / CONSTRUCTION WORKER</div>
+            <div class="width-taboo-group">
+              <div class="width-line" data-phrase="bin / garbage can / trash can">BIN / GARBAGE CAN / TRASH CAN</div>
+              <div class="width-line" data-phrase="waiter / waitress / server">WAITER / WAITRESS / SERVER</div>
+              <div class="width-line" data-phrase="doctor's / doctors office">DOCTOR'S / DOCTORS OFFICE</div>
+              <div class="width-line" data-phrase="table tennis / ping pong">TABLE TENNIS / PING PONG</div>
+              <div class="width-line" data-phrase="cinema / movie theatre">CINEMA / MOVIE THEATRE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-layer card-layer-top" id="card-top-layer">
+        <div class="card-top">
+          <div class="title-wrap">
+            <img
+              class="title-image"
+              src="https://scaryhouse.github.io/scaryhouse-assets/amity-taboo-header.png?v=425"
+              alt="Amity Games Amity Taboo"
+              draggable="false"
+            >
+            <div class="build-tag">v.460</div>
+          </div>
+        </div>
+        <div class="card-bottom">
+          <div class="info-card">
+            <div class="info-top">(a friendly game of taboo)</div>
+            <div class="info-main">
+              <div>No teams.</div>
+              <div>No timers.</div>
+              <div>No scores.</div>
+            </div>
+            <div class="info-just">JUST PROMPTS.</div>
+            <div class="info-ready" id="info-ready">Loading deck...</div>
+            <div class="info-swipe">
+              <span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span>
+              <span class="swipe-label">SWIPE TO PLAY</span>
+              <span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span>
+            </div>
+            <div class="info-bottom">Double tap to shuffle</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="statusbar" aria-hidden="true">
+      <div class="status-left" id="status-deck">Deck: 0 of 000</div>
+      <a class="status-mid" id="coffee-link" href="https://buymeacoffee.com/scaryhouse" target="_blank" rel="noopener noreferrer external" aria-label="Buy me a Coffee">Buy me a Coffee</a>
+      <div class="status-right" id="status-cardid">Card ID: #0000</div>
+    </div>
+  </div>
+
+
+<script>
+(function(){
+  /**
+   * Phone UI state lives entirely in localStorage so the player can rebuild
+   * or resume a deck without extra server-side state management.
+   */
+  const LS_KEY = 'amity_taboo_session_v2';
+
+  function escapeHtml_(value){
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  const topCard = document.getElementById('card-top-layer');
+  if(!topCard) return;
+
+  const topBottom = topCard.querySelector('.card-bottom');
+  const underBottom = document.querySelector('.card-layer-under .card-bottom');
+  const statusDeck = document.getElementById('status-deck');
+  const statusCard = document.getElementById('status-cardid');
+  const infoMarkup = topBottom ? topBottom.innerHTML : '';
+
+  let loadingTimer = null;
+  let motionPermissionRequested_ = false;
+  let shakeEnabled_ = false;
+  let shakeState_ = { lastMagnitude: 0, lastShuffleAt: 0 };
+
+  /**
+   * Requests motion permission when the browser requires it.
+   * This only prepares optional motion access for shake-to-shuffle when allowed.
+   */
+  function prepareOptionalMotionFeatures_(){
+    requestMotionPermissionIfNeeded_();
+    return Promise.resolve(shakeEnabled_);
+  }
+
+  /** Persist the current local session snapshot. */
+  function saveSession(session){
+    try{
+      localStorage.setItem(LS_KEY, JSON.stringify(session));
+    }catch(e){}
+  }
+
+  /** Load and lightly normalize the saved session. */
+  function loadSession(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return null;
+      const obj = JSON.parse(raw);
+      if(!obj || !Array.isArray(obj.cards) || !obj.cards.length) return null;
+      if(typeof obj.index !== 'number') obj.index = 0;
+      if(!obj.mode) obj.mode = 'INFO';
+      return obj;
+    }catch(e){
+      return null;
+    }
+  }
+
+  /** Remove the saved session so a fresh deck can be built. */
+  function clearSession(){
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  }
+
+  function formatDeckStatus_(current, total){
+    return 'Deck: ' + String(current || 0) + ' of ' + String(total || 0).padStart(3, '0');
+  }
+
+  function formatCardId_(rowId){
+    const n = Number(rowId || 0) || 0;
+    return n ? ('Card ID: #' + String(n).padStart(4, '0')) : 'Card ID: #0000';
+  }
+
+  function isStandalone_(){
+    try{
+      return window.navigator.standalone === true ||
+        (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    }catch(e){
+      return false;
+    }
+  }
+
+  function getInstallCardMarkup_(){
+    const ua = navigator.userAgent || '';
+    let aTitle = 'ADD TO HOME SCREEN';
+    let aCopy = 'FOR THE BEST FULL SCREEN PLAY.\n1. ADD THIS PAGE TO YOUR HOME SCREEN\n2. OPEN THE APP FROM ITS ICON';
+
+    if(/iPhone|iPad|iPod/i.test(ua)){
+      aTitle = 'ADD TO HOME SCREEN';
+      aCopy = 'FOR THE BEST FULL SCREEN PLAY.\n1. OPEN IN SAFARI\n2. TAP SHARE\n3. TAP ADD TO HOME SCREEN\n4. OPEN THE NEW ICON';
+    } else if(/Android/i.test(ua)){
+      aTitle = 'ADD TO HOME SCREEN';
+      aCopy = 'FOR THE BEST FULL SCREEN PLAY.\n1. OPEN IN CHROME\n2. TAP MENU\n3. TAP ADD TO HOME SCREEN OR INSTALL APP\n4. OPEN THE NEW ICON';
+    }
+
+    return `
+      <div class="install-card">
+        <div class="info-top">(a friendly game of taboo)</div>
+        <div class="info-main">
+          <div>No teams.</div>
+          <div>No timers.</div>
+          <div>No scores.</div>
+        </div>
+        <div class="info-just">JUST PROMPTS.</div>
+        <div class="install-choices">
+          <div class="install-choice">
+            <div class="install-choice-label">${aTitle}</div>
+            <div class="install-choice-copy">${escapeHtml_(aCopy)}</div>
+          </div>
+        </div>
+        <div id="install-continue" class="install-browser-button"><div class="install-swipe-row"><span class="swipe-arrow swipe-arrow-left" aria-hidden="true"></span><span class="install-swipe-label">SWIPE TO PLAY IN BROWSER</span><span class="swipe-arrow swipe-arrow-right" aria-hidden="true"></span></div><span class="install-later-note">YOU CAN ADD THE ICON LATER.</span></div>
+      </div>
+    `;
+  }
+
+  function showInstallCard_(){
+    if(!topBottom) return;
+    topBottom.innerHTML = getInstallCardMarkup_();
+    if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+    if(statusCard) statusCard.textContent = 'Card ID: #0000';
+    if(underBottom) underBottom.innerHTML = '';
+
+    const installContinue = document.getElementById('install-continue');
+    if(installContinue){
+      installContinue.addEventListener('click', function(){
+        const existing = loadSession();
+        showInfoCardLoading_();
+        startBuildNewDeck_();
+      });
+    }
+  }
+
+  function applyPhraseHandlingWithin_(root){
+    if(!root) return;
+    root.querySelectorAll('.width-line[data-phrase]').forEach(function(el){
+      const raw = (el.getAttribute('data-phrase') || '').trim();
+      if(!raw) return;
+
+      el.classList.remove('is-stacked');
+      el.innerHTML = escapeHtml_(raw.toUpperCase());
+
+      if(el.scrollWidth <= el.clientWidth){
+        return;
+      }
+
+      const parts = raw.split(/\s*\/\s*/).map(function(part){
+        return part.trim();
+      }).filter(Boolean);
+
+      if(parts.length < 2){
+        return;
+      }
+
+      el.classList.add('is-stacked');
+      el.innerHTML = parts.map(function(part){
+        return '<span class="phrase-part">' + escapeHtml_(part.toUpperCase()) + '</span>';
+      }).join('');
+    });
+  }
+
+  function buildPromptMarkup_(cardObj){
+    const target = cardObj && cardObj.target ? String(cardObj.target) : '';
+    const taboo = Array.isArray(cardObj && cardObj.taboo) ? cardObj.taboo : [];
+
+    return `
+      <div class="width-test-card prompt-card">
+        <div class="width-target width-line" data-phrase="${escapeHtml_(target)}">${escapeHtml_(target.toUpperCase())}</div>
+        <div class="width-taboo-group">
+          ${taboo.map(function(t){
+            const phrase = String(t || '').trim();
+            return '<div class="width-line" data-phrase="' + escapeHtml_(phrase) + '">' + escapeHtml_(phrase.toUpperCase()) + '</div>';
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  /** Show the loading card while a new deck is being built. */
+  function showInfoCardLoading_(){
+    if(!topBottom) return;
+    topBottom.innerHTML = infoMarkup;
+    const readyText = document.getElementById('info-ready');
+    if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+    if(statusCard) statusCard.textContent = 'Card ID: #0000';
+    if(underBottom) underBottom.innerHTML = '';
+
+    if(loadingTimer) clearInterval(loadingTimer);
+    const letters = 'Loading...';
+    const lead = '\u00A0';
+    let i = 0;
+    if(readyText){
+      readyText.style.display = 'inline-block';
+      readyText.style.minWidth = '15ch';
+      readyText.style.whiteSpace = 'pre';
+      readyText.textContent = lead;
+    }
+    loadingTimer = setInterval(function(){
+      if(!readyText) return;
+      if(i < letters.length){
+        readyText.textContent = lead + letters.slice(0, i + 1);
+        i++;
+      }else{
+        readyText.textContent = lead;
+        i = 0;
+      }
+    }, 250);
+  }
+
+  /** Show the ready card once a deck is available. */
+  function showInfoCardReady_(total){
+    if(loadingTimer){
+      clearInterval(loadingTimer);
+      loadingTimer = null;
+    }
+    if(!topBottom) return;
+    topBottom.innerHTML = infoMarkup;
+    const readyText = document.getElementById('info-ready');
+    if(readyText) readyText.textContent = 'Your deck is ready.';
+    if(statusDeck) statusDeck.textContent = formatDeckStatus_(0, total || 0);
+    if(statusCard) statusCard.textContent = 'Card ID: #0000';
+    if(underBottom) underBottom.innerHTML = '';
+  }
+
+  function renderUnderCard_(direction){
+    const s = loadSession();
+    if(!underBottom || !s || !Array.isArray(s.cards) || !s.cards.length){
+      if(underBottom) underBottom.innerHTML = '';
+      return;
+    }
+
+    if(s.mode !== 'PLAY' && s.mode !== 'INFO'){
+      underBottom.innerHTML = '';
+      return;
+    }
+
+    const cur = s.mode === 'PLAY'
+      ? Math.max(0, Math.min(Number(s.index) || 0, s.cards.length - 1))
+      : 0;
+
+    const idx = direction === 'right'
+      ? ((cur - 1 + s.cards.length) % s.cards.length)
+      : ((cur + 1) % s.cards.length);
+
+    underBottom.innerHTML = buildPromptMarkup_(s.cards[idx]);
+    applyPhraseHandlingWithin_(underBottom);
+  }
+
+  /** Render the currently selected play card. */
+  function renderCurrentCard_(){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length){
+      showInfoCardLoading_();
+      return;
+    }
+
+    if(s.mode !== 'PLAY'){
+      showInfoCardReady_(s.total);
+      return;
+    }
+
+    const idx = Math.max(0, Math.min(Number(s.index) || 0, s.cards.length - 1));
+    const cardObj = s.cards[idx];
+
+    if(topBottom){
+      topBottom.innerHTML = buildPromptMarkup_(cardObj);
+      applyPhraseHandlingWithin_(topBottom);
+    }
+
+    if(statusDeck) statusDeck.textContent = formatDeckStatus_(idx + 1, s.total);
+    if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
+
+    renderUnderCard_('left');
+  }
+
+  /** Ask Apps Script to build a new shuffled deck and save it locally. */
+  function startBuildNewDeck_(){
+    clearSession();
+    showInfoCardLoading_();
+
+    google.script.run
+      .withSuccessHandler(function(res){
+        const cards = (res && res.cards) ? res.cards : [];
+        const total = (res && res.total) ? res.total : cards.length;
+        const session = {
+          schema: 1,
+          deckId: (res && res.deckId) ? res.deckId : String(Date.now()),
+          index: 0,
+          total: total,
+          cards: cards,
+          mode: 'INFO',
+        };
+        saveSession(session);
+
+        showInfoCardReady_(total);
+      })
+      .withFailureHandler(function(){
+        if(loadingTimer){
+          clearInterval(loadingTimer);
+          loadingTimer = null;
+        }
+        if(topBottom) topBottom.innerHTML = infoMarkup;
+        const readyText = document.getElementById('info-ready');
+        if(readyText) readyText.textContent = 'Unable to build deck.';
+        if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+        if(statusCard) statusCard.textContent = 'Card ID: #0000';
+      })
+      .buildDeck();
+  }
+
+  function onBeginPlay_(direction){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
+    s.index = (direction === 'back') ? (s.cards.length - 1) : 0;
+    s.mode = 'PLAY';
+    saveSession(s);
+    renderCurrentCard_();
+  }
+
+  function onNext_(deferRender){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
+    if(s.mode !== 'PLAY'){
+      onBeginPlay_('forward');
+      return;
+    }
+    s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
+    saveSession(s);
+    if(!deferRender) renderCurrentCard_();
+  }
+
+  function onBack_(deferRender){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
+    if(s.mode !== 'PLAY'){
+      onBeginPlay_('back');
+      return;
+    }
+    s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
+    saveSession(s);
+    if(!deferRender) renderCurrentCard_();
+  }
+
+  function requestMotionPermissionIfNeeded_(){
+    try{
+      const DM = window.DeviceMotionEvent;
+      if(!DM){
+        shakeEnabled_ = true;
+        return;
+      }
+      if(typeof DM.requestPermission !== 'function'){
+        shakeEnabled_ = true;
+        return;
+      }
+      if(motionPermissionRequested_) return;
+      motionPermissionRequested_ = true;
+      DM.requestPermission()
+        .then(function(state){
+          shakeEnabled_ = (state === 'granted');
+        })
+        .catch(function(){
+          shakeEnabled_ = false;
+        });
+    }catch(e){
+      shakeEnabled_ = false;
+    }
+  }
+
+  function triggerShuffle_(){
+    const now = Date.now();
+    if(now - shakeState_.lastShuffleAt < 2500) return;
+    shakeState_.lastShuffleAt = now;
+    startBuildNewDeck_();
+  }
+
+  /** Treat a clean double tap as a request for a new deck. */
+  function bindDoubleTapShuffle_(){
+    const surface = document.querySelector('.card') || document.body;
+    if(!surface) return;
+
+    let lastTapAt = 0;
+    let tapStartX = 0;
+    let tapStartY = 0;
+
+    surface.addEventListener('touchstart', function(e){
+      const t = e.touches && e.touches[0];
+      if(!t) return;
+      tapStartX = t.clientX;
+      tapStartY = t.clientY;
+    }, { passive:true });
+
+    surface.addEventListener('touchend', function(e){
+      const t = e.changedTouches && e.changedTouches[0];
+      if(!t) return;
+      const dx = Math.abs((t.clientX || 0) - tapStartX);
+      const dy = Math.abs((t.clientY || 0) - tapStartY);
+      if(dx > 14 || dy > 14) return;
+
+      const now = Date.now();
+      if(now - lastTapAt <= 350){
+        triggerShuffle_();
+        lastTapAt = 0;
+        return;
+      }
+      lastTapAt = now;
+    }, { passive:true });
+
+    surface.addEventListener('dblclick', function(e){
+      if(e && e.target && e.target.closest && e.target.closest('a')) return;
+      triggerShuffle_();
+    });
+  }
+
+  /** Treat a deliberate shake as a request for a new deck. */
+  function bindShakeToShuffle_(){
+    window.addEventListener('devicemotion', function(e){
+      if(!shakeEnabled_) return;
+      const a = e && e.accelerationIncludingGravity;
+      if(!a) return;
+
+      const x = Number(a.x || 0);
+      const y = Number(a.y || 0);
+      const z = Number(a.z || 0);
+      const magnitude = Math.sqrt((x * x) + (y * y) + (z * z));
+      const delta = Math.abs(magnitude - shakeState_.lastMagnitude);
+      shakeState_.lastMagnitude = magnitude;
+
+      if(delta > 18){
+        triggerShuffle_();
+      }
+    }, { passive:true });
+  }
+
+  const axisRatio = 1.6;
+  const revealThresholdX = 42;
+  const revealAxisRatio = 1.15;
+
+  let startX = 0;
+  let startY = 0;
+  let lastX = 0;
+  let lastY = 0;
+  let tracking = false;
+
+  function resetCardPosition_(){
+    topCard.classList.remove('is-dragging', 'is-animating');
+    topCard.style.transition = '';
+    topCard.style.transform = '';
+    topCard.style.opacity = '';
+  }
+
+  function begin_(x, y){
+    startX = x;
+    startY = y;
+    lastX = x;
+    lastY = y;
+    tracking = true;
+    topCard.classList.remove('is-animating');
+    topCard.classList.add('is-dragging');
+  }
+
+  function getCommitThresholdX_(){
+    const cardWidth = topCard ? (topCard.getBoundingClientRect().width || 0) : 0;
+    return Math.max(95, Math.round(cardWidth * 0.60));
+  }
+
+  function move_(x, y){
+    if(!tracking) return;
+
+    lastX = x;
+    lastY = y;
+
+    const dx = lastX - startX;
+    const dy = lastY - startY;
+
+    const horizontalDrag =
+      Math.abs(dx) > 12 &&
+      Math.abs(dx) > Math.abs(dy);
+
+    if(!horizontalDrag) return;
+
+    topCard.style.transform = `translateX(${dx}px)`;
+    topCard.style.opacity = '1';
+
+    const revealUnderCard =
+      Math.abs(dx) >= revealThresholdX &&
+      Math.abs(dx) > (Math.abs(dy) * revealAxisRatio);
+
+    if(revealUnderCard){
+      renderUnderCard_(dx < 0 ? 'left' : 'right');
+    } else if(underBottom){
+      underBottom.innerHTML = '';
+    }
+  }
+
+  /** Commit a swipe when it clearly crosses the horizontal threshold. */
+  function finish_(x, y){
+    if(!tracking){
+      resetCardPosition_();
+      return;
+    }
+
+    lastX = x;
+    lastY = y;
+
+    const dx = lastX - startX;
+    const dy = lastY - startY;
+
+    tracking = false;
+
+    const deliberateHorizontalSwipe =
+      Math.abs(dx) >= getCommitThresholdX_() &&
+      Math.abs(dx) > (Math.abs(dy) * axisRatio);
+
+    if(!deliberateHorizontalSwipe){
+      if(underBottom) underBottom.innerHTML = '';
+      topCard.classList.remove('is-dragging');
+      topCard.classList.add('is-animating');
+      topCard.style.transition = 'transform 360ms cubic-bezier(.2,.8,.2,1), opacity 360ms linear';
+      topCard.style.transform = 'translateX(0)';
+      topCard.style.opacity = '1';
+      window.setTimeout(function(){
+        resetCardPosition_();
+      }, 370);
+      return;
+    }
+
+    const direction = dx < 0 ? 'left' : 'right';
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length){
+      resetCardPosition_();
+      return;
+    }
+
+
+    if(s.mode !== 'PLAY'){
+      const firstIndex = (direction === 'left') ? 0 : (s.cards.length - 1);
+      if(underBottom){
+        underBottom.innerHTML = buildPromptMarkup_(s.cards[firstIndex]);
+        applyPhraseHandlingWithin_(underBottom);
+      }
+      s.index = firstIndex;
+      s.mode = 'PLAY';
+      saveSession(s);
+    } else {
+      renderUnderCard_(direction);
+      if(direction === 'left'){
+        onNext_(true);
+      } else {
+        onBack_(true);
+      }
+    }
+
+    topCard.classList.remove('is-dragging');
+    topCard.classList.add('is-animating');
+    topCard.style.transition = 'transform 520ms cubic-bezier(.22,.61,.36,1), opacity 520ms linear';
+    topCard.style.transform = direction === 'left' ? 'translateX(-120vw)' : 'translateX(120vw)';
+    topCard.style.opacity = '1';
+
+    window.setTimeout(function(){
+      renderCurrentCard_();
+      resetCardPosition_();
+    }, 530);
+  }
+
+  topCard.addEventListener('touchstart', function(e){
+    const t = e.touches && e.touches[0];
+    if(!t) return;
+
+    const s = loadSession();
+    if(s && s.mode === 'INFO'){
+      prepareOptionalMotionFeatures_().then(function(){
+        const fresh = loadSession();
+        if(fresh && fresh.mode === 'INFO'){
+          showInfoCardReady_(fresh.total);
+        }
+      });
+    } else {
+      prepareOptionalMotionFeatures_();
+    }
+
+    begin_(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive:false });
+
+  topCard.addEventListener('touchmove', function(e){
+    const t = e.touches && e.touches[0];
+    if(!t) return;
+    move_(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive:false });
+
+  topCard.addEventListener('touchend', function(e){
+    const t = e.changedTouches && e.changedTouches[0];
+    if(!t){
+      finish_(lastX, lastY);
+    } else {
+      finish_(t.clientX, t.clientY);
+    }
+    e.preventDefault();
+  }, { passive:false });
+
+  topCard.addEventListener('touchcancel', function(e){
+    tracking = false;
+    if(underBottom) underBottom.innerHTML = '';
+    resetCardPosition_();
+    e.preventDefault();
+  }, { passive:false });
+
+  bindShakeToShuffle_();
+  bindDoubleTapShuffle_();
+
+  document.addEventListener('touchstart', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
+  document.addEventListener('click', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
+
+  if(!isStandalone_()){
+    showInstallCard_();
+  } else {
+    const existing = loadSession();
+    if(existing){
+      renderCurrentCard_();
+    } else {
+      startBuildNewDeck_();
+    }
+  }
+
+  window.__amity = {
+    loadSession: loadSession,
+    saveSession: saveSession,
+    clearSession: clearSession,
+    startBuildNewDeck: startBuildNewDeck_
+  };
+})();
+</script>
+</body>
+</html>

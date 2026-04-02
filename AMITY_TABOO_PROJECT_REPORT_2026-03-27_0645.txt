@@ -1,0 +1,96 @@
+=======================================================
+AMITY_TABOO
+PROJECT REPORT — 2026-03-27 06:45
+=======================================================
+
+1. CURRENT VERIFIED STATE
+
+A. Project root:
+   /Users/computerservices/PROJECTS/AMITY_TABOO
+
+B. GAS side is deployed and live.
+
+C. Active web app deployment:
+   AKfycbz1sG3PHLRYAyYNe7R3Vc792JIsmCKQNoKePptxPO6P-PsY2Omk2Jn73DMzgjdaXiARbw
+
+D. Current deployment version:
+   @467
+   Description: cleanup pass silent
+
+E. API endpoint verified:
+   /exec?api=deck returned valid JSON deck output.
+
+2. GAS STATUS
+
+A. Current tracked files:
+   appsscript.json
+   Code.gs
+   phone.html
+
+B. Local timestamps indicate latest accepted GAS edits:
+   2026-03-26 20:13
+
+C. No tracked-file divergence detected during latest clasp status check.
+
+D. Untracked local files are expected:
+   .clasp.json
+   .claspignore
+   icon-180.png
+   icon-192.png
+   icon-512.png
+
+3. GITHUB-PAGES STATUS
+
+A. Repository:
+   https://github.com/ScaryHouse/AMITY_TABOO
+
+B. Branch:
+   main
+
+C. Working tree clean during latest scan.
+
+D. Current head:
+   a4d3539
+   group swipe state into gesture object
+
+E. Recent accepted commits:
+   1. group swipe state into gesture object
+   2. extract shared top card and status renderer
+   3. add startup render router and remove dead helper
+   4. unify card swipe input under pointer events
+   5. clear under-card layer before swipe rerender
+
+4. CURRENT FRONT-END ASSESSMENT
+
+A. Front end is structurally cleaner than earlier state.
+
+B. gestureState_ now centralizes swipe state.
+
+C. Rendering responsibilities are separated:
+   1. renderTopAndStatus_()
+   2. renderUnderCard_()
+   3. renderCurrentCard_()
+   4. renderAppFromSession_()
+
+D. Pointer event handling is unified.
+
+5. REMAINING KNOWN RISK AREA
+
+A. Motion feel still likely unresolved.
+
+B. Next inspection target:
+   1. begin_()
+   2. move_()
+   3. finish_()
+   4. pointer listener wiring
+
+C. Do not alter card geometry, art, offsets, scaling, or padding unless explicitly intended.
+
+6. SAFE RESUME POINT
+
+A. GAS is safe to resume from current local + deployment state.
+
+B. GitHub Pages is safe to resume from clean main branch head.
+
+C. If future motion experiments fail visually, rollback anchor remains:
+   a4d3539
