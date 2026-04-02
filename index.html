@@ -1446,6 +1446,7 @@ console.log("APP_BOOT_OK");
   }, { passive:false });
 
   topCard.addEventListener("pointerdown", function(e){
+  topCard.setPointerCapture(e.pointerId);
   if(e.pointerType === "mouse" && e.width === 1 && e.height === 1) return;
   let startX = e.clientX;
   let currentX = startX;
@@ -1470,7 +1471,10 @@ console.log("APP_BOOT_OK");
   }
 
   window.addEventListener("pointermove", onMove);
-  window.addEventListener("pointerup", onUp);
+  window.addEventListener("pointerup", function(ev){
+    topCard.releasePointerCapture(ev.pointerId);
+    onUp();
+  });
 });      } else {
         prepareOptionalMotionFeatures_();
       }
