@@ -1575,45 +1575,9 @@ function onBack_(){
 
   
 
-  function bindSwipe_(){
-    let startX = 0;
-    let currentX = 0;
-    let isDragging = false;
+  
 
-    const threshold = 50;
-
-    const surface = document.getElementById("card");
-
-    surface.addEventListener("touchstart", function(e){
-      startX = e.touches[0].clientX;
-      isDragging = true;
-    });
-
-    surface.addEventListener("touchmove", function(e){
-      if(!isDragging) return;
-      currentX = e.touches[0].clientX;
-    });
-
-    surface.addEventListener("touchend", function(){
-      if(!isDragging) return;
-
-      const delta = currentX - startX;
-
-      if(Math.abs(delta) > threshold){
-        if(delta < 0){
-          onNext_();
-        } else {
-          onBack_();
-        }
-      }
-
-      isDragging = false;
-      startX = 0;
-      currentX = 0;
-    });
-  }
-
-  bindSwipe_();
+  
   bindKeyboardControls_();
 
   document.addEventListener('pointerdown', prepareOptionalMotionFeatures_, { once:true, capture:true });
