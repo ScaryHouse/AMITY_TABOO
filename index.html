@@ -1548,6 +1548,33 @@ function onBack_(){
 
   function bindSwipe_(){
     let startX = 0;
+    let endX = 0;
+    const threshold = 50;
+
+    const surface = document.getElementById("card");
+
+    surface.addEventListener("touchstart", function(e){
+      startX = e.touches[0].clientX;
+    });
+
+    surface.addEventListener("touchend", function(e){
+      endX = e.changedTouches[0].clientX;
+      const delta = endX - startX;
+
+      if(Math.abs(delta) > threshold){
+        if(delta < 0){
+          onNext_();
+        } else {
+          onBack_();
+        }
+      }
+    });
+  }
+
+  bindSwipe_();
+
+  function bindSwipe_(){
+    let startX = 0;
     let currentX = 0;
     let isDragging = false;
 
