@@ -223,17 +223,6 @@
       margin-bottom:8px;
     }
 
-    .info-shuffle{
-      width:100%;
-      text-align:center;
-      font-size:var(--fs-info-ready);
-      font-weight:900;
-      line-height:1.03;
-      color:#000;
-      margin-top:8px;
-      text-transform:uppercase;
-    }
-
     .info-main{
       font-size:var(--fs-info-main);
       font-weight:900;
@@ -666,7 +655,6 @@
             <div class="info-play-group">
               <div class="info-ready" id="info-ready">Loading deck...</div>
               <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" aria-hidden="true" draggable="false">
-              <div class="info-shuffle">DOUBLE TAP TO SHUFFLE</div>
             </div>
           </div>
         </div>
@@ -710,20 +698,7 @@
   const underBottom = document.querySelector('.card-layer-under .card-bottom');
   const statusDeck = document.getElementById('status-deck');
   const statusCard = document.getElementById('status-cardid');
-  function getInfoCardMarkup_(){
-    return `
-      <div class="info-card">
-        <div class="card-art-top-wrap">
-          <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
-        </div>
-        <div class="info-play-group">
-          <div class="info-ready" id="info-ready">Loading deck...</div>
-          <img class="card-art-bottom" src="at-swipe.svg?v=1" alt="" aria-hidden="true" draggable="false">
-          <div class="info-shuffle">DOUBLE TAP TO SHUFFLE</div>
-        </div>
-      </div>
-    `;
-  }
+  const infoMarkup = topBottom ? topBottom.innerHTML : '';
 
   let loadingTimer = null;
   let motionPermissionRequested_ = false;
@@ -829,6 +804,13 @@
     }
   }
 
+  function isDesktopBrowser_(){
+    const ua = navigator.userAgent || '';
+    const touchPoints = Number(navigator.maxTouchPoints || 0);
+    const isMobileUA = /iPhone|iPad|iPod|Android|Mobile/i.test(ua);
+    return !isMobileUA && touchPoints === 0;
+  }
+
   function getInstallCardMarkup_(){
     const ua = navigator.userAgent || '';
     let installAsset = 'at-install-ios-safari.svg?v=1';
@@ -855,12 +837,10 @@
 
   function showInstallCard_(){
     if(!topBottom) return;
-    renderTopAndStatus_(
-      getInstallCardMarkup_(),
-      'Deck: 0 of 000',
-      'Card ID: #0000',
-      getInfoCardMarkup_()
-    );
+    topBottom.innerHTML = getInstallCardMarkup_();
+    if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+    if(statusCard) statusCard.textContent = 'Card ID: #0000';
+    if(underBottom) underBottom.innerHTML = infoMarkup;
     announceScreenReader_(getInstallAnnouncement_());
   }
 
@@ -923,24 +903,15 @@
     `;
   }
 
-  function renderTopAndStatus_(markup, deckText, cardText, underMarkup){
-    if(topBottom) topBottom.innerHTML = markup || '';
-    if(statusDeck) statusDeck.textContent = deckText || 'Deck: 0 of 000';
-    if(statusCard) statusCard.textContent = cardText || 'Card ID: #0000';
-    if(underBottom) underBottom.innerHTML = underMarkup || '';
-  }
-
   /** Show the loading card while a new deck is being built. */
   function showInfoCardLoading_(){
     if(!topBottom) return;
-    renderTopAndStatus_(
-      getInfoCardMarkup_(),
-      'Deck: 0 of 000',
-      'Card ID: #0000',
-      ''
-    );
+    topBottom.innerHTML = infoMarkup;
     announceScreenReader_(getInfoLoadingAnnouncement_());
     const readyText = document.getElementById('info-ready');
+    if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+    if(statusCard) statusCard.textContent = 'Card ID: #0000';
+    if(underBottom) underBottom.innerHTML = '';
 
     if(loadingTimer) clearInterval(loadingTimer);
     const letters = 'Loading...';
@@ -971,14 +942,12 @@
       loadingTimer = null;
     }
     if(!topBottom) return;
-    renderTopAndStatus_(
-      getInfoCardMarkup_(),
-      formatDeckStatus_(0, total || 0),
-      'Card ID: #0000',
-      ''
-    );
+    topBottom.innerHTML = infoMarkup;
     const readyText = document.getElementById('info-ready');
     if(readyText) readyText.textContent = 'Your deck is ready.';
+    if(statusDeck) statusDeck.textContent = formatDeckStatus_(0, total || 0);
+    if(statusCard) statusCard.textContent = 'Card ID: #0000';
+    if(underBottom) underBottom.innerHTML = '';
     announceScreenReader_(getInfoReadyAnnouncement_(total || 0));
   }
 
@@ -986,13 +955,13 @@
     const s = loadSession();
     if(!underBottom || !s || !Array.isArray(s.cards) || !s.cards.length){
       if(underBottom) underBottom.innerHTML = '';
-      gestureState_.underPreviewMode = '';
+      underPreviewMode = '';
       return;
     }
 
     if(s.mode !== 'PLAY' && s.mode !== 'INFO'){
       underBottom.innerHTML = '';
-      gestureState_.underPreviewMode = '';
+      underPreviewMode = '';
       return;
     }
 
@@ -1040,7 +1009,7 @@
 
     announceScreenReader_(getPlayCardAnnouncement_(idx + 1, s.total, cardObj));
 
-    
+    renderUnderCard_('left');
   }
 
   function syncStatusFromSession_(){
@@ -1061,19 +1030,6 @@
     const cardObj = s.cards[idx];
     if(statusDeck) statusDeck.textContent = formatDeckStatus_(idx + 1, s.total);
     if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
-  }
-
-  function renderAppFromSession_(){
-    const existing = loadSession();
-    if(!isStandalone_()){
-      showInstallCard_();
-      return;
-    }
-    if(existing){
-      renderCurrentCard_();
-      return;
-    }
-    startBuildNewDeck_();
   }
 
   /** Fetch a new shuffled deck from the Apps Script web app. */
@@ -1109,7 +1065,7 @@
           clearInterval(loadingTimer);
           loadingTimer = null;
         }
-        if(topBottom) topBottom.innerHTML = getInfoCardMarkup_();
+        if(topBottom) topBottom.innerHTML = infoMarkup;
         const readyText = document.getElementById('info-ready');
         if(readyText) readyText.textContent = 'Unable to build deck.';
         if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
@@ -1126,71 +1082,25 @@
     renderCurrentCard_();
   }
 
-function onNext_(){
-  const s = loadSession();
-  if(!s || !s.cards || !s.cards.length) return;
-
-  s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
-  saveSession(s);
-
-  topCard.style.transform = "";
-  topCard.classList.remove("is-dragging","is-animating");
-
-  renderCurrentCard_();
-}
-
-  return;
-
-  const s = loadSession();
-  if(!s || !s.cards || !s.cards.length) return;
-
-  s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
-  saveSession(s);
-
-  
-
-  topCard.style.transform = "";
-  topCard.classList.remove("is-dragging","is-animating");
-
-  if(!deferRender){
-    renderCurrentCard_();
-  }
-}
+  function onNext_(deferRender){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
+    if(s.mode !== 'PLAY'){
+      onBeginPlay_('forward');
+      return;
+    }
     s.index = ((Number(s.index) || 0) + 1) % s.cards.length;
     saveSession(s);
     if(!deferRender) renderCurrentCard_();
   }
 
-function onBack_(){
-  const s = loadSession();
-  if(!s || !s.cards || !s.cards.length) return;
-
-  s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
-  saveSession(s);
-
-  topCard.style.transform = "";
-  topCard.classList.remove("is-dragging","is-animating");
-
-  renderCurrentCard_();
-}
-
-  return;
-
-  const s = loadSession();
-  if(!s || !s.cards || !s.cards.length) return;
-
-  s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
-  saveSession(s);
-
-  
-
-  topCard.style.transform = "";
-  topCard.classList.remove("is-dragging","is-animating");
-
-  if(!deferRender){
-    renderCurrentCard_();
-  }
-}
+  function onBack_(deferRender){
+    const s = loadSession();
+    if(!s || !Array.isArray(s.cards) || !s.cards.length) return;
+    if(s.mode !== 'PLAY'){
+      onBeginPlay_('back');
+      return;
+    }
     s.index = ((Number(s.index) || 0) - 1 + s.cards.length) % s.cards.length;
     saveSession(s);
     if(!deferRender) renderCurrentCard_();
@@ -1325,29 +1235,27 @@ function onBack_(){
   const revealThresholdX = 42;
   const revealAxisRatio = 1.15;
 
-  const gestureState_ = {
-    startX: 0,
-    startY: 0,
-    lastX: 0,
-    lastY: 0,
-    tracking: false,
-    underPreviewMode: ''
-  };
+  let startX = 0;
+  let startY = 0;
+  let lastX = 0;
+  let lastY = 0;
+  let tracking = false;
+  let underPreviewMode = '';
 
   function resetCardPosition_(){
     topCard.classList.remove('is-dragging', 'is-animating');
     topCard.style.transition = '';
     topCard.style.transform = '';
     topCard.style.opacity = '';
-    gestureState_.underPreviewMode = '';
+    underPreviewMode = '';
   }
 
   function begin_(x, y){
-    gestureState_.startX = x;
-    gestureState_.startY = y;
-    gestureState_.lastX = x;
-    gestureState_.lastY = y;
-    gestureState_.tracking = true;
+    startX = x;
+    startY = y;
+    lastX = x;
+    lastY = y;
+    tracking = true;
     topCard.classList.remove('is-animating');
     topCard.classList.add('is-dragging');
   }
@@ -1358,13 +1266,13 @@ function onBack_(){
   }
 
   function move_(x, y){
-    if(!gestureState_.tracking) return;
+    if(!tracking) return;
 
-    gestureState_.lastX = x;
-    gestureState_.lastY = y;
+    lastX = x;
+    lastY = y;
 
-    const dx = gestureState_.lastX - gestureState_.startX;
-    const dy = gestureState_.lastY - gestureState_.startY;
+    const dx = lastX - startX;
+    const dy = lastY - startY;
 
     const horizontalDrag =
       Math.abs(dx) > 12 &&
@@ -1381,41 +1289,41 @@ function onBack_(){
 
     if(revealUnderCard){
       if(isInstallCardVisible_()){
-        if(gestureState_.underPreviewMode !== 'install-info'){
-          if(underBottom) underBottom.innerHTML = getInfoCardMarkup_();
-          gestureState_.underPreviewMode = 'install-info';
+        if(underPreviewMode !== 'install-info'){
+          if(underBottom) underBottom.innerHTML = infoMarkup;
+          underPreviewMode = 'install-info';
         }
       } else {
-        
+        renderUnderCard_(dx < 0 ? 'left' : 'right');
       }
     } else if(underBottom){
       const emptyKey = isInstallCardVisible_() ? 'install-info' : 'empty';
       if(emptyKey === 'install-info'){
-        if(gestureState_.underPreviewMode !== 'install-info'){
-          underBottom.innerHTML = getInfoCardMarkup_();
-          gestureState_.underPreviewMode = 'install-info';
+        if(underPreviewMode !== 'install-info'){
+          underBottom.innerHTML = infoMarkup;
+          underPreviewMode = 'install-info';
         }
-      } else if(gestureState_.underPreviewMode !== 'empty'){
+      } else if(underPreviewMode !== 'empty'){
         underBottom.innerHTML = '';
-        gestureState_.underPreviewMode = 'empty';
+        underPreviewMode = 'empty';
       }
     }
   }
 
   /** Commit a swipe when it clearly crosses the horizontal threshold. */
   function finish_(x, y){
-    if(!gestureState_.tracking){
+    if(!tracking){
       resetCardPosition_();
       return;
     }
 
-    gestureState_.lastX = x;
-    gestureState_.lastY = y;
+    lastX = x;
+    lastY = y;
 
-    const dx = gestureState_.lastX - gestureState_.startX;
-    const dy = gestureState_.lastY - gestureState_.startY;
+    const dx = lastX - startX;
+    const dy = lastY - startY;
 
-    gestureState_.tracking = false;
+    tracking = false;
 
     const deliberateHorizontalSwipe =
       Math.abs(dx) >= getCommitThresholdX_() &&
@@ -1474,6 +1382,7 @@ function onBack_(){
       saveSession(s);
       syncStatusFromSession_();
     } else {
+      renderUnderCard_(direction);
       if(direction === 'left'){
         onNext_(true);
       } else {
@@ -1489,14 +1398,14 @@ function onBack_(){
     topCard.style.opacity = '1';
 
     window.setTimeout(function(){
-      if(underBottom) underBottom.innerHTML = '';
-      resetCardPosition_();
       renderCurrentCard_();
+      resetCardPosition_();
     }, 530);
   }
 
-  topCard.addEventListener('pointerdown', function(e){
-    if(!(e.pointerType === 'mouse' || e.pointerType === 'touch' || e.pointerType === 'pen')) return;
+  topCard.addEventListener('touchstart', function(e){
+    const t = e.touches && e.touches[0];
+    if(!t) return;
 
     const s = loadSession();
     if(s && s.mode === 'INFO'){
@@ -1510,23 +1419,24 @@ function onBack_(){
       prepareOptionalMotionFeatures_();
     }
 
-    begin_(e.clientX, e.clientY);
-  }, { passive:true });
+    begin_(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive:false });
 
-  topCard.addEventListener('pointermove', function(e){
-    if(!gestureState_.tracking) return;
-    move_(e.clientX, e.clientY);
-  }, { passive:true });
-
-  topCard.addEventListener('pointerup', function(e){
-    if(!gestureState_.tracking) return;
-    finish_(e.clientX, e.clientY);
-  }, { passive:true });
-
-  topCard.addEventListener('pointercancel', function(){
-    gestureState_.tracking = false;
-    if(underBottom) underBottom.innerHTML = '';
-    resetCardPosition_();
+  topCard.addEventListener('pointerdown', function(e){
+    if(e.pointerType === 'mouse' || e.pointerType === 'touch' || e.pointerType === 'pen'){
+      const s = loadSession();
+      if(s && s.mode === 'INFO'){
+        prepareOptionalMotionFeatures_().then(function(){
+          const fresh = loadSession();
+          if(fresh && fresh.mode === 'INFO'){
+            showInfoCardReady_(fresh.total);
+          }
+        });
+      } else {
+        prepareOptionalMotionFeatures_();
+      }
+    }
   }, { passive:true });
 
   topCard.addEventListener('click', function(){
@@ -1543,48 +1453,48 @@ function onBack_(){
     }
   }, { passive:true });
 
+  topCard.addEventListener('touchmove', function(e){
+    const t = e.touches && e.touches[0];
+    if(!t) return;
+    move_(t.clientX, t.clientY);
+    e.preventDefault();
+  }, { passive:false });
+
+  topCard.addEventListener('touchend', function(e){
+    const t = e.changedTouches && e.changedTouches[0];
+    if(!t){
+      finish_(lastX, lastY);
+    } else {
+      finish_(t.clientX, t.clientY);
+    }
+    e.preventDefault();
+  }, { passive:false });
+
+  topCard.addEventListener('touchcancel', function(e){
+    tracking = false;
+    if(underBottom) underBottom.innerHTML = '';
+    resetCardPosition_();
+    e.preventDefault();
+  }, { passive:false });
+
   bindShakeToShuffle_();
   bindDoubleTapShuffle_();
-
-  function bindSwipe_(){
-    let startX = 0;
-    let endX = 0;
-    const threshold = 50;
-
-    const surface = document.getElementById("card");
-
-    surface.addEventListener("touchstart", function(e){
-      startX = e.touches[0].clientX;
-    });
-
-    surface.addEventListener("touchend", function(e){
-      endX = e.changedTouches[0].clientX;
-      const delta = endX - startX;
-
-      if(Math.abs(delta) > threshold){
-        if(delta < 0){
-          onNext_();
-        } else {
-          onBack_();
-        }
-      }
-    });
-  }
-
-  bindSwipe_();
-
-  
-
-  
-
-  
   bindKeyboardControls_();
 
-  document.addEventListener('pointerdown', prepareOptionalMotionFeatures_, { once:true, capture:true });
-  document.addEventListener('touchstart', prepareOptionalMotionFeatures_, { passive:true, once:true, capture:true });
-  document.addEventListener('click', prepareOptionalMotionFeatures_, { passive:true, once:true, capture:true });
+  document.addEventListener('pointerdown', prepareInteractionFeatures_, { once:true, capture:true });
+  document.addEventListener('touchstart', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
+  document.addEventListener('click', prepareInteractionFeatures_, { passive:true, once:true, capture:true });
 
-  renderAppFromSession_();
+  if(!isStandalone_() && !isDesktopBrowser_()){
+    showInstallCard_();
+  } else {
+    const existing = loadSession();
+    if(existing){
+      renderCurrentCard_();
+    } else {
+      startBuildNewDeck_();
+    }
+  }
 
   window.__amity = {
     loadSession: loadSession,
