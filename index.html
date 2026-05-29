@@ -113,6 +113,7 @@ html, body {
 
     .card-layer-top{
       z-index:2;
+      will-change:transform;
     }
 
     .card-layer-under{
@@ -1259,6 +1260,9 @@ console.log("APP_BOOT_OK");
   const axisRatio = 1.6;
   const revealThresholdX = 42;
   const revealAxisRatio = 1.15;
+  const flyOutTransition = 'transform 300ms linear, opacity 300ms linear';
+  const flyOutDurationMs = 310;
+  const flyOutDistance = '140vw';
 
   let startX = 0;
   let startY = 0;
@@ -1305,7 +1309,7 @@ console.log("APP_BOOT_OK");
 
     if(!horizontalDrag) return;
 
-    topCard.style.transform = `translateX(${dx}px)`;
+    topCard.style.transform = `translate3d(${dx}px, 0, 0)`;
     topCard.style.opacity = '1';
 
     const revealUnderCard =
@@ -1359,7 +1363,7 @@ console.log("APP_BOOT_OK");
       topCard.classList.remove('is-dragging');
       topCard.classList.add('is-animating');
       topCard.style.transition = 'transform 360ms cubic-bezier(.2,.8,.2,1), opacity 360ms linear';
-      topCard.style.transform = 'translateX(0)';
+      topCard.style.transform = 'translate3d(0, 0, 0)';
       topCard.style.opacity = '1';
       window.setTimeout(function(){
         resetCardPosition_();
@@ -1372,8 +1376,10 @@ console.log("APP_BOOT_OK");
     if(isInstallCardVisible_()){
       topCard.classList.remove('is-dragging');
       topCard.classList.add('is-animating');
-      topCard.style.transition = 'transform 520ms cubic-bezier(.22,.61,.36,1), opacity 520ms linear';
-      topCard.style.transform = direction === 'left' ? 'translateX(-120vw)' : 'translateX(120vw)';
+      topCard.style.transition = flyOutTransition;
+      topCard.style.transform = direction === 'left'
+        ? `translate3d(-${flyOutDistance}, 0, 0)`
+        : `translate3d(${flyOutDistance}, 0, 0)`;
       topCard.style.opacity = '1';
 
       window.setTimeout(function(){
@@ -1385,7 +1391,7 @@ console.log("APP_BOOT_OK");
         } else {
           startBuildNewDeck_();
         }
-      }, 530);
+      }, flyOutDurationMs);
       return;
     }
 
@@ -1418,14 +1424,16 @@ console.log("APP_BOOT_OK");
 
     topCard.classList.remove('is-dragging');
     topCard.classList.add('is-animating');
-    topCard.style.transition = 'transform 520ms cubic-bezier(.22,.61,.36,1), opacity 520ms linear';
-    topCard.style.transform = direction === 'left' ? 'translateX(-120vw)' : 'translateX(120vw)';
+    topCard.style.transition = flyOutTransition;
+    topCard.style.transform = direction === 'left'
+      ? `translate3d(-${flyOutDistance}, 0, 0)`
+      : `translate3d(${flyOutDistance}, 0, 0)`;
     topCard.style.opacity = '1';
 
     window.setTimeout(function(){
       renderCurrentCard_();
       resetCardPosition_();
-    }, 530);
+    }, flyOutDurationMs);
   }
 
   topCard.addEventListener('touchstart', function(e){
