@@ -592,6 +592,21 @@ html, body {
       border:0 !important;
     }
 
+    .sr-controls{
+      position:absolute;
+      left:-10000px;
+      top:auto;
+      width:1px;
+      height:1px;
+      overflow:hidden;
+    }
+
+    .sr-controls button{
+      display:block;
+      width:1px;
+      height:1px;
+    }
+
     .motion-permission{
       position:fixed;
       inset:0;
@@ -696,6 +711,15 @@ html, body {
 </head>
 <body>
   <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+  <nav class="sr-controls" aria-label="Screen reader game controls">
+    <button type="button" id="sr-continue">Continue to game</button>
+    <button type="button" id="sr-start-first">Start with first card</button>
+    <button type="button" id="sr-start-last">Start with last card</button>
+    <button type="button" id="sr-prev">Previous card</button>
+    <button type="button" id="sr-repeat">Repeat current card</button>
+    <button type="button" id="sr-next">Next card</button>
+    <button type="button" id="sr-shuffle">Shuffle deck</button>
+  </nav>
   <div class="motion-permission" id="motion-permission" role="dialog" aria-modal="true" aria-labelledby="motion-title" hidden>
     <div class="motion-box">
       <div class="motion-title" id="motion-title">Enable Shake?</div>
@@ -765,7 +789,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.100</div>
+        <div class="status-version" id="status-version">v.101</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -781,7 +805,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '100';
+  const APP_VERSION = '101';
 
   function escapeHtml_(value){
     return String(value)
@@ -802,6 +826,13 @@ console.log("APP_BOOT_OK");
   const motionPrompt = document.getElementById('motion-permission');
   const motionEnable = document.getElementById('motion-enable');
   const motionLater = document.getElementById('motion-later');
+  const srContinue = document.getElementById('sr-continue');
+  const srStartFirst = document.getElementById('sr-start-first');
+  const srStartLast = document.getElementById('sr-start-last');
+  const srPrev = document.getElementById('sr-prev');
+  const srRepeat = document.getElementById('sr-repeat');
+  const srNext = document.getElementById('sr-next');
+  const srShuffle = document.getElementById('sr-shuffle');
   const infoMarkup = topBottom ? topBottom.innerHTML : '';
 
   let loadingTimer = null;
@@ -912,6 +943,56 @@ console.log("APP_BOOT_OK");
     }, 40);
   }
 
+  function focusScreenReaderControl_(control){
+    if(!control || control.hidden || control.disabled) return;
+    window.setTimeout(function(){
+      try{ control.focus(); }catch(e){}
+    }, 80);
+  }
+
+  function setSrButtonVisible_(button, visible){
+    if(!button) return;
+    button.hidden = !visible;
+    button.disabled = !visible;
+  }
+
+  function updateScreenReaderControls_(){
+    const s = loadSession();
+    const installVisible = isInstallCardVisible_();
+    const hasDeck = !!(s && Array.isArray(s.cards) && s.cards.length);
+    const playing = !!(hasDeck && s.mode === 'PLAY');
+    const ready = !!(hasDeck && s.mode !== 'PLAY' && !installVisible);
+
+    setSrButtonVisible_(srContinue, installVisible);
+    setSrButtonVisible_(srStartFirst, ready);
+    setSrButtonVisible_(srStartLast, ready);
+    setSrButtonVisible_(srPrev, playing);
+    setSrButtonVisible_(srRepeat, ready || playing);
+    setSrButtonVisible_(srNext, playing);
+    setSrButtonVisible_(srShuffle, hasDeck && !installVisible);
+  }
+
+  function announceCurrentScreenReaderState_(){
+    const s = loadSession();
+    if(isInstallCardVisible_()){
+      announceScreenReader_(getInstallAnnouncement_());
+      return;
+    }
+
+    if(!s || !Array.isArray(s.cards) || !s.cards.length){
+      announceScreenReader_(getInfoLoadingAnnouncement_());
+      return;
+    }
+
+    if(s.mode !== 'PLAY'){
+      announceScreenReader_(getInfoReadyAnnouncement_(s.total || s.cards.length));
+      return;
+    }
+
+    const idx = Math.max(0, Math.min(Number(s.index) || 0, s.cards.length - 1));
+    announceScreenReader_(getPlayCardAnnouncement_(idx + 1, s.total || s.cards.length, s.cards[idx]));
+  }
+
   function getInstallAnnouncement_(){
     const ua = navigator.userAgent || '';
     const intro = 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. ';
@@ -989,6 +1070,8 @@ console.log("APP_BOOT_OK");
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = infoMarkup;
     announceScreenReader_(getInstallAnnouncement_());
+    updateScreenReaderControls_();
+    focusScreenReaderControl_(srContinue);
   }
 
   function isInstallCardVisible_(){
@@ -1059,6 +1142,7 @@ console.log("APP_BOOT_OK");
     if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = '';
+    updateScreenReaderControls_();
 
     if(loadingTimer) clearInterval(loadingTimer);
     const letters = 'Loading...';
@@ -1096,6 +1180,8 @@ console.log("APP_BOOT_OK");
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = '';
     announceScreenReader_(getInfoReadyAnnouncement_(total || 0));
+    updateScreenReaderControls_();
+    focusScreenReaderControl_(srStartFirst);
     window.setTimeout(showMotionPermissionPrompt_, 650);
   }
 
@@ -1156,6 +1242,7 @@ console.log("APP_BOOT_OK");
     if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
 
     announceScreenReader_(getPlayCardAnnouncement_(idx + 1, s.total, cardObj));
+    updateScreenReaderControls_();
 
     renderUnderCard_('left');
   }
@@ -1165,12 +1252,14 @@ console.log("APP_BOOT_OK");
     if(!s || !Array.isArray(s.cards) || !s.cards.length){
       if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
       if(statusCard) statusCard.textContent = 'Card ID: #0000';
+      updateScreenReaderControls_();
       return;
     }
 
     if(s.mode !== 'PLAY'){
       if(statusDeck) statusDeck.textContent = formatDeckStatus_(0, s.total || s.cards.length);
       if(statusCard) statusCard.textContent = 'Card ID: #0000';
+      updateScreenReaderControls_();
       return;
     }
 
@@ -1178,6 +1267,7 @@ console.log("APP_BOOT_OK");
     const cardObj = s.cards[idx];
     if(statusDeck) statusDeck.textContent = formatDeckStatus_(idx + 1, s.total);
     if(statusCard) statusCard.textContent = formatCardId_(cardObj && cardObj.rowId);
+    updateScreenReaderControls_();
   }
 
   /** Fetch a new shuffled deck from the Apps Script web app. */
@@ -1688,6 +1778,57 @@ console.log("APP_BOOT_OK");
     });
   }
 
+  if(srContinue){
+    srContinue.addEventListener('click', function(){
+      showInfoCardLoading_();
+      resetCardPosition_();
+      const existing = loadSession();
+      if(existing && Array.isArray(existing.cards) && existing.cards.length){
+        showInfoCardReady_(existing.total || existing.cards.length);
+      } else {
+        startBuildNewDeck_();
+      }
+    });
+  }
+
+  if(srStartFirst){
+    srStartFirst.addEventListener('click', function(){
+      onBeginPlay_('forward');
+      focusScreenReaderControl_(srRepeat);
+    });
+  }
+
+  if(srStartLast){
+    srStartLast.addEventListener('click', function(){
+      onBeginPlay_('back');
+      focusScreenReaderControl_(srRepeat);
+    });
+  }
+
+  if(srPrev){
+    srPrev.addEventListener('click', function(){
+      onBack_(false);
+    });
+  }
+
+  if(srNext){
+    srNext.addEventListener('click', function(){
+      onNext_(false);
+    });
+  }
+
+  if(srRepeat){
+    srRepeat.addEventListener('click', function(){
+      announceCurrentScreenReaderState_();
+    });
+  }
+
+  if(srShuffle){
+    srShuffle.addEventListener('click', function(){
+      triggerShuffle_();
+    });
+  }
+
       
   if(!isStandalone_() && !isDesktopBrowser_()){
     showInstallCard_();
@@ -1699,6 +1840,7 @@ console.log("APP_BOOT_OK");
       startBuildNewDeck_();
     }
   }
+  updateScreenReaderControls_();
 
   window.__amity = {
     loadSession: loadSession,
