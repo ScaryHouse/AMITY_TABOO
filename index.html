@@ -807,7 +807,7 @@ html, body {
   <div class="motion-permission" id="motion-permission" role="dialog" aria-modal="true" aria-labelledby="motion-title" hidden>
     <div class="motion-box">
       <div class="motion-title" id="motion-title">Enable Shake?</div>
-      <div class="motion-copy">Tap Enable, then allow motion access. Double tap still shuffles if motion is off.</div>
+      <div class="motion-copy">Tap Enable, then allow motion access. Screen reader users can use the Shuffle deck button.</div>
       <div class="motion-actions">
         <button type="button" class="motion-button" id="motion-enable">Enable</button>
         <button type="button" class="motion-button motion-button-secondary" id="motion-later">Not Now</button>
@@ -873,7 +873,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.103</div>
+        <div class="status-version" id="status-version">v.104</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -889,7 +889,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '103';
+  const APP_VERSION = '104';
 
   function escapeHtml_(value){
     return String(value)
@@ -948,7 +948,7 @@ console.log("APP_BOOT_OK");
     if(!motionPrompt || shakeEnabled_ || motionPermissionRequested_ || motionPromptDismissed_) return;
     if(!motionPermissionIsNeeded_()) return;
     motionPrompt.hidden = false;
-    announceScreenReader_('Shake to shuffle needs motion access. Tap Enable to allow it, or double tap to shuffle instead.');
+    announceScreenReader_('Shake to shuffle needs motion access. Tap Enable to allow it. Screen reader users can use the Shuffle deck button.');
   }
 
   function hideMotionPermissionPrompt_(){
@@ -1111,7 +1111,7 @@ console.log("APP_BOOT_OK");
   }
 
   function getInfoReadyAnnouncement_(total){
-    return 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. Your deck of ' + String(total || 0) + ' cards is ready. Swipe either way to play. Double tap to shuffle.';
+    return 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. Your deck of ' + String(total || 0) + ' cards is ready. Swipe either way to play. Screen reader users can use the Shuffle deck button.';
   }
 
   function getPlayCardAnnouncement_(current, total, cardObj){
@@ -1533,44 +1533,6 @@ console.log("APP_BOOT_OK");
     startBuildNewDeck_();
   }
 
-  /** Treat a clean double tap as a request for a new deck. */
-  function bindDoubleTapShuffle_(){
-    const surface = document.querySelector('.card') || document.body;
-    if(!surface) return;
-
-    let lastTapAt = 0;
-    let tapStartX = 0;
-    let tapStartY = 0;
-
-    surface.addEventListener('touchstart', function(e){
-      const t = e.touches && e.touches[0];
-      if(!t) return;
-      tapStartX = t.clientX;
-      tapStartY = t.clientY;
-    }, { passive:true });
-
-    surface.addEventListener('touchend', function(e){
-      const t = e.changedTouches && e.changedTouches[0];
-      if(!t) return;
-      const dx = Math.abs((t.clientX || 0) - tapStartX);
-      const dy = Math.abs((t.clientY || 0) - tapStartY);
-      if(dx > 14 || dy > 14) return;
-
-      const now = Date.now();
-      if(now - lastTapAt <= 350){
-        triggerShuffle_();
-        lastTapAt = 0;
-        return;
-      }
-      lastTapAt = now;
-    }, { passive:true });
-
-    surface.addEventListener('dblclick', function(e){
-      if(e && e.target && e.target.closest && e.target.closest('a')) return;
-      triggerShuffle_();
-    });
-  }
-
   /** Treat a deliberate shake as a request for a new deck. */
   function bindShakeToShuffle_(){
     window.addEventListener('devicemotion', function(e){
@@ -1650,7 +1612,7 @@ console.log("APP_BOOT_OK");
   }
 
   function isInteractiveTarget_(target){
-    return !!(target && target.closest && target.closest('button, a, input, textarea, select, [role="button"]'));
+    return !!(target && target.closest && target.closest('button, a, input, textarea, select, [role="button"]:not(.install-card)'));
   }
 
   function begin_(x, y){
@@ -1664,6 +1626,10 @@ console.log("APP_BOOT_OK");
   }
 
   function prepareMotionOnInteraction_(){
+    if(motionPermissionIsNeeded_()){
+      return;
+    }
+
     const s = loadSession();
     if(s && s.mode === 'INFO'){
       prepareOptionalMotionFeatures_().then(function(){
@@ -1909,13 +1875,15 @@ console.log("APP_BOOT_OK");
   }
 
   topCard.addEventListener('click', function(){
+    if(isInstallCardVisible_() || isInstallHelpVisible_()){
+      return;
+    }
     if(!tracking){
       prepareMotionOnInteraction_();
     }
   }, { passive:true });
 
   bindShakeToShuffle_();
-  bindDoubleTapShuffle_();
   bindKeyboardControls_();
   checkForAppUpdate_();
 
@@ -1925,7 +1893,7 @@ console.log("APP_BOOT_OK");
         hideMotionPermissionPrompt_();
         motionPromptDismissed_ = true;
         if(!enabled){
-          window.alert('Shake is not enabled. You can still double tap to shuffle. To try again later, check iPhone Settings for Motion & Orientation Access, then reopen the game.');
+          window.alert('Shake is not enabled. Screen reader users can still use the Shuffle deck button. To try again later, check iPhone Settings for Motion & Orientation Access, then reopen the game.');
         }
       });
     });
