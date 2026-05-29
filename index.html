@@ -873,7 +873,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.104</div>
+        <div class="status-version" id="status-version">v.105</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -889,7 +889,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '104';
+  const APP_VERSION = '105';
 
   function escapeHtml_(value){
     return String(value)
@@ -1103,7 +1103,7 @@ console.log("APP_BOOT_OK");
     const safariTransfer = isIosSafariBrowser_()
       ? ''
       : 'If this page opened in Chrome, copy this address, open Safari, and paste it there: https://scaryhouse.github.io/AMITY_TABOO/. ';
-    return 'Add AMITY TABOO to your Home Screen. ' + safariIntro + 'VoiceOver basics: swipe right to move to the next item, swipe left to move to the previous item, and double tap to activate the selected item. Steps: Find the Share button. Double tap Share. Swipe right until you hear Add to Home Screen. Double tap Add to Home Screen. Swipe right until you hear Add. Double tap Add. Open AMITY TABOO from your Home Screen. ' + safariTransfer + 'If you get stuck, ask Siri to turn off VoiceOver.';
+    return 'Add AMITY TABOO to your Home Screen. ' + safariIntro + 'Steps: Find the Share button. Double tap Share. Swipe right until you hear Add to Home Screen. Double tap Add to Home Screen. Swipe right until you hear Add. Double tap Add. Open AMITY TABOO from your Home Screen. ' + safariTransfer + 'VoiceOver basics: swipe right to move to the next item, swipe left to move to the previous item, and double tap to activate the selected item. If you get stuck, ask Siri to turn off VoiceOver.';
   }
 
   function getInfoLoadingAnnouncement_(){
@@ -1176,12 +1176,6 @@ console.log("APP_BOOT_OK");
       <section class="install-help-card" aria-labelledby="install-help-title">
         <h1 id="install-help-title">Add AMITY TABOO to your Home Screen</h1>
         <p>${safariIntro}</p>
-        <p>VoiceOver basics:</p>
-        <ul>
-          <li>Swipe right to move to the next item.</li>
-          <li>Swipe left to move to the previous item.</li>
-          <li>Double tap to activate the selected item.</li>
-        </ul>
         <p>Steps:</p>
         <ol>
           <li>Find the Share button.</li>
@@ -1193,6 +1187,12 @@ console.log("APP_BOOT_OK");
           <li>Open AMITY TABOO from your Home Screen.</li>
         </ol>
         ${safariTransfer}
+        <p>VoiceOver basics:</p>
+        <ul>
+          <li>Swipe right to move to the next item.</li>
+          <li>Swipe left to move to the previous item.</li>
+          <li>Double tap to activate the selected item.</li>
+        </ul>
         <p>If you get stuck, ask Siri: Turn off VoiceOver.</p>
       </section>
     `;
