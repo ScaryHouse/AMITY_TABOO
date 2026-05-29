@@ -693,7 +693,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.098</div>
+        <div class="status-version" id="status-version">v.099</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -709,6 +709,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
+  const APP_VERSION = '099';
 
   function escapeHtml_(value){
     return String(value)
@@ -767,6 +768,29 @@ console.log("APP_BOOT_OK");
   /** Remove the saved session so a fresh deck can be built. */
   function clearSession(){
     try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  }
+
+  function checkForAppUpdate_(){
+    try{
+      fetch('version.json?ts=' + Date.now(), { cache: 'no-store' })
+        .then(function(resp){
+          if(!resp.ok) return null;
+          return resp.json();
+        })
+        .then(function(info){
+          const latest = info && info.version ? String(info.version) : '';
+          if(!latest || latest === APP_VERSION) return;
+
+          const key = 'amity_taboo_refresh_' + latest;
+          if(sessionStorage.getItem(key)) return;
+          sessionStorage.setItem(key, '1');
+
+          const url = new URL(window.location.href);
+          url.searchParams.set('refresh', latest + '-' + Date.now());
+          window.location.replace(url.toString());
+        })
+        .catch(function(){});
+    }catch(e){}
   }
 
   function formatDeckStatus_(current, total){
@@ -1540,6 +1564,7 @@ console.log("APP_BOOT_OK");
   bindShakeToShuffle_();
   bindDoubleTapShuffle_();
   bindKeyboardControls_();
+  checkForAppUpdate_();
 
       
   if(!isStandalone_() && !isDesktopBrowser_()){
