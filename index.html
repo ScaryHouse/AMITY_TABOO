@@ -227,25 +227,29 @@ html, body {
 
     .install-help-card h1{
       margin:0 0 18px;
-      font-size:clamp(30px, 8vw, 42px);
+      font-size:clamp(26px, 6.8vw, 34px);
       line-height:1.08;
       font-weight:900;
     }
 
     .install-help-card p{
       margin:0 0 16px;
-      font-size:clamp(22px, 6.2vw, 30px);
+      font-size:clamp(20px, 5.6vw, 26px);
     }
 
     .install-help-card ol,
     .install-help-card ul{
       margin:0 0 18px 28px;
       padding:0;
-      font-size:clamp(22px, 6.2vw, 30px);
+      font-size:clamp(22px, 5.8vw, 28px);
     }
 
     .install-help-card li{
       margin:0 0 12px;
+    }
+
+    .install-help-card li span{
+      display:block;
     }
 
     .card-art-top-wrap{
@@ -873,7 +877,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.105</div>
+        <div class="status-version" id="status-version">v.106</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -889,7 +893,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '105';
+  const APP_VERSION = '106';
 
   function escapeHtml_(value){
     return String(value)
@@ -1097,13 +1101,7 @@ console.log("APP_BOOT_OK");
   }
 
   function getInstallHelpAnnouncement_(){
-    const safariIntro = isIosSafariBrowser_()
-      ? 'You are in Safari. Use the Share button to add this page to your Home Screen. '
-      : 'For the best full screen game experience on iPhone, open this page in Safari and add it to your Home Screen. ';
-    const safariTransfer = isIosSafariBrowser_()
-      ? ''
-      : 'If this page opened in Chrome, copy this address, open Safari, and paste it there: https://scaryhouse.github.io/AMITY_TABOO/. ';
-    return 'Add AMITY TABOO to your Home Screen. ' + safariIntro + 'Steps: Find the Share button. Double tap Share. Swipe right until you hear Add to Home Screen. Double tap Add to Home Screen. Swipe right until you hear Add. Double tap Add. Open AMITY TABOO from your Home Screen. ' + safariTransfer + 'VoiceOver basics: swipe right to move to the next item, swipe left to move to the previous item, and double tap to activate the selected item. If you get stuck, ask Siri to turn off VoiceOver.';
+    return 'Add AMITY TABOO to your Home Screen. One. More. Two. Share. Three. View More. Four. Add to Home Screen.';
   }
 
   function getInfoLoadingAnnouncement_(){
@@ -1162,38 +1160,15 @@ console.log("APP_BOOT_OK");
   }
 
   function getInstallHelpMarkup_(){
-    const inIosSafari = isIosSafariBrowser_();
-    const safariIntro = inIosSafari
-      ? 'You are in Safari. Use the Share button to add this page to your Home Screen.'
-      : 'For the best full-screen game experience on iPhone, open this page in Safari and add it to your Home Screen.';
-    const safariTransfer = inIosSafari
-      ? ''
-      : `
-        <p>If this page opened in Chrome, copy this address, open Safari, and paste it there:</p>
-        <p>https://scaryhouse.github.io/AMITY_TABOO/</p>
-      `;
     return `
       <section class="install-help-card" aria-labelledby="install-help-title">
         <h1 id="install-help-title">Add AMITY TABOO to your Home Screen</h1>
-        <p>${safariIntro}</p>
-        <p>Steps:</p>
         <ol>
-          <li>Find the Share button.</li>
-          <li>Double tap Share.</li>
-          <li>Swipe right until you hear Add to Home Screen.</li>
-          <li>Double tap Add to Home Screen.</li>
-          <li>Swipe right until you hear Add.</li>
-          <li>Double tap Add.</li>
-          <li>Open AMITY TABOO from your Home Screen.</li>
+          <li>More...</li>
+          <li>Share</li>
+          <li>View More</li>
+          <li><span>Add to</span><span>Home Screen</span></li>
         </ol>
-        ${safariTransfer}
-        <p>VoiceOver basics:</p>
-        <ul>
-          <li>Swipe right to move to the next item.</li>
-          <li>Swipe left to move to the previous item.</li>
-          <li>Double tap to activate the selected item.</li>
-        </ul>
-        <p>If you get stuck, ask Siri: Turn off VoiceOver.</p>
       </section>
     `;
   }
