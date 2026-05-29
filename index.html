@@ -212,6 +212,42 @@ html, body {
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
     }
 
+    .install-help-card{
+      flex:1 1 auto;
+      min-height:0;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+      padding:22px 24px 28px;
+      color:#fff;
+      background:#000;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      line-height:1.08;
+      text-align:left;
+    }
+
+    .install-help-card h1{
+      margin:0 0 18px;
+      font-size:clamp(30px, 8vw, 42px);
+      line-height:1.08;
+      font-weight:900;
+    }
+
+    .install-help-card p{
+      margin:0 0 16px;
+      font-size:clamp(22px, 6.2vw, 30px);
+    }
+
+    .install-help-card ol,
+    .install-help-card ul{
+      margin:0 0 18px 28px;
+      padding:0;
+      font-size:clamp(22px, 6.2vw, 30px);
+    }
+
+    .install-help-card li{
+      margin:0 0 12px;
+    }
+
     .card-art-top-wrap{
       width:75%;
       margin:0 auto;
@@ -236,7 +272,53 @@ html, body {
       margin-top:auto;
       flex:0 0 auto;
       display:flex;
+      flex-direction:column;
       align-items:flex-end;
+    }
+
+    .install-help-visual{
+      width:100%;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:18px;
+      margin-bottom:10px;
+      color:#000;
+    }
+
+    .install-help-copy{
+      width:100%;
+      font-size:clamp(24px, 6.2vw, 38px);
+      line-height:1;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .install-help-copy span,
+    .install-help-button span{
+      display:block;
+    }
+
+    .install-help-button{
+      appearance:none;
+      width:100%;
+      border:5px solid #000;
+      border-radius:30px;
+      background:var(--card-header-bg);
+      color:#000;
+      padding:18px 14px 20px;
+      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+      font-size:clamp(26px, 7.0vw, 44px);
+      line-height:0.96;
+      font-weight:900;
+      text-align:center;
+      cursor:pointer;
+      box-shadow:0 8px 0 #000;
+    }
+
+    .install-help-button:active{
+      transform:translateY(4px);
+      box-shadow:0 4px 0 #000;
     }
 
     .info-ready{
@@ -712,6 +794,8 @@ html, body {
 <body>
   <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <nav class="sr-controls" aria-label="Screen reader game controls">
+    <button type="button" id="sr-install-help">VoiceOver install help</button>
+    <button type="button" id="sr-install-back">Back to install card</button>
     <button type="button" id="sr-continue">Continue to game</button>
     <button type="button" id="sr-start-first">Start with first card</button>
     <button type="button" id="sr-start-last">Start with last card</button>
@@ -789,7 +873,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.101</div>
+        <div class="status-version" id="status-version">v.102</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -805,7 +889,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '101';
+  const APP_VERSION = '102';
 
   function escapeHtml_(value){
     return String(value)
@@ -826,6 +910,8 @@ console.log("APP_BOOT_OK");
   const motionPrompt = document.getElementById('motion-permission');
   const motionEnable = document.getElementById('motion-enable');
   const motionLater = document.getElementById('motion-later');
+  const srInstallHelp = document.getElementById('sr-install-help');
+  const srInstallBack = document.getElementById('sr-install-back');
   const srContinue = document.getElementById('sr-continue');
   const srStartFirst = document.getElementById('sr-start-first');
   const srStartLast = document.getElementById('sr-start-last');
@@ -959,11 +1045,14 @@ console.log("APP_BOOT_OK");
   function updateScreenReaderControls_(){
     const s = loadSession();
     const installVisible = isInstallCardVisible_();
+    const installHelpVisible = isInstallHelpVisible_();
     const hasDeck = !!(s && Array.isArray(s.cards) && s.cards.length);
-    const playing = !!(hasDeck && s.mode === 'PLAY');
-    const ready = !!(hasDeck && s.mode !== 'PLAY' && !installVisible);
+    const playing = !!(hasDeck && s.mode === 'PLAY' && !installHelpVisible);
+    const ready = !!(hasDeck && s.mode !== 'PLAY' && !installVisible && !installHelpVisible);
 
-    setSrButtonVisible_(srContinue, installVisible);
+    setSrButtonVisible_(srInstallHelp, installVisible && !document.getElementById('install-help-open'));
+    setSrButtonVisible_(srInstallBack, installHelpVisible);
+    setSrButtonVisible_(srContinue, installVisible || installHelpVisible);
     setSrButtonVisible_(srStartFirst, ready);
     setSrButtonVisible_(srStartLast, ready);
     setSrButtonVisible_(srPrev, playing);
@@ -974,6 +1063,11 @@ console.log("APP_BOOT_OK");
 
   function announceCurrentScreenReaderState_(){
     const s = loadSession();
+    if(isInstallHelpVisible_()){
+      announceScreenReader_(getInstallHelpAnnouncement_());
+      return;
+    }
+
     if(isInstallCardVisible_()){
       announceScreenReader_(getInstallAnnouncement_());
       return;
@@ -994,18 +1088,22 @@ console.log("APP_BOOT_OK");
   }
 
   function getInstallAnnouncement_(){
-    const ua = navigator.userAgent || '';
     const intro = 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. ';
-    if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
-      return intro + 'For the best full screen play follow this path: Tap Share. View More. Add to Home Screen.';
-    }
-    if(/iPhone|iPad|iPod/i.test(ua)){
-      return intro + 'For the best full screen play follow this path: Tap More options. Share. View More. Add to Home Screen.';
-    }
-    if(/Android/i.test(ua)){
-      return intro + 'For the best full screen play follow this path: Tap Menu. Add to Home Screen.';
-    }
-    return intro + 'Install this app to play full screen.';
+    return intro + 'For best full screen play, add AMITY TABOO to your Home Screen. Use the Add to Home Screen Help button for instructions.';
+  }
+
+  function getInstallButtonDescription_(){
+    return 'Amity Games presents. Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. For best full screen play, add AMITY TABOO to your Home Screen.';
+  }
+
+  function getInstallHelpAnnouncement_(){
+    const safariIntro = isIosSafariBrowser_()
+      ? 'You are in Safari. Use the Share button to add this page to your Home Screen. '
+      : 'For the best full screen game experience on iPhone, open this page in Safari and add it to your Home Screen. ';
+    const safariTransfer = isIosSafariBrowser_()
+      ? ''
+      : 'If this page opened in Chrome, copy this address, open Safari, and paste it there: https://scaryhouse.github.io/AMITY_TABOO/. ';
+    return 'Add AMITY TABOO to your Home Screen. ' + safariIntro + 'VoiceOver basics: swipe right to move to the next item, swipe left to move to the previous item, and double tap to activate the selected item. Steps: Find the Share button. Double tap Share. Swipe right until you hear Add to Home Screen. Double tap Add to Home Screen. Swipe right until you hear Add. Double tap Add. Open AMITY TABOO from your Home Screen. ' + safariTransfer + 'If you get stuck, ask Siri to turn off VoiceOver.';
   }
 
   function getInfoLoadingAnnouncement_(){
@@ -1039,27 +1137,64 @@ console.log("APP_BOOT_OK");
     return !isMobileUA && touchPoints === 0;
   }
 
-  function getInstallCardMarkup_(){
+  function isIosSafariBrowser_(){
     const ua = navigator.userAgent || '';
-    let installAsset = 'at-install-ios-safari.svg?v=1';
+    return /iPhone|iPad|iPod/i.test(ua) &&
+      /Safari/i.test(ua) &&
+      !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua);
+  }
 
-    if(/iPhone|iPad|iPod/i.test(ua) && /CriOS/i.test(ua)){
-      installAsset = 'at-install-ios-chrome.svg?v=1';
-    } else if(/iPhone|iPad|iPod/i.test(ua)){
-      installAsset = 'at-install-ios-safari.svg?v=1';
-    } else if(/Android/i.test(ua)){
-      installAsset = 'at-install-android.svg?v=1';
-    }
-
+  function getInstallCardMarkup_(){
     return `
       <div class="install-card">
+        <div class="sr-only" id="install-button-description">${getInstallButtonDescription_()}</div>
         <div class="card-art-top-wrap">
           <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
         </div>
         <div class="install-bottom-wrap">
-          <img class="install-art-bottom" src="${installAsset}" alt="" aria-hidden="true" draggable="false">
+          <div class="install-help-visual">
+            <div class="install-help-copy"><span>FOR BEST</span><span>FULL SCREEN PLAY</span></div>
+            <button class="install-help-button" id="install-help-open" type="button" aria-label="Add to Home Screen instructions" aria-describedby="install-button-description"><span>ADD TO</span><span>HOME SCREEN</span></button>
+          </div>
         </div>
       </div>
+    `;
+  }
+
+  function getInstallHelpMarkup_(){
+    const inIosSafari = isIosSafariBrowser_();
+    const safariIntro = inIosSafari
+      ? 'You are in Safari. Use the Share button to add this page to your Home Screen.'
+      : 'For the best full-screen game experience on iPhone, open this page in Safari and add it to your Home Screen.';
+    const safariTransfer = inIosSafari
+      ? ''
+      : `
+        <p>If this page opened in Chrome, copy this address, open Safari, and paste it there:</p>
+        <p>https://scaryhouse.github.io/AMITY_TABOO/</p>
+      `;
+    return `
+      <section class="install-help-card" aria-labelledby="install-help-title">
+        <h1 id="install-help-title">Add AMITY TABOO to your Home Screen</h1>
+        <p>${safariIntro}</p>
+        <p>VoiceOver basics:</p>
+        <ul>
+          <li>Swipe right to move to the next item.</li>
+          <li>Swipe left to move to the previous item.</li>
+          <li>Double tap to activate the selected item.</li>
+        </ul>
+        <p>Steps:</p>
+        <ol>
+          <li>Find the Share button.</li>
+          <li>Double tap Share.</li>
+          <li>Swipe right until you hear Add to Home Screen.</li>
+          <li>Double tap Add to Home Screen.</li>
+          <li>Swipe right until you hear Add.</li>
+          <li>Double tap Add.</li>
+          <li>Open AMITY TABOO from your Home Screen.</li>
+        </ol>
+        ${safariTransfer}
+        <p>If you get stuck, ask Siri: Turn off VoiceOver.</p>
+      </section>
     `;
   }
 
@@ -1071,11 +1206,26 @@ console.log("APP_BOOT_OK");
     if(underBottom) underBottom.innerHTML = infoMarkup;
     announceScreenReader_(getInstallAnnouncement_());
     updateScreenReaderControls_();
-    focusScreenReaderControl_(srContinue);
+    focusScreenReaderControl_(document.getElementById('install-help-open') || srInstallHelp);
+  }
+
+  function showInstallHelp_(){
+    if(!topBottom) return;
+    topBottom.innerHTML = getInstallHelpMarkup_();
+    if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+    if(statusCard) statusCard.textContent = 'Card ID: #0000';
+    if(underBottom) underBottom.innerHTML = infoMarkup;
+    announceScreenReader_(getInstallHelpAnnouncement_());
+    updateScreenReaderControls_();
+    focusScreenReaderControl_(srInstallBack);
   }
 
   function isInstallCardVisible_(){
     return !!(topBottom && topBottom.querySelector('.install-card'));
+  }
+
+  function isInstallHelpVisible_(){
+    return !!(topBottom && topBottom.querySelector('.install-help-card'));
   }
 
   function applyPhraseHandlingWithin_(root){
@@ -1499,6 +1649,10 @@ console.log("APP_BOOT_OK");
     underPreviewMode = '';
   }
 
+  function isInteractiveTarget_(target){
+    return !!(target && target.closest && target.closest('button, a, input, textarea, select'));
+  }
+
   function begin_(x, y){
     startX = x;
     startY = y;
@@ -1674,6 +1828,9 @@ console.log("APP_BOOT_OK");
     if(e.pointerType === 'mouse' && e.button !== 0){
       return;
     }
+    if(isInteractiveTarget_(e.target)){
+      return;
+    }
 
     activePointerId = e.pointerId;
     prepareMotionOnInteraction_();
@@ -1715,6 +1872,9 @@ console.log("APP_BOOT_OK");
 
   if(!window.PointerEvent){
     topCard.addEventListener('touchstart', function(e){
+      if(isInteractiveTarget_(e.target)){
+        return;
+      }
       const t = e.touches && e.touches[0];
       if(!t) return;
 
@@ -1788,6 +1948,28 @@ console.log("APP_BOOT_OK");
       } else {
         startBuildNewDeck_();
       }
+    });
+  }
+
+  if(srInstallHelp){
+    srInstallHelp.addEventListener('click', function(){
+      showInstallHelp_();
+    });
+  }
+
+  if(topBottom){
+    topBottom.addEventListener('click', function(e){
+      const trigger = e.target && e.target.closest ? e.target.closest('#install-help-open') : null;
+      if(!trigger) return;
+      e.preventDefault();
+      showInstallHelp_();
+    });
+  }
+
+  if(srInstallBack){
+    srInstallBack.addEventListener('click', function(){
+      showInstallCard_();
+      focusScreenReaderControl_(srInstallHelp);
     });
   }
 
