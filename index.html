@@ -896,8 +896,8 @@ html, body {
         <a class="status-mid" id="coffee-link" href="https://buymeacoffee.com/scaryhouse" target="_blank" rel="noopener noreferrer external" aria-label="Buy me a Coffee">Buy me a Coffee</a>
       </div>
       <div class="status-bottomrow">
-        <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.114</div>
+        <div class="status-left" id="status-deck">Card: 0 of 000</div>
+        <div class="status-version" id="status-version">v.115</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -913,7 +913,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '114';
+  const APP_VERSION = '115';
 
   function escapeHtml_(value){
     return String(value)
@@ -1032,7 +1032,7 @@ console.log("APP_BOOT_OK");
   }
 
   function formatDeckStatus_(current, total){
-    return 'Deck: ' + String(current || 0) + ' of ' + String(total || 0).padStart(3, '0');
+    return 'Card: ' + String(current || 0) + ' of ' + String(total || 0).padStart(3, '0');
   }
 
   function formatCardId_(rowId){
@@ -1269,7 +1269,7 @@ console.log("APP_BOOT_OK");
   function showInstallCard_(){
     if(!topBottom) return;
     topBottom.innerHTML = getInstallCardMarkup_();
-    if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+    if(statusDeck) statusDeck.textContent = 'Card: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = infoMarkup;
     announceScreenReader_(getInstallAnnouncement_());
@@ -1280,7 +1280,7 @@ console.log("APP_BOOT_OK");
   function showInstallHelp_(){
     if(!topBottom) return;
     topBottom.innerHTML = getInstallHelpMarkup_();
-    if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+    if(statusDeck) statusDeck.textContent = 'Card: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = infoMarkup;
     announceScreenReader_(getInstallHelpAnnouncement_());
@@ -1357,7 +1357,7 @@ console.log("APP_BOOT_OK");
     topBottom.innerHTML = infoMarkup;
     announceScreenReader_(getInfoLoadingAnnouncement_());
     const readyText = document.getElementById('info-ready');
-    if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+    if(statusDeck) statusDeck.textContent = 'Card: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = '';
     updateScreenReaderControls_();
@@ -1468,7 +1468,7 @@ console.log("APP_BOOT_OK");
   function syncStatusFromSession_(){
     const s = loadSession();
     if(!s || !Array.isArray(s.cards) || !s.cards.length){
-      if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+      if(statusDeck) statusDeck.textContent = 'Card: 0 of 000';
       if(statusCard) statusCard.textContent = 'Card ID: #0000';
       updateScreenReaderControls_();
       return;
@@ -1524,7 +1524,7 @@ console.log("APP_BOOT_OK");
         if(topBottom) topBottom.innerHTML = infoMarkup;
         const readyText = document.getElementById('info-ready');
         if(readyText) readyText.textContent = 'Unable to build deck.';
-        if(statusDeck) statusDeck.textContent = 'Deck: 0 of 000';
+        if(statusDeck) statusDeck.textContent = 'Card: 0 of 000';
         if(statusCard) statusCard.textContent = 'Card ID: #0000';
       });
   }
