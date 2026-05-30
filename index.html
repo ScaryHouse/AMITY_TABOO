@@ -205,6 +205,7 @@ html, body {
     }
 
     .install-card{
+      position:relative;
       flex:1 1 auto;
       min-height:0;
       display:flex;
@@ -216,6 +217,33 @@ html, body {
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
       overflow:auto;
       -webkit-overflow-scrolling:touch;
+    }
+
+    .install-vo-button{
+      position:absolute;
+      left:18px;
+      right:18px;
+      z-index:4;
+      height:44px;
+      padding:0;
+      border:0;
+      appearance:none;
+      background:transparent;
+      color:transparent;
+      opacity:0.01;
+      overflow:hidden;
+    }
+
+    .install-vo-button:focus{
+      outline:2px solid transparent;
+    }
+
+    #screen-reader-confirm{
+      top:10px;
+    }
+
+    #install-help-open{
+      top:58px;
     }
 
     .install-intro{
@@ -876,7 +904,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.125</div>
+        <div class="status-version" id="status-version">v.126</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -893,7 +921,7 @@ console.log("APP_BOOT_OK");
    */
   const LS_KEY = 'amity_taboo_session_v2';
   const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
-  const APP_VERSION = '125';
+  const APP_VERSION = '126';
 
   function escapeHtml_(value){
     return String(value)
@@ -1236,8 +1264,8 @@ console.log("APP_BOOT_OK");
           <p class="install-directive"><span>Add to your</span><span>Home Screen</span></p>
         </div>
         <div class="install-bottom-wrap">
-          <button class="sr-only" id="screen-reader-confirm" type="button">Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.</button>
-          <button class="sr-only" id="install-help-open" type="button">AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Double tap to read instructions.</button>
+          <button class="install-vo-button" id="screen-reader-confirm" type="button">Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.</button>
+          <button class="install-vo-button" id="install-help-open" type="button">AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Double tap to read instructions.</button>
           ${getInstallHelpMarkup_()}
         </div>
       </div>

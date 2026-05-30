@@ -29,7 +29,7 @@ This matches the intended mental model: browser equals installer, Home Screen eq
 
 ## VoiceOver install flow
 
-Web apps cannot reliably detect whether VoiceOver is enabled. The install card therefore provides a screen-reader-only confirmation control instead of trying to infer screen-reader use.
+Web apps cannot reliably detect whether VoiceOver is enabled. The install card therefore provides an invisible but physically focusable confirmation control instead of trying to infer screen-reader use.
 
 The first screen-reader-only control asks:
 
