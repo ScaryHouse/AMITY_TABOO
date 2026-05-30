@@ -35,9 +35,9 @@ The first screen-reader-only control asks:
 
 > Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.
 
-If activated, the app saves that choice on the device. The next screen-reader-only control identifies the app and reads the install instructions:
+If activated, the app saves that choice on the device. The next invisible focusable control contains the full platform-specific install instructions:
 
-> AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Double tap to read instructions.
+> AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Instructions. ...
 
 Sighted users do not see this button. They read the visible instructions directly on the install card.
 
