@@ -897,7 +897,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.117</div>
+        <div class="status-version" id="status-version">v.118</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -913,7 +913,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '117';
+  const APP_VERSION = '118';
 
   function escapeHtml_(value){
     return String(value)
@@ -1206,7 +1206,7 @@ console.log("APP_BOOT_OK");
         <div class="install-bottom-wrap">
           <div class="install-help-visual">
             <div class="install-help-copy" aria-hidden="true"><span>FOR BEST</span><span>FULL SCREEN PLAY</span></div>
-            <button class="install-help-button" id="install-help-open" type="button"><span>ADD TO</span><span>HOME SCREEN</span></button>
+            <button class="install-help-button" id="install-help-open" type="button" aria-label="AMITY TABOO. A friendly game of Taboo. Add to Home Screen"><span aria-hidden="true">ADD TO</span><span aria-hidden="true">HOME SCREEN</span></button>
           </div>
         </div>
       </div>
