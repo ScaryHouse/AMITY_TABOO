@@ -29,9 +29,13 @@ This matches the intended mental model: browser equals installer, Home Screen eq
 
 ## VoiceOver install flow
 
-Web apps cannot reliably detect whether VoiceOver is enabled. The install card therefore provides one screen-reader-only install control instead of trying to infer screen-reader use.
+Web apps cannot reliably detect whether VoiceOver is enabled. The install card therefore provides a screen-reader-only confirmation control instead of trying to infer screen-reader use.
 
-The screen-reader-only control identifies the app and reads the install instructions:
+The first screen-reader-only control asks:
+
+> Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.
+
+If activated, the app saves that choice on the device. The next screen-reader-only control identifies the app and reads the install instructions:
 
 > AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Double tap to read instructions.
 

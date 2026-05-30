@@ -876,7 +876,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.124</div>
+        <div class="status-version" id="status-version">v.125</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -892,7 +892,8 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '124';
+  const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
+  const APP_VERSION = '125';
 
   function escapeHtml_(value){
     return String(value)
@@ -1001,6 +1002,10 @@ console.log("APP_BOOT_OK");
   /** Remove the saved session so a fresh deck can be built. */
   function clearSession(){
     try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  }
+
+  function saveScreenReaderMode_(){
+    try{ localStorage.setItem(SCREEN_READER_PREF_KEY, '1'); }catch(e){}
   }
 
   function checkForAppUpdate_(){
@@ -1231,6 +1236,7 @@ console.log("APP_BOOT_OK");
           <p class="install-directive"><span>Add to your</span><span>Home Screen</span></p>
         </div>
         <div class="install-bottom-wrap">
+          <button class="sr-only" id="screen-reader-confirm" type="button">Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.</button>
           <button class="sr-only" id="install-help-open" type="button">AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Double tap to read instructions.</button>
           ${getInstallHelpMarkup_()}
         </div>
@@ -1294,7 +1300,13 @@ console.log("APP_BOOT_OK");
     if(underBottom) underBottom.innerHTML = infoMarkup;
     announceScreenReader_('');
     updateScreenReaderControls_();
-    focusScreenReaderControl_(document.getElementById('install-help-open') || srInstallHelp);
+    focusScreenReaderControl_(document.getElementById('screen-reader-confirm') || document.getElementById('install-help-open') || srInstallHelp);
+  }
+
+  function confirmScreenReaderMode_(){
+    saveScreenReaderMode_();
+    announceScreenReader_('Screen reader controls on. Add AMITY TABOO to your Home Screen. Double tap to read instructions.');
+    focusScreenReaderControl_(document.getElementById('install-help-open'));
   }
 
   function focusInstallInstructions_(){
@@ -1995,6 +2007,13 @@ console.log("APP_BOOT_OK");
 
   if(topBottom){
     topBottom.addEventListener('click', function(e){
+      const screenReaderTrigger = e.target && e.target.closest ? e.target.closest('#screen-reader-confirm') : null;
+      if(screenReaderTrigger){
+        e.preventDefault();
+        confirmScreenReaderMode_();
+        return;
+      }
+
       const trigger = e.target && e.target.closest ? e.target.closest('#install-help-open') : null;
       if(!trigger) return;
       e.preventDefault();
@@ -2002,6 +2021,14 @@ console.log("APP_BOOT_OK");
     });
 
     topBottom.addEventListener('keydown', function(e){
+      const screenReaderTrigger = e.target && e.target.closest ? e.target.closest('#screen-reader-confirm') : null;
+      if(screenReaderTrigger){
+        if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+        e.preventDefault();
+        confirmScreenReaderMode_();
+        return;
+      }
+
       const trigger = e.target && e.target.closest ? e.target.closest('#install-help-open') : null;
       if(!trigger) return;
       if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
