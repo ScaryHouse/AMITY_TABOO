@@ -214,42 +214,42 @@ html, body {
       color:#000;
       padding:10px 18px 24px 18px;
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-    }
-
-    .install-help-card{
-      flex:1 1 auto;
-      min-height:0;
       overflow:auto;
       -webkit-overflow-scrolling:touch;
-      padding:22px 24px 28px;
+    }
+
+    .install-steps{
+      width:100%;
+      margin-top:22px;
       color:#000;
       background:#fff;
       font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
       line-height:1.08;
       text-align:left;
+      outline:none;
     }
 
-    .install-help-card h1{
+    .install-steps h1{
       margin:0 0 18px;
       font-size:clamp(26px, 6.8vw, 34px);
       line-height:1.08;
       font-weight:900;
     }
 
-    .install-help-card p{
+    .install-steps p{
       margin:0 0 16px;
       font-size:clamp(20px, 5.6vw, 26px);
     }
 
-    .install-help-card ol,
-    .install-help-card ul{
+    .install-steps ol,
+    .install-steps ul{
       margin:0 0 18px 0;
       padding:0;
       font-size:clamp(22px, 5.8vw, 28px);
       list-style:none;
     }
 
-    .install-help-card li{
+    .install-steps li{
       margin:0 0 12px;
     }
 
@@ -289,11 +289,11 @@ html, body {
     .install-bottom-wrap{
       width:92%;
       margin:0 auto;
-      margin-top:auto;
+      margin-top:18px;
       flex:0 0 auto;
       display:flex;
       flex-direction:column;
-      align-items:flex-end;
+      align-items:center;
     }
 
     .install-help-visual{
@@ -897,7 +897,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.121</div>
+        <div class="status-version" id="status-version">v.122</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -913,7 +913,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '121';
+  const APP_VERSION = '122';
 
   function escapeHtml_(value){
     return String(value)
@@ -1172,7 +1172,7 @@ console.log("APP_BOOT_OK");
 
   function getInstallAnnouncement_(){
     const intro = 'Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. ';
-    return intro + 'For best full screen play, add AMITY TABOO to your Home Screen. Use the Add to Home Screen Help button for instructions.';
+    return intro + 'Add AMITY TABOO to your Home Screen. ' + getInstallHelpAnnouncement_();
   }
 
   function getInstallHelpAnnouncement_(){
@@ -1253,8 +1253,9 @@ console.log("APP_BOOT_OK");
         <div class="install-bottom-wrap">
           <div class="install-help-visual">
             <div class="install-help-copy" aria-hidden="true"><span>FOR BEST</span><span>FULL SCREEN PLAY</span></div>
-            <button class="install-help-button" id="install-help-open" type="button" aria-label="AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen"><span aria-hidden="true">ADD TO</span><span aria-hidden="true">HOME SCREEN</span></button>
+            <button class="install-help-button" id="install-help-open" type="button" aria-label="AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Double tap for instructions."><span aria-hidden="true">ADD TO</span><span aria-hidden="true">HOME SCREEN</span></button>
           </div>
+          ${getInstallHelpMarkup_()}
         </div>
       </div>
     `;
@@ -1263,8 +1264,8 @@ console.log("APP_BOOT_OK");
   function getInstallHelpMarkup_(){
     if(isAndroidBrowser_()){
       return `
-        <section class="install-help-card" aria-labelledby="install-help-title">
-          <h1 id="install-help-title">How to Add to Home Screen</h1>
+        <section class="install-steps" aria-labelledby="install-help-title">
+          <h1 id="install-help-title" tabindex="-1">How to Add to Home Screen</h1>
           <ol>
             ${installStep_('one', 'Tap Menu', 'Tap Menu')}
             ${installStep_('two', 'Tap Add to Home Screen', '<span>Tap Add to</span><span>Home Screen</span>')}
@@ -1276,8 +1277,8 @@ console.log("APP_BOOT_OK");
 
     if(isIosBrowser_() && !isIosSafariBrowser_()){
       return `
-        <section class="install-help-card" aria-labelledby="install-help-title">
-          <h1 id="install-help-title">Open in Safari First</h1>
+        <section class="install-steps" aria-labelledby="install-help-title">
+          <h1 id="install-help-title" tabindex="-1">Open in Safari First</h1>
           <ol>
             ${installStep_('one', 'Tap Share', 'Tap Share')}
             ${installStep_('two', 'Tap Open in Safari', '<span>Tap Open</span><span>in Safari</span>')}
@@ -1295,8 +1296,8 @@ console.log("APP_BOOT_OK");
     }
 
     return `
-      <section class="install-help-card" aria-labelledby="install-help-title">
-        <h1 id="install-help-title">How to Add to Home Screen</h1>
+      <section class="install-steps" aria-labelledby="install-help-title">
+        <h1 id="install-help-title" tabindex="-1">How to Add to Home Screen</h1>
         <ol>
           ${installStep_('one', 'Tap More...', 'Tap More...')}
           ${installStep_('two', 'Tap Share', 'Tap Share')}
@@ -1319,15 +1320,13 @@ console.log("APP_BOOT_OK");
     focusScreenReaderControl_(document.getElementById('install-help-open') || srInstallHelp);
   }
 
-  function showInstallHelp_(){
-    if(!topBottom) return;
-    topBottom.innerHTML = getInstallHelpMarkup_();
-    if(statusDeck) statusDeck.textContent = 'Card: 0 of 000';
-    if(statusCard) statusCard.textContent = 'Card ID: #0000';
-    if(underBottom) underBottom.innerHTML = infoMarkup;
+  function focusInstallInstructions_(){
+    const title = document.getElementById('install-help-title');
+    if(title && typeof title.focus === 'function'){
+      title.focus({ preventScroll: false });
+      title.scrollIntoView({ block: 'start', inline: 'nearest' });
+    }
     announceScreenReader_(getInstallHelpAnnouncement_());
-    updateScreenReaderControls_();
-    focusScreenReaderControl_(srInstallBack);
   }
 
   function isInstallCardVisible_(){
@@ -1335,7 +1334,7 @@ console.log("APP_BOOT_OK");
   }
 
   function isInstallHelpVisible_(){
-    return !!(topBottom && topBottom.querySelector('.install-help-card'));
+    return false;
   }
 
   function applyPhraseHandlingWithin_(root){
@@ -2013,7 +2012,7 @@ console.log("APP_BOOT_OK");
 
   if(srInstallHelp){
     srInstallHelp.addEventListener('click', function(){
-      showInstallHelp_();
+      focusInstallInstructions_();
     });
   }
 
@@ -2022,7 +2021,7 @@ console.log("APP_BOOT_OK");
       const trigger = e.target && e.target.closest ? e.target.closest('#install-help-open') : null;
       if(!trigger) return;
       e.preventDefault();
-      showInstallHelp_();
+      focusInstallInstructions_();
     });
 
     topBottom.addEventListener('keydown', function(e){
@@ -2030,7 +2029,7 @@ console.log("APP_BOOT_OK");
       if(!trigger) return;
       if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
       e.preventDefault();
-      showInstallHelp_();
+      focusInstallInstructions_();
     });
   }
 
