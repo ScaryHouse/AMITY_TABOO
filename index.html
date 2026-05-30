@@ -897,7 +897,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.119</div>
+        <div class="status-version" id="status-version">v.120</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -913,7 +913,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '119';
+  const APP_VERSION = '120';
 
   function escapeHtml_(value){
     return String(value)
@@ -936,15 +936,31 @@ console.log("APP_BOOT_OK");
   const motionPrompt = document.getElementById('motion-permission');
   const motionEnable = document.getElementById('motion-enable');
   const motionLater = document.getElementById('motion-later');
-  const srInstallHelp = document.getElementById('sr-install-help');
-  const srInstallBack = document.getElementById('sr-install-back');
-  const srContinue = document.getElementById('sr-continue');
-  const srStartFirst = document.getElementById('sr-start-first');
-  const srStartLast = document.getElementById('sr-start-last');
-  const srPrev = document.getElementById('sr-prev');
-  const srRepeat = document.getElementById('sr-repeat');
-  const srNext = document.getElementById('sr-next');
-  const srShuffle = document.getElementById('sr-shuffle');
+  const srControlHost = document.getElementById('sr-controls');
+  const srButtons = {
+    installHelp: document.getElementById('sr-install-help'),
+    installBack: document.getElementById('sr-install-back'),
+    continueGame: document.getElementById('sr-continue'),
+    startFirst: document.getElementById('sr-start-first'),
+    startLast: document.getElementById('sr-start-last'),
+    prev: document.getElementById('sr-prev'),
+    repeat: document.getElementById('sr-repeat'),
+    next: document.getElementById('sr-next'),
+    shuffle: document.getElementById('sr-shuffle')
+  };
+  Object.keys(srButtons).forEach(function(key){
+    const button = srButtons[key];
+    if(button) button.remove();
+  });
+  const srInstallHelp = srButtons.installHelp;
+  const srInstallBack = srButtons.installBack;
+  const srContinue = srButtons.continueGame;
+  const srStartFirst = srButtons.startFirst;
+  const srStartLast = srButtons.startLast;
+  const srPrev = srButtons.prev;
+  const srRepeat = srButtons.repeat;
+  const srNext = srButtons.next;
+  const srShuffle = srButtons.shuffle;
   const infoMarkup = topBottom ? topBottom.innerHTML : '';
 
   let loadingTimer = null;
@@ -1064,7 +1080,12 @@ console.log("APP_BOOT_OK");
 
   function setSrButtonVisible_(button, visible){
     if(!button) return;
-    button.hidden = !visible;
+    if(visible && button.parentNode !== srControlHost && srControlHost){
+      srControlHost.appendChild(button);
+    } else if(!visible && button.parentNode){
+      button.remove();
+    }
+    button.hidden = false;
     button.disabled = !visible;
     button.setAttribute('aria-hidden', visible ? 'false' : 'true');
     button.tabIndex = visible ? 0 : -1;
@@ -1206,7 +1227,7 @@ console.log("APP_BOOT_OK");
         <div class="install-bottom-wrap">
           <div class="install-help-visual">
             <div class="install-help-copy" aria-hidden="true"><span>FOR BEST</span><span>FULL SCREEN PLAY</span></div>
-            <button class="install-help-button" id="install-help-open" type="button" aria-label="Add AMITY TABOO to Home Screen"><span aria-hidden="true">ADD TO</span><span aria-hidden="true">HOME SCREEN</span></button>
+            <button class="install-help-button" id="install-help-open" type="button" aria-label="AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen"><span aria-hidden="true">ADD TO</span><span aria-hidden="true">HOME SCREEN</span></button>
           </div>
         </div>
       </div>
