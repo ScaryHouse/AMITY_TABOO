@@ -897,7 +897,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.115</div>
+        <div class="status-version" id="status-version">v.117</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -913,7 +913,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '115';
+  const APP_VERSION = '117';
 
   function escapeHtml_(value){
     return String(value)
@@ -1128,10 +1128,6 @@ console.log("APP_BOOT_OK");
     return intro + 'For best full screen play, add AMITY TABOO to your Home Screen. Use the Add to Home Screen Help button for instructions.';
   }
 
-  function getInstallButtonDescription_(){
-    return 'Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. For best full screen play, add AMITY TABOO to your Home Screen.';
-  }
-
   function getInstallHelpAnnouncement_(){
     if(isAndroidBrowser_()){
       return 'How to Add to Home Screen. Step one. Tap Menu. Step two. Tap Add to Home Screen. Step three. Tap Add.';
@@ -1204,14 +1200,13 @@ console.log("APP_BOOT_OK");
   function getInstallCardMarkup_(){
     return `
       <div class="install-card">
-        <div class="sr-only" id="install-button-description">${getInstallButtonDescription_()}</div>
         <div class="card-art-top-wrap">
           <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
         </div>
         <div class="install-bottom-wrap">
           <div class="install-help-visual">
-            <div class="install-help-copy"><span>FOR BEST</span><span>FULL SCREEN PLAY</span></div>
-            <button class="install-help-button" id="install-help-open" type="button" aria-labelledby="install-button-description install-button-action"><span aria-hidden="true">ADD TO</span><span aria-hidden="true">HOME SCREEN</span><span class="sr-only" id="install-button-action">Add to Home Screen</span></button>
+            <div class="install-help-copy" aria-hidden="true"><span>FOR BEST</span><span>FULL SCREEN PLAY</span></div>
+            <button class="install-help-button" id="install-help-open" type="button"><span>ADD TO</span><span>HOME SCREEN</span></button>
           </div>
         </div>
       </div>
@@ -1272,7 +1267,7 @@ console.log("APP_BOOT_OK");
     if(statusDeck) statusDeck.textContent = 'Card: 0 of 000';
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = infoMarkup;
-    announceScreenReader_(getInstallAnnouncement_());
+    announceScreenReader_('');
     updateScreenReaderControls_();
     focusScreenReaderControl_(document.getElementById('install-help-open') || srInstallHelp);
   }
