@@ -29,13 +29,13 @@ This matches the intended mental model: browser equals installer, Home Screen eq
 
 ## VoiceOver install flow
 
-Web apps cannot reliably detect whether VoiceOver is enabled. The install card therefore provides an invisible but physically focusable confirmation control instead of trying to infer screen-reader use.
+Web apps cannot reliably detect whether VoiceOver is enabled. The install card itself is therefore the first focusable VoiceOver control instead of trying to infer screen-reader use.
 
 The first invisible focusable control identifies the app once, then asks:
 
 > AMITY TABOO. A friendly game of Taboo. Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.
 
-If activated, the app saves that choice on the device, moves focus to a repeat-instructions control, and reads the full platform-specific install instructions once. The repeat control itself has a short label:
+The visible install instructions are hidden from VoiceOver so the screen reader does not jump to the visual heading or landmark. If the install card is activated, the app saves that choice on the device, changes the same focusable card to a repeat-instructions control, and reads the full platform-specific install instructions once. The repeat label is:
 
 > Repeat install instructions. Double tap to hear the instructions again.
 
