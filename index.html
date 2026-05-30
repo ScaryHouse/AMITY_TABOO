@@ -75,6 +75,10 @@ html, body {
 
     *{ box-sizing:border-box; }
 
+    [hidden]{
+      display:none !important;
+    }
+
     .screen{
       min-height:100dvh;
       display:flex;
@@ -693,6 +697,10 @@ html, body {
       height:1px;
     }
 
+    .sr-controls button[hidden]{
+      display:none !important;
+    }
+
     .motion-permission{
       position:fixed;
       inset:0;
@@ -797,7 +805,7 @@ html, body {
 </head>
 <body>
   <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
-  <nav class="sr-controls" aria-label="Screen reader game controls">
+  <div class="sr-controls" id="sr-controls">
     <button type="button" id="sr-install-help">VoiceOver install help</button>
     <button type="button" id="sr-install-back">Back to install card</button>
     <button type="button" id="sr-continue">Continue to game</button>
@@ -807,7 +815,7 @@ html, body {
     <button type="button" id="sr-repeat">Repeat current card</button>
     <button type="button" id="sr-next">Next card</button>
     <button type="button" id="sr-shuffle">Shuffle deck</button>
-  </nav>
+  </div>
   <div class="motion-permission" id="motion-permission" role="dialog" aria-modal="true" aria-labelledby="motion-title" hidden>
     <div class="motion-box">
       <div class="motion-title" id="motion-title">Enable Shake?</div>
@@ -877,7 +885,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.108</div>
+        <div class="status-version" id="status-version">v.109</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -893,7 +901,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '108';
+  const APP_VERSION = '109';
 
   function escapeHtml_(value){
     return String(value)
@@ -1044,6 +1052,8 @@ console.log("APP_BOOT_OK");
     if(!button) return;
     button.hidden = !visible;
     button.disabled = !visible;
+    button.setAttribute('aria-hidden', visible ? 'false' : 'true');
+    button.tabIndex = visible ? 0 : -1;
   }
 
   function updateScreenReaderControls_(){
