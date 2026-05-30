@@ -877,7 +877,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.130</div>
+        <div class="status-version" id="status-version">v.131</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -894,7 +894,7 @@ console.log("APP_BOOT_OK");
    */
   const LS_KEY = 'amity_taboo_session_v2';
   const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
-  const APP_VERSION = '130';
+  const APP_VERSION = '131';
 
   function escapeHtml_(value){
     return String(value)
@@ -1180,7 +1180,7 @@ console.log("APP_BOOT_OK");
   }
 
   function getInstallInstructionsOnce_(){
-    return getInstallHelpAnnouncement_() + ' You are on Repeat install instructions. Double tap to hear these instructions again.';
+    return 'Instructions. ' + getInstallHelpAnnouncement_() + ' You are on Repeat install instructions. Double tap to hear these instructions again.';
   }
 
   const INSTALL_STEP_NUMERALS_ = {
@@ -1322,11 +1322,11 @@ console.log("APP_BOOT_OK");
     const installControl = document.getElementById('install-screen-reader-control');
     if(installControl){
       installControl.setAttribute('aria-label', getInstallRepeatPrompt_());
-      focusScreenReaderControl_(installControl);
     }
+    announceScreenReader_('Screen reader controls enabled.');
     window.setTimeout(function(){
-      announceScreenReader_('Screen reader controls on. ' + getInstallInstructionsOnce_());
-    }, 350);
+      announceScreenReader_(getInstallInstructionsOnce_());
+    }, 1100);
   }
 
   function focusInstallInstructions_(){
@@ -1335,7 +1335,7 @@ console.log("APP_BOOT_OK");
       installControl.setAttribute('aria-label', getInstallRepeatPrompt_());
       focusScreenReaderControl_(installControl);
     }
-    announceScreenReader_(getInstallHelpAnnouncement_());
+    announceScreenReader_('Instructions. ' + getInstallHelpAnnouncement_());
   }
 
   function isInstallCardVisible_(){
