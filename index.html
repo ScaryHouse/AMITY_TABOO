@@ -818,15 +818,15 @@ html, body {
 <body>
   <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <div class="sr-controls" id="sr-controls">
-    <button type="button" id="sr-install-help">VoiceOver install help</button>
-    <button type="button" id="sr-install-back">Back to install card</button>
-    <button type="button" id="sr-continue">Continue to game</button>
-    <button type="button" id="sr-start-first">Start with first card</button>
-    <button type="button" id="sr-start-last">Start with last card</button>
-    <button type="button" id="sr-prev">Previous card</button>
-    <button type="button" id="sr-repeat">Repeat current card</button>
-    <button type="button" id="sr-next">Next card</button>
-    <button type="button" id="sr-shuffle">Shuffle deck</button>
+    <button type="button" id="sr-install-help" hidden disabled aria-hidden="true" tabindex="-1">VoiceOver install help</button>
+    <button type="button" id="sr-install-back" hidden disabled aria-hidden="true" tabindex="-1">Back to install card</button>
+    <button type="button" id="sr-continue" hidden disabled aria-hidden="true" tabindex="-1">Continue to game</button>
+    <button type="button" id="sr-start-first" hidden disabled aria-hidden="true" tabindex="-1">Start with first card</button>
+    <button type="button" id="sr-start-last" hidden disabled aria-hidden="true" tabindex="-1">Start with last card</button>
+    <button type="button" id="sr-prev" hidden disabled aria-hidden="true" tabindex="-1">Previous card</button>
+    <button type="button" id="sr-repeat" hidden disabled aria-hidden="true" tabindex="-1">Repeat current card</button>
+    <button type="button" id="sr-next" hidden disabled aria-hidden="true" tabindex="-1">Next card</button>
+    <button type="button" id="sr-shuffle" hidden disabled aria-hidden="true" tabindex="-1">Shuffle deck</button>
   </div>
   <div class="motion-permission" id="motion-permission" role="dialog" aria-modal="true" aria-labelledby="motion-title" hidden>
     <div class="motion-box">
@@ -897,7 +897,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.120</div>
+        <div class="status-version" id="status-version">v.121</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -913,7 +913,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '120';
+  const APP_VERSION = '121';
 
   function escapeHtml_(value){
     return String(value)
@@ -1097,7 +1097,7 @@ console.log("APP_BOOT_OK");
     const installHelpVisible = isInstallHelpVisible_();
     const installScreenVisible = installVisible || installHelpVisible;
     const hasDeck = !!(s && Array.isArray(s.cards) && s.cards.length);
-    const playing = !!(hasDeck && s.mode === 'PLAY' && !installHelpVisible);
+    const playing = !!(hasDeck && s.mode === 'PLAY' && !installVisible && !installHelpVisible);
     const ready = !!(hasDeck && s.mode !== 'PLAY' && !installVisible && !installHelpVisible);
 
     if(statusBar){
@@ -1107,7 +1107,33 @@ console.log("APP_BOOT_OK");
       coffeeLink.tabIndex = installScreenVisible ? -1 : 0;
     }
 
-    setSrButtonVisible_(srInstallHelp, installVisible && !document.getElementById('install-help-open'));
+    if(installVisible){
+      setSrButtonVisible_(srInstallHelp, false);
+      setSrButtonVisible_(srInstallBack, false);
+      setSrButtonVisible_(srContinue, false);
+      setSrButtonVisible_(srStartFirst, false);
+      setSrButtonVisible_(srStartLast, false);
+      setSrButtonVisible_(srPrev, false);
+      setSrButtonVisible_(srRepeat, false);
+      setSrButtonVisible_(srNext, false);
+      setSrButtonVisible_(srShuffle, false);
+      return;
+    }
+
+    if(installHelpVisible){
+      setSrButtonVisible_(srInstallHelp, false);
+      setSrButtonVisible_(srInstallBack, true);
+      setSrButtonVisible_(srContinue, false);
+      setSrButtonVisible_(srStartFirst, false);
+      setSrButtonVisible_(srStartLast, false);
+      setSrButtonVisible_(srPrev, false);
+      setSrButtonVisible_(srRepeat, false);
+      setSrButtonVisible_(srNext, false);
+      setSrButtonVisible_(srShuffle, false);
+      return;
+    }
+
+    setSrButtonVisible_(srInstallHelp, false);
     setSrButtonVisible_(srInstallBack, installHelpVisible);
     setSrButtonVisible_(srContinue, false);
     setSrButtonVisible_(srStartFirst, ready);
@@ -2011,7 +2037,7 @@ console.log("APP_BOOT_OK");
   if(srInstallBack){
     srInstallBack.addEventListener('click', function(){
       showInstallCard_();
-      focusScreenReaderControl_(srInstallHelp);
+      focusScreenReaderControl_(document.getElementById('install-help-open'));
     });
   }
 
