@@ -296,51 +296,6 @@ html, body {
       align-items:center;
     }
 
-    .install-help-visual{
-      width:100%;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:18px;
-      margin-bottom:10px;
-      color:#000;
-    }
-
-    .install-help-copy{
-      width:100%;
-      font-size:clamp(24px, 6.2vw, 38px);
-      line-height:1;
-      font-weight:900;
-      text-align:center;
-    }
-
-    .install-help-copy span,
-    .install-help-button span{
-      display:block;
-    }
-
-    .install-help-button{
-      appearance:none;
-      width:100%;
-      border:5px solid #000;
-      border-radius:30px;
-      background:var(--card-header-bg);
-      color:#000;
-      padding:18px 14px 20px;
-      font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
-      font-size:clamp(26px, 7.0vw, 44px);
-      line-height:0.96;
-      font-weight:900;
-      text-align:center;
-      cursor:pointer;
-      box-shadow:0 8px 0 #000;
-    }
-
-    .install-help-button:active{
-      transform:translateY(4px);
-      box-shadow:0 4px 0 #000;
-    }
-
     .info-ready{
       width:100%;
       text-align:center;
@@ -897,7 +852,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.122</div>
+        <div class="status-version" id="status-version">v.123</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -913,7 +868,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '122';
+  const APP_VERSION = '123';
 
   function escapeHtml_(value){
     return String(value)
@@ -1251,10 +1206,7 @@ console.log("APP_BOOT_OK");
           <img class="card-art-top" src="at-description.svg?v=1" alt="" aria-hidden="true" draggable="false">
         </div>
         <div class="install-bottom-wrap">
-          <div class="install-help-visual">
-            <div class="install-help-copy" aria-hidden="true"><span>FOR BEST</span><span>FULL SCREEN PLAY</span></div>
-            <button class="install-help-button" id="install-help-open" type="button" aria-label="AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Double tap for instructions."><span aria-hidden="true">ADD TO</span><span aria-hidden="true">HOME SCREEN</span></button>
-          </div>
+          <button class="sr-only" id="install-help-open" type="button">AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Double tap to read instructions.</button>
           ${getInstallHelpMarkup_()}
         </div>
       </div>
