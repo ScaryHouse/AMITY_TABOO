@@ -4,6 +4,13 @@
 
 Until AMITY TABOO is launched from the Home Screen, the browser version is only an installer.
 
+The install card should stay direct:
+
+- AMITY TABOO branding.
+- A friendly game of Taboo.
+- Add to your Home Screen.
+- Platform-specific install instructions.
+
 Browser mode must not expose game play:
 
 - No card navigation.
