@@ -243,16 +243,28 @@ html, body {
 
     .install-help-card ol,
     .install-help-card ul{
-      margin:0 0 18px 28px;
+      margin:0 0 18px 0;
       padding:0;
       font-size:clamp(22px, 5.8vw, 28px);
+      list-style:none;
     }
 
     .install-help-card li{
       margin:0 0 12px;
     }
 
-    .install-help-card li span{
+    .install-step-number{
+      display:inline-block;
+      min-width:1.4em;
+      margin-right:0.25em;
+    }
+
+    .install-step-copy{
+      display:inline-block;
+      vertical-align:top;
+    }
+
+    .install-step-copy span{
       display:block;
     }
 
@@ -885,7 +897,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Deck: 0 of 000</div>
-        <div class="status-version" id="status-version">v.109</div>
+        <div class="status-version" id="status-version">v.110</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -901,7 +913,7 @@ console.log("APP_BOOT_OK");
    * Session state is kept locally so deck navigation stays instant.
    */
   const LS_KEY = 'amity_taboo_session_v2';
-  const APP_VERSION = '109';
+  const APP_VERSION = '110';
 
   function escapeHtml_(value){
     return String(value)
@@ -1120,8 +1132,17 @@ console.log("APP_BOOT_OK");
     return 'How to Add to Home Screen. Step one. Tap More. Step two. Tap Share. Step three. Tap View More. Step four. Tap Add to Home Screen. Step five. Tap Add.';
   }
 
+  const INSTALL_STEP_NUMERALS_ = {
+    one: '1',
+    two: '2',
+    three: '3',
+    four: '4',
+    five: '5'
+  };
+
   function installStep_(numberWord, label, visualHtml){
-    return '<li aria-label="Step ' + numberWord + '. ' + label + '"><span aria-hidden="true">Step ' + numberWord + '</span><span aria-hidden="true">' + visualHtml + '</span></li>';
+    const numeral = INSTALL_STEP_NUMERALS_[numberWord] || '';
+    return '<li aria-label="Step ' + numberWord + '. ' + label + '"><span class="install-step-number" aria-hidden="true">' + numeral + '.</span><span class="install-step-copy" aria-hidden="true">' + visualHtml + '</span></li>';
   }
 
   function getInfoLoadingAnnouncement_(){
@@ -1211,7 +1232,7 @@ console.log("APP_BOOT_OK");
           </ol>
           <h1>How to Add to Home Screen</h1>
           <ol>
-            ${installStep_('one', 'Tap More', 'Tap More...')}
+            ${installStep_('one', 'Tap More...', 'Tap More...')}
             ${installStep_('two', 'Tap Share', 'Tap Share')}
             ${installStep_('three', 'Tap View More', 'Tap View More')}
             ${installStep_('four', 'Tap Add to Home Screen', '<span>Tap Add to</span><span>Home Screen</span>')}
@@ -1225,7 +1246,7 @@ console.log("APP_BOOT_OK");
       <section class="install-help-card" aria-labelledby="install-help-title">
         <h1 id="install-help-title">How to Add to Home Screen</h1>
         <ol>
-          ${installStep_('one', 'Tap More', 'Tap More...')}
+          ${installStep_('one', 'Tap More...', 'Tap More...')}
           ${installStep_('two', 'Tap Share', 'Tap Share')}
           ${installStep_('three', 'Tap View More', 'Tap View More')}
           ${installStep_('four', 'Tap Add to Home Screen', '<span>Tap Add to</span><span>Home Screen</span>')}
