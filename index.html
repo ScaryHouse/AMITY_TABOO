@@ -904,7 +904,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.127</div>
+        <div class="status-version" id="status-version">v.128</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -921,7 +921,7 @@ console.log("APP_BOOT_OK");
    */
   const LS_KEY = 'amity_taboo_session_v2';
   const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
-  const APP_VERSION = '127';
+  const APP_VERSION = '128';
 
   function escapeHtml_(value){
     return String(value)
@@ -1189,16 +1189,20 @@ console.log("APP_BOOT_OK");
 
   function getInstallHelpAnnouncement_(){
     if(isAndroidBrowser_()){
-      return 'How to Add to Home Screen. Step one. Tap Menu. Step two. Tap Add to Home Screen. Step three. Tap Add.';
+      return 'How to Add to Home Screen. Step one. Select Menu. Step two. Select Add to Home Screen. Step three. Select Add.';
     }
     if(isIosBrowser_() && !isIosSafariBrowser_()){
-      return 'How to Open in Safari. Step one. Tap Share. Step two. Tap Open in Safari. Then, How to Add to Home Screen. Step one. Tap More. Step two. Tap Share. Step three. Tap View More. Step four. Tap Add to Home Screen. Step five. Tap Add.';
+      return 'How to Open in Safari. Step one. Select Share. Step two. Select Open in Safari. Then, How to Add to Home Screen. Step one. Select More. Step two. Select Share. Step three. Select View More. Step four. Select Add to Home Screen. Step five. Select Add.';
     }
-    return 'How to Add to Home Screen. Step one. Tap More. Step two. Tap Share. Step three. Tap View More. Step four. Tap Add to Home Screen. Step five. Tap Add.';
+    return 'How to Add to Home Screen. Step one. Select More. Step two. Select Share. Step three. Select View More. Step four. Select Add to Home Screen. Step five. Select Add.';
   }
 
-  function getInstallInstructionPrompt_(){
-    return 'AMITY TABOO. A friendly game of Taboo. Add AMITY TABOO to your Home Screen. Instructions. ' + getInstallHelpAnnouncement_() + ' Double tap to repeat these instructions.';
+  function getInstallRepeatPrompt_(){
+    return 'Repeat install instructions. Double tap to hear the instructions again.';
+  }
+
+  function getInstallInstructionsOnce_(){
+    return getInstallHelpAnnouncement_() + ' You are on Repeat install instructions. Double tap to hear these instructions again.';
   }
 
   const INSTALL_STEP_NUMERALS_ = {
@@ -1268,8 +1272,8 @@ console.log("APP_BOOT_OK");
           <p class="install-directive"><span>Add to your</span><span>Home Screen</span></p>
         </div>
         <div class="install-bottom-wrap">
-          <button class="install-vo-button" id="screen-reader-confirm" type="button">Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.</button>
-          <button class="install-vo-button" id="install-help-open" type="button">${escapeHtml_(getInstallInstructionPrompt_())}</button>
+          <button class="install-vo-button" id="screen-reader-confirm" type="button">AMITY TABOO. A friendly game of Taboo. Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.</button>
+          <button class="install-vo-button" id="install-help-open" type="button">${escapeHtml_(getInstallRepeatPrompt_())}</button>
           ${getInstallHelpMarkup_()}
         </div>
       </div>
@@ -1282,9 +1286,9 @@ console.log("APP_BOOT_OK");
         <section class="install-steps" aria-labelledby="install-help-title">
           <h1 id="install-help-title" tabindex="-1">Instructions</h1>
           <ol>
-            ${installStep_('one', 'Tap Menu', 'Tap Menu')}
-            ${installStep_('two', 'Tap Add to Home Screen', '<span>Tap Add to</span><span>Home Screen</span>')}
-            ${installStep_('three', 'Tap Add', 'Tap Add')}
+            ${installStep_('one', 'Select Menu', 'Select Menu')}
+            ${installStep_('two', 'Select Add to Home Screen', '<span>Select Add to</span><span>Home Screen</span>')}
+            ${installStep_('three', 'Select Add', 'Select Add')}
           </ol>
         </section>
       `;
@@ -1295,16 +1299,16 @@ console.log("APP_BOOT_OK");
         <section class="install-steps" aria-labelledby="install-help-title">
           <h1 id="install-help-title" tabindex="-1">Open in Safari First</h1>
           <ol>
-            ${installStep_('one', 'Tap Share', 'Tap Share')}
-            ${installStep_('two', 'Tap Open in Safari', '<span>Tap Open</span><span>in Safari</span>')}
+            ${installStep_('one', 'Select Share', 'Select Share')}
+            ${installStep_('two', 'Select Open in Safari', '<span>Select Open</span><span>in Safari</span>')}
           </ol>
           <h1>Then Add to Home Screen</h1>
           <ol>
-            ${installStep_('one', 'Tap More...', 'Tap More...')}
-            ${installStep_('two', 'Tap Share', 'Tap Share')}
-            ${installStep_('three', 'Tap View More', 'Tap View More')}
-            ${installStep_('four', 'Tap Add to Home Screen', '<span>Tap Add to</span><span>Home Screen</span>')}
-            ${installStep_('five', 'Tap Add', 'Tap Add')}
+            ${installStep_('one', 'Select More...', 'Select More...')}
+            ${installStep_('two', 'Select Share', 'Select Share')}
+            ${installStep_('three', 'Select View More', 'Select View More')}
+            ${installStep_('four', 'Select Add to Home Screen', '<span>Select Add to</span><span>Home Screen</span>')}
+            ${installStep_('five', 'Select Add', 'Select Add')}
           </ol>
         </section>
       `;
@@ -1314,11 +1318,11 @@ console.log("APP_BOOT_OK");
       <section class="install-steps" aria-labelledby="install-help-title">
         <h1 id="install-help-title" tabindex="-1">Instructions</h1>
         <ol>
-          ${installStep_('one', 'Tap More...', 'Tap More...')}
-          ${installStep_('two', 'Tap Share', 'Tap Share')}
-          ${installStep_('three', 'Tap View More', 'Tap View More')}
-          ${installStep_('four', 'Tap Add to Home Screen', '<span>Tap Add to</span><span>Home Screen</span>')}
-          ${installStep_('five', 'Tap Add', 'Tap Add')}
+          ${installStep_('one', 'Select More...', 'Select More...')}
+          ${installStep_('two', 'Select Share', 'Select Share')}
+          ${installStep_('three', 'Select View More', 'Select View More')}
+          ${installStep_('four', 'Select Add to Home Screen', '<span>Select Add to</span><span>Home Screen</span>')}
+          ${installStep_('five', 'Select Add', 'Select Add')}
         </ol>
       </section>
     `;
@@ -1337,19 +1341,21 @@ console.log("APP_BOOT_OK");
 
   function confirmScreenReaderMode_(){
     saveScreenReaderMode_();
-    announceScreenReader_('Screen reader controls on. ' + getInstallInstructionPrompt_());
     focusScreenReaderControl_(document.getElementById('install-help-open'));
+    window.setTimeout(function(){
+      announceScreenReader_('Screen reader controls on. ' + getInstallInstructionsOnce_());
+    }, 350);
   }
 
   function focusInstallInstructions_(){
     const instructionButton = document.getElementById('install-help-open');
-    const prompt = getInstallInstructionPrompt_();
+    const prompt = getInstallRepeatPrompt_();
     if(instructionButton){
       instructionButton.textContent = prompt;
       instructionButton.setAttribute('aria-label', prompt);
       focusScreenReaderControl_(instructionButton);
     }
-    announceScreenReader_(prompt);
+    announceScreenReader_(getInstallHelpAnnouncement_());
   }
 
   function isInstallCardVisible_(){
