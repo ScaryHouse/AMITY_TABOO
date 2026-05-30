@@ -904,7 +904,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.128</div>
+        <div class="status-version" id="status-version">v.129</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -921,7 +921,7 @@ console.log("APP_BOOT_OK");
    */
   const LS_KEY = 'amity_taboo_session_v2';
   const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
-  const APP_VERSION = '128';
+  const APP_VERSION = '129';
 
   function escapeHtml_(value){
     return String(value)
@@ -1304,7 +1304,7 @@ console.log("APP_BOOT_OK");
           </ol>
           <h1>Then Add to Home Screen</h1>
           <ol>
-            ${installStep_('one', 'Select More...', 'Select More...')}
+            ${installStep_('one', 'Select More', 'Select ...')}
             ${installStep_('two', 'Select Share', 'Select Share')}
             ${installStep_('three', 'Select View More', 'Select View More')}
             ${installStep_('four', 'Select Add to Home Screen', '<span>Select Add to</span><span>Home Screen</span>')}
@@ -1318,7 +1318,7 @@ console.log("APP_BOOT_OK");
       <section class="install-steps" aria-labelledby="install-help-title">
         <h1 id="install-help-title" tabindex="-1">Instructions</h1>
         <ol>
-          ${installStep_('one', 'Select More...', 'Select More...')}
+          ${installStep_('one', 'Select More', 'Select ...')}
           ${installStep_('two', 'Select Share', 'Select Share')}
           ${installStep_('three', 'Select View More', 'Select View More')}
           ${installStep_('four', 'Select Add to Home Screen', '<span>Select Add to</span><span>Home Screen</span>')}
