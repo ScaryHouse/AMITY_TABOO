@@ -878,7 +878,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.134</div>
+        <div class="status-version" id="status-version">v.135</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -895,7 +895,7 @@ console.log("APP_BOOT_OK");
    */
   const LS_KEY = 'amity_taboo_session_v2';
   const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
-  const APP_VERSION = '131';
+  const APP_VERSION = '135';
 
   function escapeHtml_(value){
     return String(value)
@@ -1055,17 +1055,18 @@ console.log("APP_BOOT_OK");
     let completed = false;
     let stepIndex = 0;
     let steps = getInstallStepSequence_();
+    let includeIntroOnNextStep = false;
 
     function getControl_(){
       return document.getElementById('install-screen-reader-control');
     }
 
     function getStepControl_(){
-      return document.getElementById('sr-install-step');
+      return srInstallStep;
     }
 
     function getRepeatControl_(){
-      return document.getElementById('sr-install-help');
+      return srInstallHelp;
     }
 
     function getCurrentStep_(){
@@ -1075,7 +1076,11 @@ console.log("APP_BOOT_OK");
     function setControlLabel_(){
       const control = getControl_();
       if(!control) return;
-      control.setAttribute('aria-label', confirmed ? getInstallRepeatPrompt_() : getInstallQuestionPrompt_());
+      if(!confirmed){
+        control.setAttribute('aria-label', getInstallQuestionPrompt_());
+        control.setAttribute('aria-hidden', 'false');
+      }
+      control.tabIndex = confirmed ? -1 : 0;
     }
 
     function setStepButtonState_(){
@@ -1086,7 +1091,12 @@ console.log("APP_BOOT_OK");
       if(stepControl){
         if(currentStep){
           stepControl.textContent = currentStep.label;
-          stepControl.setAttribute('aria-label', currentStep.label);
+          stepControl.setAttribute(
+            'aria-label',
+            includeIntroOnNextStep
+              ? getInstallIntroAnnouncement_() + ' ' + currentStep.label
+              : currentStep.label
+          );
         } else {
           stepControl.textContent = 'Select More';
           stepControl.setAttribute('aria-label', 'Select More');
@@ -1095,17 +1105,25 @@ console.log("APP_BOOT_OK");
 
       if(repeatControl){
         repeatControl.textContent = 'Repeat instructions';
-        repeatControl.setAttribute('aria-label', 'Repeat instructions');
+        repeatControl.setAttribute(
+          'aria-label',
+          completed ? getInstallCompletionPrompt_() : 'Repeat instructions'
+        );
       }
     }
 
     function showCurrentStep_(){
       setStepButtonState_();
       updateScreenReaderControls_();
-      const stepControl = getStepControl();
+      const stepControl = getStepControl_();
       if(stepControl && !stepControl.hidden && !stepControl.disabled){
         try{ stepControl.focus(); }catch(e){}
       }
+      const questionControl = getControl_();
+      if(questionControl){
+        questionControl.setAttribute('aria-hidden', 'true');
+      }
+      includeIntroOnNextStep = false;
     }
 
     function show_(){
@@ -1122,28 +1140,30 @@ console.log("APP_BOOT_OK");
         }, 420);
         return;
       }
-      announceScreenReader_(getInstallIntroAnnouncement_());
+      includeIntroOnNextStep = true;
       window.setTimeout(function(){
         showCurrentStep_();
-      }, 220);
+      }, 120);
     }
 
     function confirm_(){
       saveScreenReaderMode_();
       confirmed = true;
       completed = false;
+      stepIndex = 0;
+      includeIntroOnNextStep = true;
+      setControlLabel_();
       setStepButtonState_();
       updateScreenReaderControls_();
-      announceScreenReader_(getInstallIntroAnnouncement_());
-      stepIndex = 0;
       window.setTimeout(function(){
         showCurrentStep_();
-      }, 220);
+      }, 120);
     }
 
     function repeat_(){
       completed = false;
       stepIndex = 0;
+      includeIntroOnNextStep = false;
       setStepButtonState_();
       updateScreenReaderControls_();
       window.setTimeout(function(){
@@ -1161,7 +1181,6 @@ console.log("APP_BOOT_OK");
           setStepButtonState_();
           updateScreenReaderControls_();
           announceScreenReader_('');
-          announceScreenReader_('Double tap to hear the instructions again, or open the app from your Home Screen.');
           const repeatControl = getRepeatControl_();
           if(repeatControl && !repeatControl.hidden && !repeatControl.disabled){
             try{ repeatControl.focus(); }catch(e){}
@@ -1373,8 +1392,8 @@ console.log("APP_BOOT_OK");
     return getInstallQuestionPrompt_();
   }
 
-  function getInstallRepeatPrompt_(){
-    return 'Double tap to hear the instructions again.';
+  function getInstallCompletionPrompt_(){
+    return 'Double tap to hear the instructions again, or open the app from your Home Screen.';
   }
 
   const INSTALL_STEP_NUMERALS_ = {
