@@ -798,7 +798,8 @@ html, body {
 <body>
   <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <div class="sr-controls" id="sr-controls">
-    <button type="button" id="sr-install-help" hidden disabled aria-hidden="true" tabindex="-1">VoiceOver install help</button>
+    <button type="button" id="sr-install-step" hidden disabled aria-hidden="true" tabindex="-1">Select More</button>
+    <button type="button" id="sr-install-help" hidden disabled aria-hidden="true" tabindex="-1">Repeat instructions</button>
     <button type="button" id="sr-install-back" hidden disabled aria-hidden="true" tabindex="-1">Back to install card</button>
     <button type="button" id="sr-continue" hidden disabled aria-hidden="true" tabindex="-1">Continue to game</button>
     <button type="button" id="sr-start-first" hidden disabled aria-hidden="true" tabindex="-1">Start with first card</button>
@@ -877,7 +878,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.131</div>
+        <div class="status-version" id="status-version">v.132</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -919,6 +920,7 @@ console.log("APP_BOOT_OK");
   const motionLater = document.getElementById('motion-later');
   const srControlHost = document.getElementById('sr-controls');
   const srButtons = {
+    installStep: document.getElementById('sr-install-step'),
     installHelp: document.getElementById('sr-install-help'),
     installBack: document.getElementById('sr-install-back'),
     continueGame: document.getElementById('sr-continue'),
@@ -933,6 +935,7 @@ console.log("APP_BOOT_OK");
     const button = srButtons[key];
     if(button) button.remove();
   });
+  const srInstallStep = srButtons.installStep;
   const srInstallHelp = srButtons.installHelp;
   const srInstallBack = srButtons.installBack;
   const srContinue = srButtons.continueGame;
@@ -949,7 +952,6 @@ console.log("APP_BOOT_OK");
   let motionPromptDismissed_ = false;
   let shakeEnabled_ = false;
   let shakeState_ = { lastMagnitude: 0, lastShuffleAt: 0 };
-  let installScreenReaderConfirmed_ = false;
 
   /**
    * Requests motion permission when the browser requires it.
@@ -1009,6 +1011,184 @@ console.log("APP_BOOT_OK");
   function saveScreenReaderMode_(){
     try{ localStorage.setItem(SCREEN_READER_PREF_KEY, '1'); }catch(e){}
   }
+
+  function loadScreenReaderMode_(){
+    try{
+      return localStorage.getItem(SCREEN_READER_PREF_KEY) === '1';
+    }catch(e){
+      return false;
+    }
+  }
+
+  function getInstallStepSequence_(){
+    if(isAndroidBrowser_()){
+      return [
+        { label: 'Select Menu' },
+        { label: 'Select Add to Home Screen' },
+        { label: 'Select Add' }
+      ];
+    }
+
+    if(isIosBrowser_() && !isIosSafariBrowser_()){
+      return [
+        { label: 'Select Share' },
+        { label: 'Select Open in Safari' },
+        { label: 'Select More' },
+        { label: 'Select Share' },
+        { label: 'Select View More' },
+        { label: 'Select Add to Home Screen' },
+        { label: 'Select Add' }
+      ];
+    }
+
+    return [
+      { label: 'Select More' },
+      { label: 'Select Share' },
+      { label: 'Select View More' },
+      { label: 'Select Add to Home Screen' },
+      { label: 'Select Add' }
+    ];
+  }
+
+  function createScreenReaderInstallFlow_(){
+    let confirmed = false;
+    let completed = false;
+    let stepIndex = 0;
+    let steps = getInstallStepSequence_();
+
+    function getControl_(){
+      return document.getElementById('install-screen-reader-control');
+    }
+
+    function getStepControl_(){
+      return document.getElementById('sr-install-step');
+    }
+
+    function getRepeatControl_(){
+      return document.getElementById('sr-install-help');
+    }
+
+    function getCurrentStep_(){
+      return steps[Math.max(0, Math.min(stepIndex, steps.length - 1))] || null;
+    }
+
+    function setControlLabel_(){
+      const control = getControl_();
+      if(!control) return;
+      control.setAttribute('aria-label', confirmed ? getInstallRepeatPrompt_() : getScreenReaderQuestionPrompt_());
+    }
+
+    function setStepButtonState_(){
+      const stepControl = getStepControl_();
+      const repeatControl = getRepeatControl_();
+      const currentStep = getCurrentStep_();
+
+      if(stepControl){
+        if(currentStep){
+          stepControl.textContent = currentStep.label;
+          stepControl.setAttribute('aria-label', currentStep.label);
+        } else {
+          stepControl.textContent = 'Select More';
+          stepControl.setAttribute('aria-label', 'Select More');
+        }
+      }
+
+      if(repeatControl){
+        repeatControl.textContent = 'Repeat instructions';
+        repeatControl.setAttribute('aria-label', 'Repeat instructions');
+      }
+    }
+
+    function showCurrentStep_(){
+      setStepButtonState_();
+      updateScreenReaderControls_();
+      const stepControl = getStepControl();
+      if(stepControl && !stepControl.hidden && !stepControl.disabled){
+        try{ stepControl.focus(); }catch(e){}
+      }
+    }
+
+    function show_(){
+      steps = getInstallStepSequence_();
+      confirmed = loadScreenReaderMode_();
+      completed = false;
+      stepIndex = 0;
+      setControlLabel_();
+      setStepButtonState_();
+      updateScreenReaderControls_();
+      if(!confirmed){
+        focusScreenReaderControl_(getControl_() || srInstallHelp);
+        return;
+      }
+      announceScreenReader_(getInstallIntroAnnouncement_());
+      window.setTimeout(function(){
+        showCurrentStep_();
+      }, 220);
+    }
+
+    function confirm_(){
+      saveScreenReaderMode_();
+      confirmed = true;
+      completed = false;
+      setStepButtonState_();
+      updateScreenReaderControls_();
+      announceScreenReader_(getInstallIntroAnnouncement_());
+      stepIndex = 0;
+      window.setTimeout(function(){
+        showCurrentStep_();
+      }, 220);
+    }
+
+    function repeat_(){
+      completed = false;
+      stepIndex = 0;
+      setStepButtonState_();
+      updateScreenReaderControls_();
+      window.setTimeout(function(){
+        showCurrentStep_();
+      }, 120);
+    }
+
+    function activate_(){
+      if(confirmed){
+        if(!completed && stepIndex < steps.length - 1){
+          stepIndex += 1;
+          showCurrentStep_();
+        } else {
+          completed = true;
+          setStepButtonState_();
+          updateScreenReaderControls_();
+          announceScreenReader_('');
+          announceScreenReader_('Double tap to hear the instructions again, or open the app from your Home Screen.');
+          const repeatControl = getRepeatControl_();
+          if(repeatControl && !repeatControl.hidden && !repeatControl.disabled){
+            try{ repeatControl.focus(); }catch(e){}
+          }
+        }
+      } else {
+        confirm_();
+      }
+    }
+
+    function isConfirmed_(){
+      return confirmed;
+    }
+
+    function isCompleted_(){
+      return completed;
+    }
+
+    return {
+      activate: activate_,
+      confirm: confirm_,
+      isConfirmed: isConfirmed_,
+      isCompleted: isCompleted_,
+      repeat: repeat_,
+      show: show_
+    };
+  }
+
+  const screenReaderInstallFlow = createScreenReaderInstallFlow_();
 
   function checkForAppUpdate_(){
     try{
@@ -1079,11 +1259,11 @@ console.log("APP_BOOT_OK");
 
   function updateScreenReaderControls_(){
     const s = loadSession();
-    const installVisible = isInstallCardVisible_();
-    const installHelpVisible = isInstallHelpVisible_();
-    const installScreenVisible = installVisible || installHelpVisible;
-    const hasDeck = !!(s && Array.isArray(s.cards) && s.cards.length);
-    const playing = !!(hasDeck && s.mode === 'PLAY' && !installVisible && !installHelpVisible);
+      const installVisible = isInstallCardVisible_();
+      const installHelpVisible = isInstallHelpVisible_();
+      const installScreenVisible = installVisible || installHelpVisible;
+      const hasDeck = !!(s && Array.isArray(s.cards) && s.cards.length);
+      const playing = !!(hasDeck && s.mode === 'PLAY' && !installVisible && !installHelpVisible);
     const ready = !!(hasDeck && s.mode !== 'PLAY' && !installVisible && !installHelpVisible);
 
     if(statusBar){
@@ -1094,7 +1274,9 @@ console.log("APP_BOOT_OK");
     }
 
     if(installVisible){
-      setSrButtonVisible_(srInstallHelp, false);
+      const installConfirmed = screenReaderInstallFlow.isConfirmed();
+      setSrButtonVisible_(srInstallStep, installConfirmed && !screenReaderInstallFlow.isCompleted());
+      setSrButtonVisible_(srInstallHelp, installConfirmed && screenReaderInstallFlow.isCompleted());
       setSrButtonVisible_(srInstallBack, false);
       setSrButtonVisible_(srContinue, false);
       setSrButtonVisible_(srStartFirst, false);
@@ -1107,6 +1289,7 @@ console.log("APP_BOOT_OK");
     }
 
     if(installHelpVisible){
+      setSrButtonVisible_(srInstallStep, false);
       setSrButtonVisible_(srInstallHelp, false);
       setSrButtonVisible_(srInstallBack, true);
       setSrButtonVisible_(srContinue, false);
@@ -1119,6 +1302,7 @@ console.log("APP_BOOT_OK");
       return;
     }
 
+    setSrButtonVisible_(srInstallStep, false);
     setSrButtonVisible_(srInstallHelp, false);
     setSrButtonVisible_(srInstallBack, installHelpVisible);
     setSrButtonVisible_(srContinue, false);
@@ -1161,6 +1345,10 @@ console.log("APP_BOOT_OK");
     return intro + 'Add AMITY TABOO to your Home Screen. ' + getInstallHelpAnnouncement_();
   }
 
+  function getInstallIntroAnnouncement_(){
+    return 'Double tap to begin step-by-step instructions to add the app to your Home Screen.';
+  }
+
   function getInstallHelpAnnouncement_(){
     if(isAndroidBrowser_()){
       return 'How to Add to Home Screen. Step one. Select Menu. Step two. Select Add to Home Screen. Step three. Select Add.';
@@ -1172,15 +1360,11 @@ console.log("APP_BOOT_OK");
   }
 
   function getScreenReaderQuestionPrompt_(){
-    return 'AMITY TABOO. A friendly game of Taboo. Are you using a screen reader? Double tap yes to use screen reader controls for AMITY TABOO.';
+    return 'Double tap to confirm using screen reader controls.';
   }
 
   function getInstallRepeatPrompt_(){
-    return 'Repeat install instructions. Double tap to hear the instructions again.';
-  }
-
-  function getInstallInstructionsOnce_(){
-    return 'Instructions. ' + getInstallHelpAnnouncement_() + ' You are on Repeat install instructions. Double tap to hear these instructions again.';
+    return 'Double tap to hear the instructions again.';
   }
 
   const INSTALL_STEP_NUMERALS_ = {
@@ -1197,18 +1381,18 @@ console.log("APP_BOOT_OK");
   }
 
   function getInfoLoadingAnnouncement_(){
-    return 'Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. Your deck is loading.';
+    return 'Amity Taboo. Loading deck.';
   }
 
   function getInfoReadyAnnouncement_(total){
-    return 'Amity Taboo. A friendly game of Taboo. No teams. No timers. No scores. Just prompts. Your deck of ' + String(total || 0) + ' cards is ready. Swipe either way to play. Screen reader users can use the Shuffle deck button.';
+    return 'Amity Taboo. Your deck of ' + String(total || 0) + ' cards is ready. Swipe to play. Screen reader users can use the Shuffle deck button.';
   }
 
   function getPlayCardAnnouncement_(current, total, cardObj){
     const target = String(cardObj && cardObj.target || '').trim();
     const taboo = Array.isArray(cardObj && cardObj.taboo) ? cardObj.taboo.map(function(x){ return String(x || '').trim(); }).filter(Boolean) : [];
     const tabooText = taboo.length ? taboo.join('. ') + '.' : '';
-    return 'Card ' + String(current || 0) + ' of ' + String(total || 0) + '. Target word: ' + target + '. Taboo words: ' + tabooText + ' Swipe for next card.';
+    return 'Card ' + String(current || 0) + ' of ' + String(total || 0) + '. Target word: ' + target + '. Taboo words: ' + tabooText + ' Swipe for the next card.';
   }
 
   function isStandalone_(){
@@ -1311,31 +1495,12 @@ console.log("APP_BOOT_OK");
     if(statusCard) statusCard.textContent = 'Card ID: #0000';
     if(underBottom) underBottom.innerHTML = infoMarkup;
     announceScreenReader_('');
-    installScreenReaderConfirmed_ = false;
     updateScreenReaderControls_();
-    focusScreenReaderControl_(document.getElementById('install-screen-reader-control') || srInstallHelp);
-  }
-
-  function confirmScreenReaderMode_(){
-    saveScreenReaderMode_();
-    installScreenReaderConfirmed_ = true;
-    const installControl = document.getElementById('install-screen-reader-control');
-    if(installControl){
-      installControl.setAttribute('aria-label', getInstallRepeatPrompt_());
-    }
-    announceScreenReader_('Screen reader controls enabled.');
-    window.setTimeout(function(){
-      announceScreenReader_(getInstallInstructionsOnce_());
-    }, 1100);
+    screenReaderInstallFlow.show();
   }
 
   function focusInstallInstructions_(){
-    const installControl = document.getElementById('install-screen-reader-control');
-    if(installControl){
-      installControl.setAttribute('aria-label', getInstallRepeatPrompt_());
-      focusScreenReaderControl_(installControl);
-    }
-    announceScreenReader_('Instructions. ' + getInstallHelpAnnouncement_());
+    screenReaderInstallFlow.repeat();
   }
 
   function isInstallCardVisible_(){
@@ -1890,89 +2055,93 @@ console.log("APP_BOOT_OK");
     }, flyOutDurationMs);
   }
 
-  topCard.addEventListener('pointerdown', function(e){
-    if(e.pointerType === 'mouse' && e.button !== 0){
-      return;
-    }
-    if(isInteractiveTarget_(e.target)){
-      return;
-    }
-
-    activePointerId = e.pointerId;
-    prepareMotionOnInteraction_();
-    begin_(e.clientX, e.clientY);
-
-    try{
-      topCard.setPointerCapture(e.pointerId);
-    }catch(err){}
-
-    e.preventDefault();
-  }, { passive:false });
-
-  topCard.addEventListener('pointermove', function(e){
-    if(activePointerId !== e.pointerId) return;
-    move_(e.clientX, e.clientY);
-    e.preventDefault();
-  }, { passive:false });
-
-  topCard.addEventListener('pointerup', function(e){
-    if(activePointerId !== e.pointerId) return;
-    activePointerId = null;
-
-    try{
-      topCard.releasePointerCapture(e.pointerId);
-    }catch(err){}
-
-    finish_(e.clientX, e.clientY);
-    e.preventDefault();
-  }, { passive:false });
-
-  topCard.addEventListener('pointercancel', function(e){
-    if(activePointerId !== e.pointerId) return;
-    activePointerId = null;
-    tracking = false;
-    if(underBottom) underBottom.innerHTML = '';
-    resetCardPosition_();
-    e.preventDefault();
-  }, { passive:false });
-
-  if(!window.PointerEvent){
-    topCard.addEventListener('touchstart', function(e){
+  function bindCardSwipeHandlers_(){
+    topCard.addEventListener('pointerdown', function(e){
+      if(e.pointerType === 'mouse' && e.button !== 0){
+        return;
+      }
       if(isInteractiveTarget_(e.target)){
         return;
       }
-      const t = e.touches && e.touches[0];
-      if(!t) return;
 
+      activePointerId = e.pointerId;
       prepareMotionOnInteraction_();
-      begin_(t.clientX, t.clientY);
+      begin_(e.clientX, e.clientY);
+
+      try{
+        topCard.setPointerCapture(e.pointerId);
+      }catch(err){}
+
       e.preventDefault();
     }, { passive:false });
 
-    topCard.addEventListener('touchmove', function(e){
-      const t = e.touches && e.touches[0];
-      if(!t) return;
-      move_(t.clientX, t.clientY);
+    topCard.addEventListener('pointermove', function(e){
+      if(activePointerId !== e.pointerId) return;
+      move_(e.clientX, e.clientY);
       e.preventDefault();
     }, { passive:false });
 
-    topCard.addEventListener('touchend', function(e){
-      const t = e.changedTouches && e.changedTouches[0];
-      if(!t){
-        finish_(lastX, lastY);
-      } else {
-        finish_(t.clientX, t.clientY);
-      }
+    topCard.addEventListener('pointerup', function(e){
+      if(activePointerId !== e.pointerId) return;
+      activePointerId = null;
+
+      try{
+        topCard.releasePointerCapture(e.pointerId);
+      }catch(err){}
+
+      finish_(e.clientX, e.clientY);
       e.preventDefault();
     }, { passive:false });
 
-    topCard.addEventListener('touchcancel', function(e){
+    topCard.addEventListener('pointercancel', function(e){
+      if(activePointerId !== e.pointerId) return;
+      activePointerId = null;
       tracking = false;
       if(underBottom) underBottom.innerHTML = '';
       resetCardPosition_();
       e.preventDefault();
     }, { passive:false });
+
+    if(!window.PointerEvent){
+      topCard.addEventListener('touchstart', function(e){
+        if(isInteractiveTarget_(e.target)){
+          return;
+        }
+        const t = e.touches && e.touches[0];
+        if(!t) return;
+
+        prepareMotionOnInteraction_();
+        begin_(t.clientX, t.clientY);
+        e.preventDefault();
+      }, { passive:false });
+
+      topCard.addEventListener('touchmove', function(e){
+        const t = e.touches && e.touches[0];
+        if(!t) return;
+        move_(t.clientX, t.clientY);
+        e.preventDefault();
+      }, { passive:false });
+
+      topCard.addEventListener('touchend', function(e){
+        const t = e.changedTouches && e.changedTouches[0];
+        if(!t){
+          finish_(lastX, lastY);
+        } else {
+          finish_(t.clientX, t.clientY);
+        }
+        e.preventDefault();
+      }, { passive:false });
+
+      topCard.addEventListener('touchcancel', function(e){
+        tracking = false;
+        if(underBottom) underBottom.innerHTML = '';
+        resetCardPosition_();
+        e.preventDefault();
+      }, { passive:false });
+    }
   }
+
+  bindCardSwipeHandlers_();
 
   topCard.addEventListener('click', function(){
     if(isInstallCardVisible_() || isInstallHelpVisible_()){
@@ -2021,7 +2190,13 @@ console.log("APP_BOOT_OK");
 
   if(srInstallHelp){
     srInstallHelp.addEventListener('click', function(){
-      focusInstallInstructions_();
+      screenReaderInstallFlow.repeat();
+    });
+  }
+
+  if(srInstallStep){
+    srInstallStep.addEventListener('click', function(){
+      screenReaderInstallFlow.activate();
     });
   }
 
@@ -2030,11 +2205,7 @@ console.log("APP_BOOT_OK");
       const installControl = e.target && e.target.closest ? e.target.closest('#install-screen-reader-control') : null;
       if(installControl){
         e.preventDefault();
-        if(installScreenReaderConfirmed_){
-          focusInstallInstructions_();
-        } else {
-          confirmScreenReaderMode_();
-        }
+        screenReaderInstallFlow.activate();
         return;
       }
     });
@@ -2044,11 +2215,7 @@ console.log("APP_BOOT_OK");
       if(!installControl) return;
       if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
       e.preventDefault();
-      if(installScreenReaderConfirmed_){
-        focusInstallInstructions_();
-      } else {
-        confirmScreenReaderMode_();
-      }
+      screenReaderInstallFlow.activate();
     });
   }
 
