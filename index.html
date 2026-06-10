@@ -878,7 +878,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.137</div>
+        <div class="status-version" id="status-version">v.138</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -895,7 +895,8 @@ console.log("APP_BOOT_OK");
    */
   const LS_KEY = 'amity_taboo_session_v2';
   const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
-  const APP_VERSION = '137';
+  const SCREEN_READER_RESET_PARAM = 'sr_reset';
+  const APP_VERSION = '138';
 
   function escapeHtml_(value){
     return String(value)
@@ -1012,6 +1013,10 @@ console.log("APP_BOOT_OK");
     try{ localStorage.setItem(SCREEN_READER_PREF_KEY, '1'); }catch(e){}
   }
 
+  function clearScreenReaderMode_(){
+    try{ localStorage.removeItem(SCREEN_READER_PREF_KEY); }catch(e){}
+  }
+
   function loadScreenReaderMode_(){
     try{
       return localStorage.getItem(SCREEN_READER_PREF_KEY) === '1';
@@ -1019,6 +1024,24 @@ console.log("APP_BOOT_OK");
       return false;
     }
   }
+
+  function maybeResetScreenReaderModeFromUrl_(){
+    try{
+      const url = new URL(window.location.href);
+      if(url.searchParams.get(SCREEN_READER_RESET_PARAM) !== '1'){
+        return false;
+      }
+
+      clearScreenReaderMode_();
+      url.searchParams.delete(SCREEN_READER_RESET_PARAM);
+      window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  maybeResetScreenReaderModeFromUrl_();
 
   function getInstallStepSequence_(){
     if(isAndroidBrowser_()){
