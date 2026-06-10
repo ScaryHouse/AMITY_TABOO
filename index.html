@@ -878,7 +878,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.136</div>
+        <div class="status-version" id="status-version">v.137</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -895,7 +895,7 @@ console.log("APP_BOOT_OK");
    */
   const LS_KEY = 'amity_taboo_session_v2';
   const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
-  const APP_VERSION = '136';
+  const APP_VERSION = '137';
 
   function escapeHtml_(value){
     return String(value)
@@ -1093,9 +1093,9 @@ console.log("APP_BOOT_OK");
           stepControl.textContent = currentStep.label;
           stepControl.setAttribute(
             'aria-label',
-            includeIntroOnNextStep
-              ? getInstallIntroAnnouncement_() + ' ' + currentStep.label
-              : currentStep.label
+            (includeIntroOnNextStep ? getInstallIntroAnnouncement_() + ' ' : '') +
+            getInstallStepAnnouncementPrefix_(stepIndex) +
+            currentStep.label
           );
         } else {
           stepControl.textContent = 'Select More';
@@ -1401,8 +1401,25 @@ console.log("APP_BOOT_OK");
     two: '2',
     three: '3',
     four: '4',
-    five: '5'
+    five: '5',
+    six: '6',
+    seven: '7'
   };
+
+  const INSTALL_STEP_WORDS_ = {
+    1: 'one',
+    2: 'two',
+    3: 'three',
+    4: 'four',
+    5: 'five',
+    6: 'six',
+    7: 'seven'
+  };
+
+  function getInstallStepAnnouncementPrefix_(stepIndex){
+    const word = INSTALL_STEP_WORDS_[Number(stepIndex || 0) + 1] || 'one';
+    return 'Step ' + word + '. ';
+  }
 
   function installStep_(numberWord, label, visualHtml){
     const numeral = INSTALL_STEP_NUMERALS_[numberWord] || '';
