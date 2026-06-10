@@ -799,6 +799,7 @@ html, body {
   <div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   <div class="sr-controls" id="sr-controls">
     <button type="button" id="sr-install-step" hidden disabled aria-hidden="true" tabindex="-1">Select More</button>
+    <button type="button" id="sr-install-step-next" hidden disabled aria-hidden="true" tabindex="-1">Select Share</button>
     <button type="button" id="sr-install-help" hidden disabled aria-hidden="true" tabindex="-1">Repeat instructions</button>
     <button type="button" id="sr-install-back" hidden disabled aria-hidden="true" tabindex="-1">Back to install card</button>
     <button type="button" id="sr-continue" hidden disabled aria-hidden="true" tabindex="-1">Continue to game</button>
@@ -878,7 +879,7 @@ html, body {
       </div>
       <div class="status-bottomrow">
         <div class="status-left" id="status-deck">Card: 0 of 000</div>
-        <div class="status-version" id="status-version">v.138</div>
+        <div class="status-version" id="status-version">v.140</div>
         <div class="status-right" id="status-cardid">Card ID: #0000</div>
       </div>
     </div>
@@ -896,7 +897,7 @@ console.log("APP_BOOT_OK");
   const LS_KEY = 'amity_taboo_session_v2';
   const SCREEN_READER_PREF_KEY = 'amity_taboo_screen_reader_mode';
   const SCREEN_READER_RESET_PARAM = 'sr_reset';
-  const APP_VERSION = '138';
+  const APP_VERSION = '140';
 
   function escapeHtml_(value){
     return String(value)
@@ -922,6 +923,7 @@ console.log("APP_BOOT_OK");
   const srControlHost = document.getElementById('sr-controls');
   const srButtons = {
     installStep: document.getElementById('sr-install-step'),
+    installStepNext: document.getElementById('sr-install-step-next'),
     installHelp: document.getElementById('sr-install-help'),
     installBack: document.getElementById('sr-install-back'),
     continueGame: document.getElementById('sr-continue'),
@@ -937,6 +939,7 @@ console.log("APP_BOOT_OK");
     if(button) button.remove();
   });
   const srInstallStep = srButtons.installStep;
+  const srInstallStepNext = srButtons.installStepNext;
   const srInstallHelp = srButtons.installHelp;
   const srInstallBack = srButtons.installBack;
   const srContinue = srButtons.continueGame;
@@ -1076,16 +1079,24 @@ console.log("APP_BOOT_OK");
   function createScreenReaderInstallFlow_(){
     let confirmed = false;
     let completed = false;
+    let instructionsStarted = false;
     let stepIndex = 0;
     let steps = getInstallStepSequence_();
-    let includeIntroOnNextStep = false;
 
     function getControl_(){
-      return document.getElementById('install-screen-reader-control');
+      return document.getElementById('install-title-control');
+    }
+
+    function getInstructionsControl_(){
+      return document.getElementById('install-instructions-control');
     }
 
     function getStepControl_(){
       return srInstallStep;
+    }
+
+    function getNextStepControl_(){
+      return srInstallStepNext;
     }
 
     function getRepeatControl_(){
@@ -1106,23 +1117,47 @@ console.log("APP_BOOT_OK");
       control.tabIndex = confirmed ? -1 : 0;
     }
 
+    function setInstructionsLabel_(){
+      const control = getInstructionsControl_();
+      if(!control) return;
+      control.setAttribute('aria-label', getInstallIntroAnnouncement_());
+      control.tabIndex = confirmed && !instructionsStarted ? 0 : -1;
+      control.setAttribute('aria-hidden', confirmed && !instructionsStarted ? 'false' : 'true');
+    }
+
     function setStepButtonState_(){
       const stepControl = getStepControl_();
+      const nextStepControl = getNextStepControl_();
       const repeatControl = getRepeatControl_();
       const currentStep = getCurrentStep_();
+      const nextStep = steps[Math.max(0, Math.min(stepIndex + 1, steps.length - 1))] || null;
+      const currentLabel = currentStep
+        ? getInstallStepAnnouncementPrefix_(stepIndex) + currentStep.label
+        : 'Select More';
+      const nextLabel = nextStep
+        ? getInstallStepAnnouncementPrefix_(stepIndex + 1) + nextStep.label
+        : '';
 
       if(stepControl){
         if(currentStep){
           stepControl.textContent = currentStep.label;
-          stepControl.setAttribute(
-            'aria-label',
-            (includeIntroOnNextStep ? getInstallIntroAnnouncement_() + ' ' : '') +
-            getInstallStepAnnouncementPrefix_(stepIndex) +
-            currentStep.label
-          );
+          stepControl.setAttribute('aria-label', currentLabel);
+          stepControl.setAttribute('aria-current', 'step');
         } else {
           stepControl.textContent = 'Select More';
           stepControl.setAttribute('aria-label', 'Select More');
+          stepControl.removeAttribute('aria-current');
+        }
+      }
+
+      if(nextStepControl){
+        if(nextStep){
+          nextStepControl.textContent = nextStep.label;
+          nextStepControl.setAttribute('aria-label', nextLabel);
+          nextStepControl.removeAttribute('aria-current');
+        } else {
+          nextStepControl.textContent = '';
+          nextStepControl.setAttribute('aria-label', '');
         }
       }
 
@@ -1146,15 +1181,21 @@ console.log("APP_BOOT_OK");
       if(questionControl){
         questionControl.setAttribute('aria-hidden', 'true');
       }
-      includeIntroOnNextStep = false;
+      const instructionsControl = getInstructionsControl_();
+      if(instructionsControl){
+        instructionsControl.setAttribute('aria-hidden', 'true');
+        instructionsControl.tabIndex = -1;
+      }
     }
 
     function show_(){
       steps = getInstallStepSequence_();
       confirmed = loadScreenReaderMode_();
       completed = false;
+      instructionsStarted = false;
       stepIndex = 0;
       setControlLabel_();
+      setInstructionsLabel_();
       setStepButtonState_();
       updateScreenReaderControls_();
       if(!confirmed){
@@ -1163,9 +1204,8 @@ console.log("APP_BOOT_OK");
         }, 420);
         return;
       }
-      includeIntroOnNextStep = true;
       window.setTimeout(function(){
-        showCurrentStep_();
+        focusScreenReaderControl_(getInstructionsControl_() || srInstallHelp);
       }, 120);
     }
 
@@ -1173,20 +1213,22 @@ console.log("APP_BOOT_OK");
       saveScreenReaderMode_();
       confirmed = true;
       completed = false;
+      instructionsStarted = false;
       stepIndex = 0;
-      includeIntroOnNextStep = true;
       setControlLabel_();
+      setInstructionsLabel_();
       setStepButtonState_();
       updateScreenReaderControls_();
       window.setTimeout(function(){
-        showCurrentStep_();
+        focusScreenReaderControl_(getInstructionsControl_() || srInstallHelp);
       }, 120);
     }
 
     function repeat_(){
       completed = false;
+      instructionsStarted = true;
       stepIndex = 0;
-      includeIntroOnNextStep = false;
+      setInstructionsLabel_();
       setStepButtonState_();
       updateScreenReaderControls_();
       window.setTimeout(function(){
@@ -1196,7 +1238,12 @@ console.log("APP_BOOT_OK");
 
     function activate_(){
       if(confirmed){
-        if(!completed && stepIndex < steps.length - 1){
+        if(!instructionsStarted){
+          instructionsStarted = true;
+          stepIndex = 0;
+          setInstructionsLabel_();
+          showCurrentStep_();
+        } else if(!completed && stepIndex < steps.length - 1){
           stepIndex += 1;
           showCurrentStep_();
         } else {
@@ -1222,11 +1269,21 @@ console.log("APP_BOOT_OK");
       return completed;
     }
 
+    function isInstructionsStarted_(){
+      return instructionsStarted;
+    }
+
+    function hasNextStep_(){
+      return stepIndex < steps.length - 1;
+    }
+
     return {
       activate: activate_,
       confirm: confirm_,
       isConfirmed: isConfirmed_,
       isCompleted: isCompleted_,
+      hasNextStep: hasNextStep_,
+      isInstructionsStarted: isInstructionsStarted_,
       repeat: repeat_,
       show: show_
     };
@@ -1319,7 +1376,9 @@ console.log("APP_BOOT_OK");
 
     if(installVisible){
       const installConfirmed = screenReaderInstallFlow.isConfirmed();
-      setSrButtonVisible_(srInstallStep, installConfirmed && !screenReaderInstallFlow.isCompleted());
+      const instructionsStarted = screenReaderInstallFlow.isInstructionsStarted();
+      setSrButtonVisible_(srInstallStep, installConfirmed && instructionsStarted && !screenReaderInstallFlow.isCompleted());
+      setSrButtonVisible_(srInstallStepNext, installConfirmed && instructionsStarted && !screenReaderInstallFlow.isCompleted() && screenReaderInstallFlow.hasNextStep());
       setSrButtonVisible_(srInstallHelp, installConfirmed && screenReaderInstallFlow.isCompleted());
       setSrButtonVisible_(srInstallBack, false);
       setSrButtonVisible_(srContinue, false);
@@ -1329,11 +1388,22 @@ console.log("APP_BOOT_OK");
       setSrButtonVisible_(srRepeat, false);
       setSrButtonVisible_(srNext, false);
       setSrButtonVisible_(srShuffle, false);
+      const titleControl = document.getElementById('install-title-control');
+      const instructionsControl = document.getElementById('install-instructions-control');
+      if(titleControl){
+        titleControl.tabIndex = installConfirmed ? -1 : 0;
+        titleControl.setAttribute('aria-hidden', installConfirmed ? 'true' : 'false');
+      }
+      if(instructionsControl){
+        instructionsControl.tabIndex = installConfirmed && !instructionsStarted ? 0 : -1;
+        instructionsControl.setAttribute('aria-hidden', installConfirmed && !instructionsStarted ? 'false' : 'true');
+      }
       return;
     }
 
     if(installHelpVisible){
       setSrButtonVisible_(srInstallStep, false);
+      setSrButtonVisible_(srInstallStepNext, false);
       setSrButtonVisible_(srInstallHelp, false);
       setSrButtonVisible_(srInstallBack, true);
       setSrButtonVisible_(srContinue, false);
@@ -1347,6 +1417,7 @@ console.log("APP_BOOT_OK");
     }
 
     setSrButtonVisible_(srInstallStep, false);
+    setSrButtonVisible_(srInstallStepNext, false);
     setSrButtonVisible_(srInstallHelp, false);
     setSrButtonVisible_(srInstallBack, installHelpVisible);
     setSrButtonVisible_(srContinue, false);
@@ -1497,12 +1568,12 @@ console.log("APP_BOOT_OK");
 
   function getInstallCardMarkup_(){
     return `
-      <div class="install-card" id="install-screen-reader-control" role="button" tabindex="0" aria-label="${escapeHtml_(getInstallQuestionPrompt_())}">
-        <div class="install-intro" aria-hidden="true">
+      <div class="install-card" id="install-screen-reader-card">
+        <div class="install-intro" id="install-title-control" role="button" tabindex="0" aria-label="${escapeHtml_(getInstallQuestionPrompt_())}">
           <p class="install-subtitle">[a friendly game of taboo]</p>
           <p class="install-directive"><span>Add to your</span><span>Home Screen</span></p>
         </div>
-        <div class="install-bottom-wrap" aria-hidden="true">
+        <div class="install-bottom-wrap" id="install-instructions-control" role="button" tabindex="-1" aria-label="${escapeHtml_(getInstallIntroAnnouncement_())}">
           ${getInstallHelpMarkup_()}
         </div>
       </div>
@@ -2269,9 +2340,15 @@ console.log("APP_BOOT_OK");
     });
   }
 
+  if(srInstallStepNext){
+    srInstallStepNext.addEventListener('click', function(){
+      screenReaderInstallFlow.activate();
+    });
+  }
+
   if(topBottom){
     topBottom.addEventListener('click', function(e){
-      const installControl = e.target && e.target.closest ? e.target.closest('#install-screen-reader-control') : null;
+        const installControl = e.target && e.target.closest ? e.target.closest('#install-title-control') || e.target.closest('#install-instructions-control') : null;
       if(installControl){
         e.preventDefault();
         screenReaderInstallFlow.activate();
@@ -2280,7 +2357,7 @@ console.log("APP_BOOT_OK");
     });
 
     topBottom.addEventListener('keydown', function(e){
-      const installControl = e.target && e.target.closest ? e.target.closest('#install-screen-reader-control') : null;
+        const installControl = e.target && e.target.closest ? e.target.closest('#install-title-control') || e.target.closest('#install-instructions-control') : null;
       if(!installControl) return;
       if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
       e.preventDefault();
@@ -2291,7 +2368,7 @@ console.log("APP_BOOT_OK");
   if(srInstallBack){
     srInstallBack.addEventListener('click', function(){
       showInstallCard_();
-      focusScreenReaderControl_(document.getElementById('install-screen-reader-control'));
+      focusScreenReaderControl_(document.getElementById('install-title-control'));
     });
   }
 
